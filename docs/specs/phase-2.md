@@ -403,7 +403,7 @@ artifacts.
 
 ## v3.0 ENFORCEMENT ADDENDUM — PHASE 2 SECURITY AND REGRESSION
 
-> This addendum supersedes any Phase 2 instruction that commits after snapshot capture and two reviewer votes alone, or that reruns only snapshot/review steps after remediation.
+> This addendum supersedes any earlier Phase 2 instruction or v3.0 draft that commits after snapshot capture and two reviewer votes alone, uses the legacy `.agy/security-review.json` schema, or reruns only snapshot/review steps after remediation. `REVIEW.md` and `SECURITY_REVIEW.md` define the canonical gate and artifact contracts.
 
 1. **Candidate:** After implementation is ready, create an immutable candidate commit on the isolated Worker branch. Record its SHA and required platforms in `.agy/runs/<run-id>/manifest.json`. Do not merge.
 2. **Full regression:** Run every applicable Phase 2 platform check required by `REVIEW.md`: Build, Typecheck, Lint, Unit Tests, State-Matrix Tests, component-consumer/integration E2E, Visual Snapshot Verification against an approved baseline, Responsive/Platform Checks, and a frozen-input immutability check proving Phase 1 assets were not changed. A missing required E2E harness is BLOCKED, not skipped. Record exact commands, exit codes, and non-empty evidence paths in `regression.json`.
