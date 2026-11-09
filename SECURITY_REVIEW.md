@@ -129,35 +129,35 @@ Do not store raw credentials, personal data, or secret-bearing scanner output.
 
 ## 8. v3.0 Candidate-Bound Evidence Contract (Normative Addendum)
 
-This section supersedes the legacy JSON shape in §4 for Phase 2/3 automated aggregation. The legacy \`.agy/security-review.json\` and \`head_sha\` fields are historical guidance only. The required v3.0 artifact path is:
+This section supersedes the legacy JSON shape in §4 for Phase 2/3 automated aggregation. The legacy `.agy/security-review.json` and `head_sha` fields are historical guidance only. The required v3.0 artifact path is:
 
-\`.agy/runs/<run-id>/security-review.json\`
+`.agy/runs/<run-id>/security-review.json`
 
 The artifact MUST be a JSON object with these top-level fields:
 
-- \`schema_version: "1.0"\`
-- \`run_id\` matching \`manifest.json\`
-- \`candidate_sha\` matching the immutable candidate commit in \`manifest.json\`
-- \`status\`: one of \`PASS\`, \`FAIL\`, \`BLOCKED\`, \`ARBITRATION\`, or \`FLAKY\`
-- \`reviewer_role: "security-reviewer"\`
-- \`fresh_context: true\`
-- \`read_only: true\`
-- \`modified_paths: []\`
-- \`checks\`: object containing each mandatory domain below
-- \`findings\`: array; empty when no findings remain
+- `schema_version: "1.0"`
+- `run_id` matching `manifest.json`
+- `candidate_sha` matching the immutable candidate commit in `manifest.json`
+- `status`: one of `PASS`, `FAIL`, `BLOCKED`, `ARBITRATION`, or `FLAKY`
+- `reviewer_role: "security-reviewer"`
+- `fresh_context: true`
+- `read_only: true`
+- `modified_paths: []`
+- `checks`: object containing each mandatory domain below
+- `findings`: array; empty when no findings remain
 
-The mandatory \`checks\` object keys and behavior are:
+The mandatory `checks` object keys and behavior are:
 
 | Key | Security domain | NOT_APPLICABLE allowed |
 |---|---|---|
-| \`secret_scanning\` | Secrets/credentials scan | No |
-| \`dependency_vulnerabilities\` | Direct/transitive dependency audit | No |
-| \`static_security\` | Static/code security analysis | No |
-| \`authorization\` | Authentication and resource-level authorization tests | Only with a scope rationale and evidence |
-| \`network_boundaries\` | Mock/production network boundary verification | Only with a scope rationale and evidence |
-| \`build_release_configuration\` | Build/release configuration and workflow permissions | No |
+| `secret_scanning` | Secrets/credentials scan | No |
+| `dependency_vulnerabilities` | Direct/transitive dependency audit | No |
+| `static_security` | Static/code security analysis | No |
+| `authorization` | Authentication and resource-level authorization tests | Only with a scope rationale and evidence |
+| `network_boundaries` | Mock/production network boundary verification | Only with a scope rationale and evidence |
+| `build_release_configuration` | Build/release configuration and workflow permissions | No |
 
-Each PASS check MUST contain the actual \`tool\`, exact executed \`command\`, \`exit_code: 0\`, and a non-empty evidence path relative to this run directory. Each NOT_APPLICABLE result MUST include a non-empty \`reason\` and evidence path. Missing/unexecuted tools are BLOCKED; a prose claim cannot substitute for tool output.
+Each PASS check MUST contain the actual `tool`, exact executed `command`, `exit_code: 0`, and a non-empty evidence path relative to this run directory. Each NOT_APPLICABLE result MUST include a non-empty `reason` and evidence path. Missing/unexecuted tools are BLOCKED; a prose claim cannot substitute for tool output.
 
 Every finding MUST include an identifier and status. The automated gate accepts no unresolved finding: each finding must be verified RESOLVED against the current candidate SHA. A finding marked ACCEPTED in the legacy schema is not automatically resolved and does not pass the v3.0 gate.
 
