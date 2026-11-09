@@ -133,7 +133,7 @@ This section supersedes the legacy JSON shape in §4 for Phase 2/3 automated agg
 
 `.agy/runs/<run-id>/security-review.json`
 
-The artifact MUST be a JSON object with these top-level fields:
+The artifact MUST be a JSON object with these top-level fields. `schema_version` MUST equal `1.0`; the validator requires this field and the exact candidate identity:
 
 - `schema_version: "1.0"`
 - `run_id` matching `manifest.json`
