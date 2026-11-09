@@ -15,7 +15,7 @@ class GateValidatorTests(unittest.TestCase):
         (self.run_dir / "evidence").mkdir()
         for name in (
             "security-secrets.log", "security-deps.log", "security-static.log",
-            "security-auth.log", "security-network.log", "regression.log",
+            "security-auth.log", "security-network.log", "security-build.log", "regression.log",
             "review-vision.log", "review-code.log",
         ):
             (self.run_dir / "evidence" / name).write_text("PASS\n", encoding="utf-8")
@@ -25,13 +25,15 @@ class GateValidatorTests(unittest.TestCase):
         })
         self.write("security-review.json", {
             "run_id": "run-001", "candidate_sha": "abc123", "status": "PASS",
-            "fresh_context": True, "read_only": True, "modified_paths": [], "findings": [],
+            "fresh_context": True, "reviewer_role": "security-reviewer",
+            "read_only": True, "modified_paths": [], "findings": [],
             "checks": {
                 "secret_scanning": self.check("security-secrets.log", "secret scanner"),
                 "dependency_vulnerabilities": self.check("security-deps.log", "dependency audit"),
                 "static_security": self.check("security-static.log", "static security scan"),
                 "authorization": self.check("security-auth.log", "resource authorization tests"),
                 "network_boundaries": self.check("security-network.log", "network boundary tests"),
+                "build_release_configuration": self.check("security-build.log", "build and release configuration audit"),
             },
         })
         platforms = {}
@@ -63,7 +65,7 @@ class GateValidatorTests(unittest.TestCase):
 
     @staticmethod
     def check(file, command):
-        return {"status": "PASS", "command": command, "exit_code": 0, "evidence": f"evidence/{file}"}
+        return {"status": "PASS", "tool": "test-tool", "command": command, "exit_code": 0, "evidence": f"evidence/{file}"}
 
     def run_validator(self):
         return subprocess.run([sys.executable, str(SCRIPT), "--run-dir", str(self.run_dir)],
@@ -97,6 +99,29 @@ class GateValidatorTests(unittest.TestCase):
         report["read_only"] = False
         report["modified_paths"] = ["src/auth.ts"]
         self.write("security-review.json", report)
+        self.assertNotEqual(self.run_validator().returncode, 0)
+
+    def test_security_report_requires_role_and_scanner_tool_ids(self):
+        report = json.loads((self.run_dir / "security-review.json").read_text())
+        report["reviewer_role"] = "worker"
+        report["checks"]["secret_scanning"].pop("tool")
+        self.write("security-review.json", report)
+        self.assertNotEqual(self.run_validator().returncode, 0)
+
+    def test_phase2_requires_frozen_phase1_inputs(self):
+        manifest = json.loads((self.run_dir / "manifest.json").read_text())
+        manifest["phase"] = 2
+        self.write("manifest.json", manifest)
+        report = json.loads((self.run_dir / "regression.json").read_text())
+        report["checks"] = {"frozen_input_immutability": self.check("regression.log", "phase 1 freeze check")}
+        self.write("regression.json", report)
+        result = self.run_validator()
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_missing_phase3_component_immutability_blocks(self):
+        report = json.loads((self.run_dir / "regression.json").read_text())
+        report["checks"] = {}
+        self.write("regression.json", report)
         self.assertNotEqual(self.run_validator().returncode, 0)
 
     def test_stale_candidate_sha_is_rejected(self):
