@@ -24,7 +24,7 @@ class GateValidatorTests(unittest.TestCase):
             "phase": 3, "platforms_required": ["web", "android"],
         })
         self.write("security-review.json", {
-            "run_id": "run-001", "candidate_sha": "abc123", "status": "PASS",
+            "schema_version": "1.0", "run_id": "run-001", "candidate_sha": "abc123", "status": "PASS",
             "fresh_context": True, "reviewer_role": "security-reviewer",
             "read_only": True, "modified_paths": [], "findings": [],
             "checks": {
