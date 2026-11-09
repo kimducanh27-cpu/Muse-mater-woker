@@ -371,3 +371,31 @@ dấu [PASS].
 
 Strict Read-Only Auditor: Không có tình trạng Sub-agent tự ý sửa mã nguồn.
 Không có Spec Drift: Code bám sát 100% spec Phiên 1 mà không tự ý sửa file đặc tả.
+
+
+## v3.0 ADDENDUM — SECURITY REVIEW GATE (MANDATORY)
+
+After implementation and before the task can enter final arbitration, dispatch a
+third independent Security Reviewer with fresh context. This reviewer is separate
+from the Vision/UX and Spec/Code auditors. It receives the exact diff, base/head
+SHAs, changed paths, relevant contracts, and SECURITY_REVIEW.md. It is read-only
+and must not modify source, tests, configuration, snapshots, or baselines.
+
+Required output:
+- `.agy/security-review.json` with the schema and exact-head binding specified in
+  SECURITY_REVIEW.md.
+- A human-readable report at the path recorded in that JSON.
+- Explicit results for secret scanning, dependency vulnerabilities, static/code
+  security analysis, authorization/access-control tests where applicable, and
+  network/mock-boundary verification where applicable.
+
+No security dispatch or invalid/missing/stale evidence means BLOCKED. A failed check
+or unresolved finding means FAIL. The Security Reviewer has an independent veto;
+neither the primary agent nor the other auditors may override it. Security PASS is
+required before commit/merge eligibility, PR-ready status, or final PASS.
+
+Any code/configuration change during remediation invalidates all prior evidence.
+Rerun the complete Phase 2 validation sequence (TDD/unit and state-matrix tests,
+build/typecheck/lint, token constraints, fresh visual snapshots, both independent
+auditors, and Security Reviewer) against the new head SHA. Do not reuse stale PASS
+artifacts.
