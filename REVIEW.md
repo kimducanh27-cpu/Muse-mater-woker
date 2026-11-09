@@ -22,6 +22,7 @@ Every gate and aggregate result MUST use exactly one of these states:
 
 | State | Meaning | Merge/release eligible |
 |---|---|---:|
+| `NOT_RUN` | Required check has not executed or has no result yet. | No |
 | `PASS` | All required assertions and evidence for this gate pass for the exact candidate revision. | Yes, subject to every other gate and approval |
 | `FAIL` | A check failed or an unresolved finding exists. | No |
 | `BLOCKED` | Required tool, input, permission, artifact, or evidence is missing or invalid. | No |
@@ -30,7 +31,7 @@ Every gate and aggregate result MUST use exactly one of these states:
 
 Reviewer votes may be `PASS` or `REJECT`; map `REJECT` to a failed gate. A reviewer vote is not the aggregate gate state. The legacy labels `FLAKY_WARNING`, `CONSENSUS`, or a bare `PASS` string without evidence MUST NOT make a gate eligible.
 
-**No transition may convert `FAIL`, `BLOCKED`, `ARBITRATION`, or `FLAKY` directly to `PASS`.** The underlying problem must be fixed and the required checks rerun. Master arbitration cannot override the Security Reviewer veto.
+**No transition may convert `NOT_RUN`, `FAIL`, `BLOCKED`, `ARBITRATION`, or `FLAKY` directly to `PASS`.** The underlying problem must be fixed and the required checks rerun. Master arbitration cannot override the Security Reviewer veto.
 
 ## 3. Candidate and evidence identity
 
