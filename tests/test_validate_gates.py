@@ -78,6 +78,16 @@ class GateValidatorTests(unittest.TestCase):
         self.assertEqual(payload["status"], "PASS")
         self.assertTrue(payload["merge_eligible"])
 
+    def test_not_run_gate_is_not_merge_eligible(self):
+        report = json.loads((self.run_dir / "regression.json").read_text())
+        report["platforms"]["web"]["e2e"]["status"] = "NOT_RUN"
+        self.write("regression.json", report)
+        result = self.run_validator()
+        self.assertNotEqual(result.returncode, 0)
+        payload = json.loads((self.run_dir / "gate-result.json").read_text())
+        self.assertNotEqual(payload["status"], "PASS")
+        self.assertFalse(payload["merge_eligible"])
+
     def test_missing_security_report_fails_closed(self):
         (self.run_dir / "security-review.json").unlink()
         result = self.run_validator()
