@@ -399,3 +399,17 @@ Rerun the complete Phase 2 validation sequence (TDD/unit and state-matrix tests,
 build/typecheck/lint, token constraints, fresh visual snapshots, both independent
 auditors, and Security Reviewer) against the new head SHA. Do not reuse stale PASS
 artifacts.
+
+
+## v3.0 ENFORCEMENT ADDENDUM — PHASE 2 SECURITY AND REGRESSION
+
+> This addendum supersedes any Phase 2 instruction that commits after snapshot capture and two reviewer votes alone, or that reruns only snapshot/review steps after remediation.
+
+1. **Candidate:** After implementation is ready, create an immutable candidate commit on the isolated Worker branch. Record its SHA and required platforms in \`.agy/runs/<run-id>/manifest.json\`. Do not merge.
+2. **Full regression:** Run every applicable Phase 2 platform check required by \`REVIEW.md\`: Build, Typecheck, Lint, Unit Tests, State-Matrix Tests, E2E where a component journey exists, Visual Snapshot Verification against an approved baseline, and Responsive/Platform Checks. Record exact commands, exit codes, and non-empty evidence paths in \`regression.json\`.
+3. **Independent reviews:** Only after full regression is PASS, dispatch fresh-context read-only Vision/UX and Code/Architecture reviewers against the exact candidate SHA. Store their result in \`independent-review.json\`.
+4. **Security review:** At the same post-regression gate, dispatch the independent read-only Security Reviewer as required by \`SECURITY_REVIEW.md\`. Store all required scan/test outputs and its decision in \`security-review.json\`. A token linter is not a security scanner.
+5. **Remediation:** After any source-code change, invalidate every old report, create a new candidate SHA, rerun the entire full regression first, and only then dispatch fresh independent reviewers and a fresh Security Reviewer. Re-running Step 5 snapshot capture or Step 6 review alone is insufficient.
+6. **Aggregation:** Run \`python3 scripts/validate-gates.py --run-dir .agy/runs/<run-id>\`. Commit/checkpoint/merge/PR readiness is allowed only on exit code 0 and aggregate PASS. \`FAIL\`, \`BLOCKED\`, \`ARBITRATION\`, and \`FLAKY\` are never PASS.
+7. **Ownership:** Worker implements and runs tests; auditors are read-only; Master dispatches and aggregates but does not edit code; the human owner approves MEDIUM/HIGH-risk changes and release actions. Master arbitration cannot override a Security Reviewer veto.
+
