@@ -18,7 +18,7 @@ FAIL = "FAIL"
 BLOCKED = "BLOCKED"
 ARBITRATION = "ARBITRATION"
 FLAKY = "FLAKY"
-VALID_STATES = {PASS, FAIL, BLOCKED, ARBITRATION, FLAKY, "NOT_APPLICABLE"}
+VALID_STATES = {PASS, FAIL, BLOCKED, ARBITRATION, FLAKY, "NOT_RUN", "NOT_APPLICABLE"}
 SECURITY_CHECKS = (
     "secret_scanning",
     "dependency_vulnerabilities",
@@ -143,6 +143,8 @@ class GateValidation:
         security = self.load("security-review.json")
         if security is not None:
             self.identity(security, "security-review.json")
+            if security.get("schema_version") != "1.0":
+                self.add(BLOCKED, "security-review.json.schema_version must be 1.0")
             if security.get("status") != PASS:
                 state = security.get("status")
                 next_state = state if state in {FAIL, BLOCKED, ARBITRATION, FLAKY} else BLOCKED
