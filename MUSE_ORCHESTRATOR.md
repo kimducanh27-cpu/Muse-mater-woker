@@ -437,7 +437,7 @@ as human approvers. Recompute risk whenever scope expands.
 
 ## v3.0 NORMATIVE ENFORCEMENT ADDENDUM — REVIEW, SECURITY, REGRESSION
 
-> This addendum is normative and supersedes any v2.0 example or instruction in this file that permits checkpoint/merge on a generic `.agy/last-run.json.status == PASS`, omits Security Reviewer dispatch, or treats reviewer consensus as sufficient by itself.
+> This addendum is normative and supersedes any v2.0 or earlier v3.0 instruction in this file that permits checkpoint/merge on a generic `.agy/last-run.json.status == PASS`, omits Security Reviewer dispatch, or conflicts with the candidate-bound evidence schema below. It also supersedes the earlier legacy `.agy/security-review.json` report path/schema: v3.0 uses only `.agy/runs/<run-id>/security-review.json`.
 
 ### A. Authority and execution order
 
@@ -454,7 +454,7 @@ When a code change is required:
 
 `FAIL/REJECT → REMEDIATING → new candidate SHA → full REGRESSION → fresh independent reviews + fresh SECURITY_REVIEW → AGGREGATING`
 
-`BLOCKED`, `ARBITRATION`, and `FLAKY` are pending/non-eligible states. They MUST NOT be converted to PASS to keep the workflow moving.
+`NOT_RUN`, `BLOCKED`, `ARBITRATION`, and `FLAKY` are pending/non-eligible states; `FAIL` is failed/non-eligible. They MUST NOT be converted to PASS to keep the workflow moving. `REVIEW.md` defines the canonical state semantics.
 
 ### B. Candidate identity and durable evidence
 
