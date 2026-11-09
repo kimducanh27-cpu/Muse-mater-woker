@@ -25,6 +25,7 @@ SECURITY_CHECKS = (
     "static_security",
     "authorization",
     "network_boundaries",
+    "build_release_configuration",
 )
 PLATFORM_CHECKS = (
     "build",
@@ -71,7 +72,7 @@ class GateValidation:
             elif actual != expected:
                 self.add(FAIL, f"stale {name}: {key} does not match manifest")
 
-    def evidence(self, record: Any, label: str, allow_na: bool = False) -> None:
+    def evidence(self, record: Any, label: str, allow_na: bool = False, require_tool: bool = False) -> None:
         if not isinstance(record, dict):
             self.add(BLOCKED, f"{label} result must be an object")
             return
@@ -93,6 +94,8 @@ class GateValidation:
             return
         if not isinstance(record.get("command"), str) or not record["command"].strip():
             self.add(BLOCKED, f"{label} is missing the executed command")
+        if require_tool and (not isinstance(record.get("tool"), str) or not record["tool"].strip()):
+            self.add(BLOCKED, f"{label} is missing the scanner/test tool identifier")
         if record.get("exit_code") != 0:
             self.add(FAIL, f"{label} did not report exit_code 0")
         self.evidence_file(record, label)
@@ -146,6 +149,8 @@ class GateValidation:
                 self.add(next_state, f"security reviewer gate is {state}; Master arbitration cannot override it")
             if security.get("fresh_context") is not True:
                 self.add(BLOCKED, "security reviewer must use fresh context")
+            if security.get("reviewer_role") != "security-reviewer":
+                self.add(BLOCKED, "security reviewer role must be security-reviewer")
             if security.get("read_only") is not True or security.get("modified_paths") != []:
                 self.add(FAIL, "security reviewer must be read-only and report zero modified paths")
             checks = security.get("checks")
@@ -160,6 +165,7 @@ class GateValidation:
                             checks[name],
                             f"security.{name}",
                             allow_na=name in {"authorization", "network_boundaries"},
+                            require_tool=True,
                         )
             findings = security.get("findings")
             if not isinstance(findings, list):
@@ -176,10 +182,11 @@ class GateValidation:
                 next_state = state if state in {FAIL, BLOCKED, ARBITRATION, FLAKY} else BLOCKED
                 self.add(next_state, f"full regression gate is {state}")
             checks = regression.get("checks")
-            if not isinstance(checks, dict) or "component_immutability" not in checks:
-                self.add(BLOCKED, "regression.checks.component_immutability is required")
+            immutable_check = "frozen_input_immutability" if manifest.get("phase") == 2 else "component_immutability"
+            if not isinstance(checks, dict) or immutable_check not in checks:
+                self.add(BLOCKED, f"regression.checks.{immutable_check} is required")
             else:
-                self.evidence(checks["component_immutability"], "regression.component_immutability")
+                self.evidence(checks[immutable_check], f"regression.{immutable_check}")
             platform_results = regression.get("platforms")
             if not isinstance(platform_results, dict):
                 self.add(BLOCKED, "regression.platforms must be an object")
