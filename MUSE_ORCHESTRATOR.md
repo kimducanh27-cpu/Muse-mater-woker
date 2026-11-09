@@ -382,3 +382,54 @@ script setup
 Báo cáo trực quan Mobile        PASS         Đính kèm đầy đủ ảnh snapshot
 PNG nghiệm thu trực tiếp trong
 giao diện chat
+
+
+## v3.0 ADDENDUM — MANDATORY SECURITY AND QUALITY GATES
+
+This addendum is normative and supersedes any conflicting v2.0 statement that permits
+merge, PR readiness, or completion based only on the two existing visual/code auditors.
+
+### Canonical gate states
+Use only: `NOT_RUN`, `PASS`, `FAIL`, `BLOCKED`, `ARBITRATION`, `FLAKY`.
+A missing, malformed, stale, or absent required artifact is `BLOCKED`, never `PASS`.
+`ARBITRATION` is a pending human decision and is never merge-eligible.
+`FLAKY` is not a pass; it blocks release until rerun evidence establishes a stable
+result or an explicitly authorized, documented exception is granted. No AI agent is
+a human approver.
+
+### Required security dispatch and aggregation
+For every Phase 2 component task and every Phase 3 screen task, Worker MUST dispatch
+a separate Security Reviewer with fresh context after implementation and before
+final arbitration. The reviewer receives the task diff, base/head commit identifiers,
+changed-path list, applicable contracts, and SECURITY_REVIEW.md. It is strictly
+read-only: no code, test, configuration, or baseline mutation; no write permissions.
+It must emit `.agy/security-review.json` and a human-readable report. The JSON must
+include schema_version, task_id, base_sha, head_sha, changed_paths, reviewer_id,
+reviewed_at, status, findings[], checks[], and report_path. A result is valid only
+when it identifies the exact audited head SHA and all mandatory checks are present.
+
+Master MUST independently validate the artifact and SHA freshness. Missing dispatch,
+missing artifact, invalid schema, mismatched SHA, skipped checks, reviewer write
+activity, unresolved security findings, or a failed security check => BLOCKED/FAIL.
+The security veto is absolute for ordinary orchestration: Master, Worker, visual
+auditors, and code auditors cannot override it. Only a named human owner may resolve
+a finding through a documented remediation and a fresh security review; a human
+exception may not waive a confirmed critical vulnerability or secret exposure.
+Security PASS is required before merge, PR-ready status, release, and final PASS.
+
+### Phase 2 / Phase 3 completion contract
+A task is merge-eligible only when every required platform-specific regression check
+is PASS, both phase-specific auditors are PASS, the independent Security Reviewer
+is PASS, component freeze/drift checks are PASS, and no finding is unresolved.
+Any remediation invalidates all prior test, visual, review, and security evidence
+for the changed task. Rerun the complete phase regression and all affected reviewers
+against the new head SHA. Phase 3 uses the full regression matrix defined in
+docs/specs/phase-3.md; E2E-only reruns are insufficient.
+
+### Human risk approval
+Defect severity (P0/P1/P2) is not change risk. Master must separately classify change
+risk using changed paths, data sensitivity, privilege boundary, blast radius, and
+release impact. LOW may complete autonomously only after every gate passes.
+MEDIUM requires at least one human approval. HIGH requires explicit owner approval
+and the stricter approval policy defined by the project owner. AI agents never count
+as human approvers. Recompute risk whenever scope expands.
