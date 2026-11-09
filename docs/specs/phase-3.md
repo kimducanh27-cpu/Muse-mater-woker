@@ -488,7 +488,7 @@ on exhaustion, stop and preserve artifacts for human intervention.
 
 ## v3.0 ENFORCEMENT ADDENDUM — PHASE 3 FULL REGRESSION AND SECURITY
 
-> This addendum replaces the baseline Step 6 remediation shortcut that reruns only E2E and reviewer steps. It also supersedes the blanket “Zero Human-in-the-Loop” wording: autonomy is conditional on risk classification and all required approvals.
+> This addendum supersedes any earlier Phase 3 instruction or v3.0 draft that uses the legacy `.agy/security-review.json` schema, reruns only E2E/reviewer steps after remediation, or permits unconditional zero-human approval. `REVIEW.md` and `SECURITY_REVIEW.md` define the canonical gate and artifact contracts. Autonomy is conditional on risk classification and all required approvals.
 
 1. **Candidate:** Create an immutable candidate commit on the isolated Worker branch after screen assembly. Bind all reports to `run_id`, exact `candidate_sha`, phase, and required platforms.
 2. **Regression before review:** Before dispatching any reviewer, run the complete platform-aware contract in `REVIEW.md`. For each required platform, evidence MUST cover Build, Typecheck, Lint, Unit Tests, State-Matrix Tests, complete E2E User Journeys (including Loading, Success/Data, Empty, Error and Retry), Visual Snapshot Verification against an approved baseline, and Responsive/Platform Checks. Also prove Component Immutability against the frozen Phase 2 component baseline.
