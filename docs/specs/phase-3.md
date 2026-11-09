@@ -445,3 +445,42 @@ Auditor qua /code-review) đều đóng dấu [PASS].
 Strict Read-Only Auditor: Không có tình trạng Sub-agent tự ý sửa mã nguồn.
 Báo cáo @egm-drift-report xác nhận Zero Drift so với @DESIGN.md.
   -
+
+
+## v3.0 ADDENDUM — FULL REGRESSION AFTER EVERY REMEDIATION
+
+The Step 6 remediation loop MUST NOT rerun only E2E and reviewers. Every source,
+test, configuration, mock, navigation, or token-related change invalidates the
+previous validation evidence. Before any reviewer is dispatched and before
+ARBITRATION or PASS, execute the complete regression matrix for every affected
+platform:
+
+1. Clean dependency/configuration validation and production build.
+2. Typecheck (Web) / Kotlin compilation and relevant static checks (Android).
+3. Lint and formatting checks, including token/style constraints.
+4. Unit tests for affected modules.
+5. Full four-state/state-matrix tests: Loading, Data/Success, Empty, Error, and
+   Retry behavior, including boundary/null/long-content cases where applicable.
+6. Web Playwright E2E and/or Android Maestro E2E for all affected user journeys.
+7. Fresh visual snapshot capture and baseline comparison (Playwright/Web and
+   Paparazzi/Android); stale snapshots are invalid.
+8. Component immutability check: prove Phase 2 component paths have zero diff.
+9. Responsive/window-size, overflow, and touch-target checks on supported
+   breakpoints/device classes.
+10. Independent UX/Drift and Architecture/Code reviewers rerun with fresh context.
+11. Independent Security Reviewer rerun with fresh context and exact head SHA.
+12. Verify all reports are complete, current, and bound to the tested head SHA.
+
+Each check must produce a durable evidence artifact with command, exit code,
+timestamp, platform, commit SHA, and report path. A required check that is unsupported,
+not configured, skipped, timed out, or missing its artifact is BLOCKED—not PASS.
+A failed check is FAIL. A flaky check remains FLAKY and blocks release.
+
+Only after the full matrix and all three independent reviews are PASS may the task
+enter ARBITRATION. ARBITRATION is a pending decision, never a PASS state. Merge or
+release remains blocked until the applicable human risk approval is recorded.
+
+If remediation changes code after any regression step, restart the entire matrix
+from step 1 against the new head SHA. Do not dispatch reviewers while mandatory
+regression is incomplete. The retry budget remains at most three remediation rounds;
+on exhaustion, stop and preserve artifacts for human intervention.
