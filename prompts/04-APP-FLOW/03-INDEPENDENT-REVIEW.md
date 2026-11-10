@@ -5,7 +5,7 @@ Read the active Skill at `.agents/skills/app-flow/SKILL.md` in full. The Skill i
 Act as an adversarial Principal Product Designer, Information Architect and QA Flow Auditor. Find structural defects; do not defend previous tabs or optimize for a GO verdict.
 
 ## Entry verification
-In a fresh conversation, independently re-read Process 03 Control File and Product Definition, Process 04 Control File, artifacts 01–06 and decision log 09. Recompute the Product Definition SHA-256 and compare it with Process 03 `gate_3.frozen_artifact.sha256`. Recompute all approved-artifact hashes and verify initiative IDs, including the immutable Process 04 Decision Log identity header. Require its current SHA-256 to match both `decision_log.latest_sha256` and `gate_2.decision_log_sha256`; require the latest `GATE_2_APPROVED` event's `decision_log_sha256` to equal the Control File field, and require no `DECISION_LOG_UPDATED` event after that approval event. If anything is missing, stale, unreadable or contradictory, reopen affected gate(s), append a canonical invalidation event, report NOT_VERIFIED and stop.
+In a fresh conversation, independently re-read Process 03 Control File and Product Definition, Process 04 Control File, artifacts 01–06 and Decision Log 09. Recompute the Product Definition SHA-256 and compare it with Process 03 `gate_3.frozen_artifact.sha256`. Recompute all approved-artifact hashes and verify initiative IDs, including the immutable Process 04 Decision Log identity header. Require its current SHA-256 to match both `decision_log.latest_sha256` and `gate_2.decision_log_sha256`; require the latest `GATE_2_APPROVED` event's `decision_log_sha256` to equal the Control File field, and require no `DECISION_LOG_UPDATED` event after that approval event. If the Control File lifecycle is FROZEN or a frozen artifact hash exists, also recompute `product/app-flow/APP_FLOW.md` and compare it with `gate_3.frozen_artifact.sha256`. A missing, unreadable or mismatched frozen file reopens Gate 3, sets lifecycle REVIEW_REQUIRED, appends `INVALIDATED`, blocks downstream use and stops. If anything else is missing, stale, unreadable or contradictory, reopen affected gate(s), append a canonical invalidation event, report NOT_VERIFIED and stop.
 
 ## Permissions
 - Read-only for Process 03 sources and Process 04 artifacts 01–06 and 09.
@@ -77,6 +77,7 @@ Preconditions:
 - Source status VERIFIED; Product Definition hash equals Process 03 `gate_3.frozen_artifact.sha256`.
 - Gates 1 and 2 APPROVED and every stored hash matches; latest canonical approval events and `approved_state_seq` fields agree. Gate 1's `decision_log_sha256` equals its `GATE_1_APPROVED` event snapshot; Gate 2's `decision_log_sha256` equals its `GATE_2_APPROVED` event snapshot.
 - No Decision Log update follows Gate 2 approval; its identity is correct and actual SHA-256 equals both `decision_log.latest_sha256` and `gate_2.decision_log_sha256`.
+- If a previously frozen `APP_FLOW.md` exists, its actual SHA-256 equals `gate_3.frozen_artifact.sha256`; otherwise Gate 3 is reopened and freeze is blocked.
 - At least one review round exists; latest review file hash matches the Control File.
 - Latest review status READY_FOR_FREEZE.
 - Latest round's 01–06, decision-log and draft hashes match current files.
