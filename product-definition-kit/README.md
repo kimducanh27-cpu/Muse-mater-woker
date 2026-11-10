@@ -70,3 +70,16 @@ Do not invent customer quotes, personas, evidence, competitor claims, baselines 
 Open Tab 01 in the same workspace, read the active Skill, initialize the control file, verify Process 02 handoff and paste the matching prompt. Do not jump to Tab 02 or 03 until the relevant human gate is recorded.
 
 Keep private participant data outside a public repository. Store only anonymized, authorized evidence references.
+
+
+## Integrity and handoff hardening
+
+The canonical control template is schema version 2. It binds each approval to SHA-256 hashes of the exact artifacts approved. Gate 3 remains APPROVED; lifecycle_status becomes FROZEN only after the canonical Product Definition hash is stored and read back.
+
+For the PROCESS_02 route, Process 03 accepts only PROCEED or NARROW decisions and re-verifies source hashes at Tab 02, Tab 03 and freeze. PIVOT, PAUSE, STOP, a source mismatch or an unverified hash blocks progression. READY FOR TESTING requires the exact command ACCEPT RESIDUAL UNCERTAINTY.
+
+Tab 03 is read-only on artifacts 01–06. Review history is append-only. Remediation returns to Tab 01 or Tab 02, requires the affected approval again and is followed by a new review round. MAJOR/MINOR findings require explicit user acceptance; freeze does not imply acceptance.
+
+PowerShell SHA-256 and Asia/Ho_Chi_Minh timestamp procedures are specified in the active Skill. If the terminal or hash verification is unavailable, approval/freeze remains NOT_VERIFIED. state_seq detects stale reads but is not a file lock; only one tab may write the Control File at a time.
+
+See VERIFICATION-CHECKLIST.md for paper failure simulations and live Antigravity checks. Paper simulations are not runtime tests.

@@ -1,42 +1,62 @@
-# Independent Product Definition Review
+# Independent Product Definition Review History
 
-> Reviewer context: fresh conversation | Review status: NOT STARTED / BLOCKERS FOUND / READY FOR FREEZE
+This file is append-only. Never delete, replace or silently rewrite a prior review round. Keep finding IDs stable across rounds.
 
-## Executive verdict
-- Verdict:
-- Strongest part:
-- Weakest part:
+## Round template
+
+### Review round <N>
+- Review date/time:
+- Reviewer conversation: FRESH
+- Gate 1 and Gate 2 verified:
+- Process 02 handoff verified:
+- Process 02 source hashes:
+- Artifact 01–06 hashes:
+- Draft 08 hash:
+- Review status: NOT_STARTED / BLOCKERS_FOUND / READY_FOR_FREEZE
+- Unresolved BLOCKER count:
+- Open MAJOR count:
+- Open MINOR count:
 - Recommendation:
 
-## Findings
-| ID | Severity: BLOCKER / MAJOR / MINOR | File and section | Finding | Why it matters | Evidence/source | Required correction |
-|---|---|---|---|---|---|---|
+#### Executive verdict
+- Strongest part:
+- Weakest part:
+- Main risk:
 
-## Traceability audit
+#### Findings
+| ID | Severity: BLOCKER / MAJOR / MINOR | Status: OPEN / RESOLVED / ACCEPTED_BY_USER | Source file/section | Finding | Why it matters | Evidence/source | Required correction | Resolved in round | User acceptance command |
+|---|---|---|---|---|---|---|---|---|---|
+
+#### Traceability audit
 | Product claim/capability | Discovery opportunity | Evidence IDs | Evidence status | Unsupported leap? |
 |---|---|---|---|---|
 
-## Scope audit
+#### Scope and metric audit
 - Primary value promise:
-- IN scope that is truly indispensable:
+- IN items that are indispensable:
 - Scope creep:
-- Ambiguous NOT NOW vs OUT:
-- Hidden dependencies:
+- NOT NOW vs OUT ambiguity:
+- Leading/lagging measure quality:
+- Baseline and target status:
+- Hidden dependencies/risks:
 
-## Metrics audit
-- Leading measure quality:
-- Lagging measure quality:
-- Baselines/targets with sources:
-- Unknowns correctly labeled:
+#### Draft 08 consistency check
+- All material decisions from 01–06 preserved:
+- All evidence labels and uncertainty preserved:
+- No new unsupported promise or capability:
+- No HYPOTHESIS changed to FACT:
+- Residual risks/deferred unknowns carried forward:
+- No App Flow, UX/UI or engineering specification:
+- Result: PASS / FAIL
+- Draft SHA-256:
 
-## Red-team questions
-1. What evidence would make this product definition wrong?
-2. What is the smallest version that still delivers the promise?
-3. Which promise cannot be substantiated?
-4. What has been prematurely pushed into App Flow or engineering?
-
-## Freeze readiness
-- Unresolved BLOCKER count:
-- Residual MAJOR/MINOR risks accepted:
-- Gates 1 and 2 verified:
+#### Freeze readiness
+- Zero unresolved BLOCKER:
+- All open MAJOR/MINOR resolved or explicitly accepted by user:
+- Gates 1 and 2 hashes verified:
+- Handoff hashes verified:
 - Recommendation: READY / NOT READY
+
+---
+
+Append the next review as Round N+1. Do not erase the evidence of earlier findings or decisions.

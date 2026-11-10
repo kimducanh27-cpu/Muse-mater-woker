@@ -51,3 +51,8 @@ PRODUCT_DEFINITION.md is the intended input to Process 04 — App Flow. Process 
 5. Transfer context through workspace artifacts, not chat history.
 
 Each process README contains its prerequisites, output contracts, gates and upstream register.
+
+
+## Process 03 integrity note
+
+Process 03 uses a schema-version-2 canonical Control File. Before using a frozen Product Definition, verify Gate 3 = APPROVED, lifecycle_status = FROZEN and the stored SHA-256 matches product/definition/PRODUCT_DEFINITION.md. Process 03 accepts only PROCEED or NARROW from Process 02; READY FOR TESTING requires explicit persisted uncertainty acceptance. Tab 03 is read-only on source artifacts and review rounds are append-only. See product-definition-kit/VERIFICATION-CHECKLIST.md. Live Antigravity behavior remains unverified until tested in the actual workspace.

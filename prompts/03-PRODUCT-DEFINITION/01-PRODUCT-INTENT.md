@@ -1,36 +1,38 @@
 # PROCESS 03 — TAB 01: PRODUCT INTENT & POSITIONING
 
-Use the active product-definition Skill. This is Process 03, not Product Discovery and not App Flow.
+Use the active product-definition Skill in a fresh Antigravity conversation. This is Process 03, not Discovery or App Flow.
 
 ## Read first
 1. product/definition/00_PRODUCT_DEFINITION_CONTROL.md; initialize from the template if missing.
-2. product/discovery/00_DISCOVERY_CONTROL.md
-3. product/discovery/07_DISCOVERY_DECISION.md
-4. product/discovery/08_DISCOVERY_OUTCOME.md if present
-5. Discovery Brief, Opportunity Map, Evidence Register, Assumption Map and source material needed to trace claims.
-6. Existing strategy, constraints or product context supplied by the user.
+2. The selected Process 02 source Control File, Decision Brief and Outcome when applicable.
+3. Discovery Brief, Opportunity Map, Evidence Register, Assumption Map and material cited sources.
+4. Existing strategy, constraints or context supplied by the user.
 
-Verify Process 02 eligibility exactly as defined in the Skill. If Gate 3 is not APPROVED, source state is missing, or the discovery state is ineligible, stop and report the blocker. If only READY FOR TESTING exists, make inherited uncertainty visible and obtain explicit user acceptance before shaping.
+## Handoff gate
+Verify route, initiative identity, Gate 3, discovery decision, outcome status and evidence status exactly as specified in the Skill. Eligible decisions are PROCEED or NARROW only. PIVOT, PAUSE, STOP, conflicting states or unreadable sources stop the process.
 
-## Your role
-Act as a Product Definition sparring partner. Make the product's purpose and value proposition concrete; do not turn Discovery into a feature wishlist.
+For READY FOR TESTING, wait for the exact command ACCEPT RESIDUAL UNCERTAINTY. Persist command, timestamp, evidence status and accepted risks before starting Product Intent. Do not infer it.
 
-## Process
-1. Summarize what Process 02 supports, what remains unknown and what decision was made.
-2. Define the primary target segment and context using evidence, not a synthetic persona.
-3. State the customer's job/problem and the outcome the product aims to change.
-4. Draft and critique the positioning statement: For [segment] who [need], [product] is a [category] that [outcome]. Unlike [alternative], it [credible difference].
-5. Compare the proposed direction with current alternatives and non-consumption.
-6. Identify the few strategic choices that determine what this product is and is not.
-7. Label unsupported differentiation or market claims HYPOTHESIS / UNKNOWN.
-8. Recommend one product intent and show the strongest counterargument.
+For an existing product without Process 02, require the exact command USE EXISTING PRODUCT CONTEXT and record/hash the supplied source path. Do not claim Process 02 was completed.
+
+Record Process 02 source paths and SHA-256 hashes in the canonical Control File. Later tabs must re-verify them.
+
+## Work
+1. Summarize what Discovery supports, what remains unknown and the opportunity decision.
+2. Inherit Process 02's evidence-supported target segment, context, customer job and current alternatives. Record deviations and rationale in the template.
+3. Define the product's target segment, customer problem/job and intended outcome. Do not invent personas or validation.
+4. Draft and critique positioning: For [segment] who [need], [product] is a [category] that [outcome]. Unlike [alternative], it [credible difference].
+5. Compare current alternatives and non-consumption.
+6. Identify strategic choices and product-level assumptions.
+7. Label unsupported claims HYPOTHESIS / UNKNOWN.
+8. Recommend one intent and state the strongest counterargument.
 
 ## Boundaries
 - No App Flow, screens, wireframes, navigation, UI, design system or UX spec.
 - No detailed PRD, user stories, acceptance criteria, API, database or code.
 - Do not invent customer quotes, personas, metrics or market claims.
 - User approval is a decision, not evidence of demand.
-- Ask one high-value question at a time. Do not send a long questionnaire.
+- Ask one high-value question at a time.
 - Do not auto-start Tab 02.
 
 ## Output
@@ -38,15 +40,17 @@ Create/update:
 - product/definition/01_PRODUCT_INTENT.md
 - product/definition/02_POSITIONING.md
 
-Use templates in templates/03-PRODUCT-DEFINITION/. Include Process 02 evidence IDs, decision source, uncertainty, counterargument and rejected alternatives.
+Use templates in templates/03-PRODUCT-DEFINITION/. Include evidence IDs, discovery decision, uncertainty, counterargument, deviations from Process 02 and rejected alternatives.
 
 ## Gate 1
-Stop and wait for exact command: APPROVE PRODUCT INTENT.
+Wait for exact command APPROVE PRODUCT INTENT. A revision request must be logged as REVISION_REQUESTED; REJECT PRODUCT INTENT sets the gate to REJECTED.
 
-On receipt, update product/definition/00_PRODUCT_DEFINITION_CONTROL.md:
-- Gate 1 = APPROVED
-- exact command and user decision
-- local timestamp (Asia/Ho_Chi_Minh)
-- artifact revision/path
+On approval:
+- Compute SHA-256 for both output artifacts.
+- Record Gate 1 = APPROVED, exact command, user decision, real local timestamp and approved_artifacts in the Control File.
+- Increment state_seq, save, read back and verify the stored hashes.
 
-Do not say Gate 1 passed until the control file is saved successfully. Never start Tab 02 automatically.
+If hashing, timestamp, write or read-back fails, report NOT VERIFIED and do not start Tab 02. Never start Tab 02 automatically.
+
+## Invalidation
+If either approved file changes, reopen Gates 1–3. Apply the Skill's invalidation matrix and append a Control File log entry.

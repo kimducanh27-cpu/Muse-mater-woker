@@ -31,3 +31,15 @@ Engineering-ready PRD skills were not copied because they would collapse Product
 - For every updated upstream copy, record source URL, check date, blob SHA and license.
 - Keep Process 03-specific gates, file contracts and restrictions in custom files.
 - Do not claim a custom adapter is an upstream skill.
+
+
+## Scope boundaries for upstream references
+
+These copies are method references only. Process 03 may selectively borrow outcome ladders, weakest assumptions, no-gos, deferred unknowns and decision framing. It must not execute prototype phases, create HTML/UI prototypes, invent fictional customer quotes/personas, walk through customer journeys, draft activation paths, generate a PRD or route work to engineering skills absent from this kit.
+
+### Immutable source identity
+
+- ferminrp/agent-skills product-shaping source file blob: 66afdf3d1fb4c6e40925ca768ccbe02571c45920. Upstream HEAD reported by the independent review: 5dac874 (short SHA only; full commit permalink not verified here). License status remains unresolved; see LICENSES/FERMINRP-LICENSE-STATUS.md. Do not invent a notice.
+- marfoerst/the-pragmatic-pm Product Brief blob: 46ffc5b69092cdccf6980d179344f140211b9ba2. MIT license blob: 5f63e803e2f9bdb0d2ec0c46f1e845e3e40167d6. Upstream HEAD reported by the independent review: 667676c (short SHA only; full commit permalink not verified here).
+
+The blob hashes identify the vendored file contents. The short repository HEAD values above are review observations, not full commit identifiers. Replace them with full immutable commit permalinks only after verifying the upstream refs; do not infer missing SHA characters.

@@ -3,19 +3,29 @@
 > Process: 03 — Product Definition | Status: DRAFT
 
 ## Process 02 handoff
-- Source decision/outcome:
+- Route: PROCESS_02 / EXISTING_PRODUCT_CONTEXT
+- Source initiative ID:
+- Source control / decision / outcome paths:
 - Process 02 Gate 3:
+- Opportunity decision: PROCEED / NARROW / PIVOT / PAUSE / STOP
 - Discovery status: FROZEN OUTCOME / READY FOR TESTING / EXISTING PRODUCT CONTEXT
-- Evidence status: PRIMARY / SECONDARY ONLY / NOT COLLECTED
-- Accepted residual uncertainty:
+- Evidence status: PRIMARY_EVIDENCE_PRESENT / SECONDARY_ONLY / NOT_COLLECTED / NOT_VERIFIED
+- Residual uncertainty acceptance command and timestamp:
+- Source SHA-256 references:
 - Evidence IDs:
+
+## Inherited context and deviations
+- Process 02 primary segment:
+- Process 02 customer job:
+- Process 02 current alternatives/workarounds:
+- Deviation from Process 02 (segment / job / alternatives): NONE or list each deviation with rationale and evidence/strategic assumption.
 
 ## Target segment and context
 - Primary segment:
 - Relevant context/trigger:
 - Current behavior/alternative:
 - Excluded segments (if known):
-- Evidence and limitations:
+- Evidence status and limitations:
 
 ## Customer job and problem
 - Job to be done:
