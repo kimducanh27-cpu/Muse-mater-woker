@@ -55,14 +55,16 @@ Additional exact commands:
 - `REJECT TASK MODEL` / `REJECT APP FLOW`
 - `REQUEST APP FLOW CHANGE [description]`
 - `ABANDON APP FLOW`
+- `RECOVER DECISION LOG [DECISION-ID]` (only when the Skill's bounded Decision Log recovery preconditions pass)
+- `RECOVER REVIEW ROUND [N]` (only when the Skill's bounded review-round recovery preconditions pass)
 
 Tab 03 must not freeze automatically after a GO verdict. The user must issue the separate exact freeze command. Tab 03 is read-only on Decision Log 09; decision outcomes must return to their owning writer tab. Gate approvals/freeze require canonical event types and matching `approved_state_seq` values. No automatic handoff; each tab runs in a fresh conversation and reads persisted workspace artifacts.
 
-Existing schema-v2 initiative workspaces cannot be silently reused. Migration to schema v3 requires the exact user command `MIGRATE APP FLOW CONTROL V2 TO V3`, archives the entire old `product/app-flow/` workspace (including old frozen output/reviews/drafts), creates a fresh active workspace, reopens all gates and requires fresh approvals; see the governing Skill for the full migration sequence.
+Existing schema-v2 initiative workspaces cannot be silently reused. Migration to schema v3 requires the exact user command `MIGRATE APP FLOW CONTROL V2 TO V3`, archives the entire old `product/app-flow/` workspace (including its README, old frozen output, reviews and drafts), creates a fresh active workspace, reopens all gates and requires fresh approvals. After moving the old directory, restore the tracked `product/app-flow/README.md` from the checked-out repository HEAD; do not reuse the archived README as the active copy. See the governing Skill for the full migration sequence.
 
 ## Decision Log integrity
 
-The Decision Log identity header must match the initiative ID in both Process 03 and Process 04 Control Files. Gate 1/2/3 approvals are append-only typed events (`GATE_1_APPROVED`, `GATE_2_APPROVED`, `GATE_3_FROZEN`) with required hashes and committed sequence numbers. Any Decision Log byte change after Gate 2 approval reopens Gates 2–3 because Gate 2 binds the whole file. See the governing Skill and Control template for classification and bounded recovery rules.
+The Decision Log identity header must match the initiative ID in both Process 03 and Process 04 Control Files. Each proposal has an immutable PROPOSED entry and unique DLE ID; each later user outcome is a separate append-only status event with a unique DLE ID. Every DLE ID must pair one-to-one with a `DECISION_LOG_UPDATED` Control File event, and current status is reconstructed from the valid event chain ordered by Control File `state_seq`. Legacy inline status fields are not proof of approval. Gate 1/2/3 approvals are append-only typed events (`GATE_1_APPROVED`, `GATE_2_APPROVED`, `GATE_3_FROZEN`) with required hashes and committed sequence numbers. Any Decision Log byte change after Gate 2 approval reopens Gates 2–3 because Gate 2 binds the whole file. See the governing Skill and Control template for classification and bounded recovery rules.
 
 ## Freeze integrity
 The reviewed draft 08 is the complete canonical content candidate. Freeze copies it byte-for-byte to APP_FLOW.md and changes only the exact status line from REVIEWED CANDIDATE — NOT FROZEN to FROZEN. It does not rebuild or re-summarize content.
