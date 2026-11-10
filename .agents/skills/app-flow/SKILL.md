@@ -93,7 +93,22 @@ Every Control File update is single-writer:
 5. Read the Control File back and verify the expected state, event and hashes.
 6. Report success only after read-back succeeds.
 
-`state_seq` is a stale-read detector, not a lock or atomic transaction. Never let two tabs write the Control File concurrently. If the sequence changed unexpectedly, stop, reload and reconcile. If a write/read-back fails, report INCOMPLETE / NOT_VERIFIED; do not infer or repair state by guessing.
+`state_seq` is a stale-read detector, not a lock, compare-and-swap operation or atomic transaction. The manual three-tab model therefore has a hard single-writer invariant: only one tab may perform a Control File or Decision Log write at a time. The operator must not run overlapping write operations. A pre-write re-read and post-write read-back reduce stale-write risk but cannot eliminate a read-read-write-write race. If concurrent writes may have occurred, stop all tabs; do not certify the event history from `state_seq` alone. Reconcile the Control File against the last trusted persisted copy and every surviving event before resuming. If that cannot be done deterministically, remain NOT_VERIFIED.
+
+### Canonical event schema
+Every `event_log` object MUST include `event_type`, `state_seq`, `timestamp_local`, `exact_user_command` (or `NOT_APPLICABLE`), `reason`, `changed_paths` and `relevant_hashes`. The event's `state_seq` must equal the new committed Control File sequence. Use only these canonical event types and required type-specific fields:
+
+- `DECISION_LOG_UPDATED`: `decision_id`, `decision_status_after_update`, `affected_gate`, `path`, `resulting_sha256`.
+- `GATE_1_APPROVED`: `gate: GATE_1`, `exact_user_command: APPROVE TASK MODEL`, `approved_artifacts` (01 and 02 path/hash pairs), `decision_log_sha256`.
+- `GATE_2_APPROVED`: `gate: GATE_2`, `exact_user_command: APPROVE APP FLOW`, `approved_artifacts` (03–06 path/hash pairs), `decision_log_sha256`.
+- `GATE_3_FROZEN`: `gate: GATE_3`, `exact_user_command: FREEZE APP FLOW`, `draft_sha256`, `frozen_artifact_path`, `frozen_artifact_sha256`, `frozen_version`.
+- `INVALIDATED`: `reopened_gates`, `affected_gate` when known, `expected_hashes`, `observed_hashes` and reason.
+- `DECISION_LOG_RECOVERED`: `decision_id`, `recovered_from_event_seq`, `resulting_sha256`, `affected_gate`, `reopened_gates`.
+- `REVIEW_ROUND_RECORDED`, `RESIDUAL_RISK_ACCEPTED`, `GATE_REJECTED`, `REVISION_REQUESTED` and `APP_FLOW_ABANDONED`: include the exact target IDs/paths, reason and hashes needed to reconstruct the transition.
+
+The Control File's `gate_1.approved_state_seq`, `gate_2.approved_state_seq` and `gate_3.approved_state_seq` must equal the sequence of their latest corresponding approval/freeze event. A gate may not be treated as approved/frozen from its status field alone. Never infer an approval event from `approved_command` or prose.
+
+If a schema-version-2 Control File already exists, do not silently fill missing event fields or sequence anchors. Stop with NOT_VERIFIED, preserve the original, and require a separately reviewed migration before resuming.
 
 Exact commands:
 - Gate 1: `APPROVE TASK MODEL`
@@ -103,6 +118,7 @@ Exact commands:
 - Defer one proposed decision: `DEFER FLOW DECISION [DECISION-ID]`
 - Accept one MAJOR/MINOR review risk: `ACCEPT RESIDUAL RISK [FINDING-ID]`
 - Gate 3 / freeze: `FREEZE APP FLOW`
+- Recover one interrupted Decision Log transaction only under the bounded procedure below: `RECOVER DECISION LOG [DECISION-ID]`
 - Reject: `REJECT TASK MODEL` / `REJECT APP FLOW`
 - Change request: `REQUEST APP FLOW CHANGE [description]`
 - Abandon this initiative: `ABANDON APP FLOW`
@@ -123,15 +139,37 @@ Append a matching user-decision addendum to the review history. Never accept on 
 ### Decision log
 The append-only `09_DECISION_LOG.md` records material product/flow-policy decisions, alternatives, rationale, affected artifacts and affected gate. A proposal is not a decided policy. The user must send exactly one of `APPROVE FLOW DECISION [DECISION-ID]`, `REJECT FLOW DECISION [DECISION-ID]`, or `DEFER FLOW DECISION [DECISION-ID]` and provide a rationale in the same message. Append a new status event for that DEC ID with the matching status APPROVED, REJECTED or DEFERRED; never edit or delete the original proposal. Only APPROVED decisions may define current flow policy. A DEFERRED decision may justify omitting a capability from the current flow only when the affected capability and scope impact are explicit. Any resulting artifact change must follow the invalidation matrix.
 
+#### Decision Log identity and gate classification
+
+The immutable identity header at the top of `09_DECISION_LOG.md` must contain `Process: 04` and an `Initiative ID` exactly equal to the Process 04 Control File and verified Process 03 source initiative ID. On initialization, populate the ID from the verified source. If a Decision Log already exists and its identity is absent, unreadable or mismatched, stop with NOT_VERIFIED; never adopt it by hashing its current bytes and never rewrite its identity header. The Decision Log is one-initiative-only.
+
+Derive `affected_gate` from the decision's actual semantic scope and affected artifacts; it is not a free-form assertion:
+- `GATE_1`: changes to `01_TASK_MODEL.md`, `02_FLOW_ARCHITECTURE.md`, actors/tasks, approved capability interpretation, or capability-to-task coverage.
+- `GATE_2`: changes limited to `03_NAVIGATION_MODEL.md`, `04_SCREEN_INVENTORY.md`, `05_FLOW_SPECIFICATION.md` or `06_STATE_AND_EXCEPTION_MATRIX.md`.
+- `GATE_3`: changes limited to review/freeze artifacts `07_FLOW_REVIEW.md` or `08_APP_FLOW_DRAFT.md` that do not alter 01–06.
+- If more than one layer is affected, choose the earliest affected gate. Any proposed change to Process 03 scope or approved capability boundaries must return to Process 03; Process 04 cannot relabel it as a local decision.
+
+Before trusting an entry, the owning tab must independently compare `affected_gate` with the affected artifact paths/IDs and decision text. A mismatch or ambiguous classification means NOT_VERIFIED; do not use the self-declared label to preserve an upstream approval.
+
 #### Decision Log hash tracking
 
 `decision_log.latest_sha256` is the last verified SHA-256 of the current bytes in `product/app-flow/09_DECISION_LOG.md`; it is not a value to be regenerated merely to make a mismatch disappear.
 
-- When the Decision Log is first initialized, compute its actual SHA-256 and record it in `decision_log.latest_sha256` before Gate 1 can be approved.
-- After every append or status event, write and read back the Decision Log, recompute its SHA-256, then update `decision_log.latest_sha256` in the same single-writer Control File transaction. Append a `DECISION_LOG_UPDATED` event with the decision ID (if applicable), `affected_gate`, path, resulting hash and timestamp. The event's `state_seq` must equal the new committed Control File `state_seq` (previous value + 1), not the stale value read before the update. Read the Control File back and verify both the event and hash.
-- Do not update `latest_sha256` before the Decision Log write/read-back succeeds. If either file or the Control File cannot be verified, stop with NOT_VERIFIED; do not claim the hash baseline was refreshed.
-- A changed Decision Log reopens the earliest gate named by the appended decision's `affected_gate` and all downstream gates. A `GATE_1` change reopens Gates 1–3; a `GATE_2` change reopens Gates 2–3; a `GATE_3` change reopens Gate 3. Record the invalidation in the append-only event log.
-- At Tab 02 entry, compare the actual Decision Log hash with the non-null `decision_log.latest_sha256`. Never repair a mismatch by copying the observed hash into the Control File; a mismatch is an unverified, potentially out-of-band edit.
+- On first initialization, verify the identity header, write the template, read it back, compute its actual SHA-256, then record that hash and a `DECISION_LOG_UPDATED` initialization event (`decision_id: NOT_APPLICABLE`, `decision_status_after_update: NOT_APPLICABLE`, `affected_gate: GATE_1`) before Gate 1 can be approved.
+- After every proposal or status append by the owning tab: write the log, read it back, compute its actual SHA-256, then in one single-writer Control File update set `decision_log.latest_sha256`, increment `state_seq`, and append `DECISION_LOG_UPDATED` with `decision_id`, `decision_status_after_update`, `affected_gate`, path, `resulting_sha256`, timestamp and the same new committed `state_seq`. Read the Control File back and verify all fields. This rule applies to Tab 01 and Tab 02; Tab 03 is read-only on the Decision Log and must never append to it.
+- Do not update `latest_sha256` before the Decision Log write/read-back succeeds. If either file or the Control File cannot be verified, stop with NOT_VERIFIED; do not claim the baseline was refreshed.
+- Gate 1 approval must append a distinct `GATE_1_APPROVED` event in the same Control File update that marks Gate 1 APPROVED. That event snapshots the exact Decision Log hash at approval time. Tab 02 locates the latest valid event by `event_type` and maximum `state_seq`, then compares it with later `DECISION_LOG_UPDATED` events.
+- Gate 2 approval binds the entire current Decision Log file hash. Therefore, after Gate 2 is APPROVED, any subsequent Decision Log byte change reopens Gates 2 and 3, regardless of whether the entry is labeled GATE_2 or GATE_3. If the independently classified change affects Gate 1, reopen Gates 1–3. Never keep Gate 2 APPROVED against a changed whole-file hash and never rewrite its approved hash in place.
+- Before Gate 2 is approved, a valid GATE_2 change reopens Gates 2–3 and a valid GATE_3 change reopens Gate 3; Gate 1 may remain approved only when the decision is independently verified not to affect Gate 1. A GATE_1 change reopens Gates 1–3.
+- A missing/unreadable log, wrong initiative ID, null baseline, unexplained hash mismatch or unclassifiable decision makes the decision state NOT_VERIFIED. Conservatively reopen Gates 1–3, invalidate review, set lifecycle REVIEW_REQUIRED, append `INVALIDATED` with expected/observed hashes and reopened gates, read back and stop. Never bless the observed hash.
+
+#### Bounded recovery after an interrupted Decision Log write
+
+Recovery is not automatic. Stop all tabs and do not approve, freeze or append further decisions. Compute the actual log hash and inspect the complete Control File event history.
+
+1. If the actual hash exactly equals the `resulting_sha256` of one well-formed, already persisted `DECISION_LOG_UPDATED` event for the same DEC ID/status/path/affected gate, and that event has a valid committed sequence, the user may authorize `RECOVER DECISION LOG [DECISION-ID]`. Only then may the owning tab set `latest_sha256` to that already-recorded hash, append `DECISION_LOG_RECOVERED` referencing the original event sequence, reopen the affected gates (and Gates 2–3 if Gate 2 had already bound the prior whole-file hash), increment `state_seq`, read back and verify. Do not invent or rewrite the original event.
+2. If no exact matching event exists, do not adopt the observed bytes. Restore the Decision Log from a trusted copy whose actual hash equals the previously stored `latest_sha256`; read it back and verify. If no such copy exists, remain NOT_VERIFIED and require a human-led forensic reconciliation outside the active workflow.
+3. If the Control File itself is partial, malformed or lacks a verifiable event trail, do not synthesize missing events. Restore a trusted Control File copy or stop. Never use a new baseline to make an unexplained mismatch pass.
 
 ## Three-tab workflow
 No automatic handoff. Each tab runs in a fresh conversation in the same workspace and reconstructs state from files, not chat history. The user manually opens the next tab only after the previous gate's exact approval and read-back succeed.
@@ -164,18 +202,18 @@ Gate 1 requires:
 - No unresolved decision that changes the task model is treated as approved.
 - Process 03 source remains VERIFIED.
 - The user sends exactly `APPROVE TASK MODEL`.
-- The Control File records exact hashes of 01 and 02, command and timestamp, increments `state_seq`, and passes read-back.
+- The Control File records exact hashes of 01 and 02, the current Decision Log SHA-256, command and timestamp; sets `gate_1.approved_state_seq` to the new committed `state_seq`; and appends `GATE_1_APPROVED` in the same update. Required event fields: `event_type: GATE_1_APPROVED`, `gate: GATE_1`, `exact_user_command: APPROVE TASK MODEL`, `state_seq`, `timestamp_local`, 01/02 approved-artifact path/hash pairs, `decision_log_sha256`, `changed_paths`, `relevant_hashes` and `reason`. Event sequence, `gate_1.approved_state_seq` and Control File `state_seq` must be identical. `approved_command` or `status: APPROVED` without this event is invalid.
 
 Stop after Gate 1. Do not start Tab 02 automatically.
 
 ### Tab 02 — Navigation & Screen Flow Specification
 Entry in a fresh conversation:
 - Re-verify Process 03 control, canonical Product Definition hash and initiative ID.
-- Verify Gate 1 = APPROVED and recompute the exact hashes stored in `gate_1.approved_artifacts`.
-- Read `product/app-flow/09_DECISION_LOG.md` and the Process 04 Control File. Require the log to be readable, `decision_log.latest_sha256` to be non-null, and the actual log SHA-256 to match that recorded value exactly.
-- Inspect Decision Log entries and the append-only Control File `event_log`. Confirm that every decision affecting Gate 1 was settled before the latest `APPROVE TASK MODEL` event, and that no later `DECISION_LOG_UPDATED` event with `affected_gate: GATE_1` exists. Compare event `state_seq` values; if the relevant approval/update events are missing or cannot be ordered reliably, report NOT_VERIFIED.
+- Verify Gate 1 = APPROVED; require the latest valid `GATE_1_APPROVED` event with `gate: GATE_1`, `exact_user_command: APPROVE TASK MODEL` and maximum applicable `state_seq`. Require `gate_1.approved_state_seq` to equal that event's `state_seq`; recompute every hash in `gate_1.approved_artifacts`.
+- Read `09_DECISION_LOG.md`; require immutable `Process: 04` / `Initiative ID` to match both Control Files, `latest_sha256` to be non-null, and actual SHA-256 to match exactly.
+- Independently classify every Decision Log entry from its text and affected paths/IDs. Confirm no GATE_1-affecting update occurred after the latest `GATE_1_APPROVED` event. Require canonical event types/fields and exact committed sequence values. Missing, malformed, mislabeled or unorderable events mean NOT_VERIFIED; never infer approval from `gate_1.approved_command` alone.
 - Treat only APPROVED decisions as active flow policy. REJECTED, DEFERRED and PROPOSED entries must not be used as approved rules. A PROPOSED or unresolved GATE_1 decision that changes the task model blocks Tab 02 and must return to Tab 01/user resolution; preserve it as an open question only when it does not determine the approved task model.
-- If the Decision Log is missing/unreadable, `latest_sha256` is null, the hashes mismatch, or a GATE_1 decision changed after Gate 1 approval, conservatively reopen Gates 1–3, invalidate the review, set lifecycle to REVIEW_REQUIRED, append an invalidation event with expected/observed hash and affected decision/gate where known, read back the Control File, and stop. Do not refresh the expected hash to bless the changed file.
+- If the Decision Log is missing/unreadable, identity is wrong/missing, `latest_sha256` is null, hashes mismatch, a decision is misclassified, or a GATE_1 decision changed after Gate 1 approval, conservatively reopen Gates 1–3, invalidate the review, set lifecycle to REVIEW_REQUIRED, append canonical `INVALIDATED` with expected/observed hashes, affected decision and `reopened_gates`, read back and stop. Use only the bounded recovery procedure above; never bless unexplained bytes.
 - If any Process 03 source or Gate 1 artifact differs, reopen the affected and downstream gates, append an invalidation event and stop.
 
 Work:
@@ -186,7 +224,7 @@ Work:
 - Build the state/exception matrix. Include only applicable states, but justify every exclusion.
 - Cover validation, permission, network/system failure, repeated submission, destructive action, interruption and recovery where relevant.
 - Maintain traceability from each task, flow, node, screen and transition to approved capability IDs and source sections.
-- Record material user decisions in the append-only decision log; use exact decision approval commands.
+- Record material GATE_2/GATE_3 decisions in the append-only Decision Log. Classify scope from affected artifacts and decision meaning; if it affects Gate 1, stop and return it to Tab 01. After every append/status event, execute the full write/read-back/hash/Control File `DECISION_LOG_UPDATED` transaction above, including `decision_status_after_update`, `resulting_sha256` and the same new committed `state_seq`. A Gate 2 decision must not change 01/02 or approved capability-to-task mapping.
 - Do not silently decide product policy or expand scope.
 
 Artifacts:
@@ -208,7 +246,7 @@ Before Gate 2, perform explicit set-based integrity checks and show the compared
 - Required template headings/tables are present and no unresolved placeholder remains.
 - Decision log has no unapproved proposal being treated as an approved product/flow rule.
 
-Gate 2 binds exact hashes of 03–06 and the current decision-log file. It also requires Gate 1 and all its artifact hashes to remain valid. The user must send exactly `APPROVE APP FLOW`. Record command, timestamp, hashes, increment `state_seq`, read back, and verify.
+Gate 2 binds exact hashes of 03–06 and the current entire Decision Log file. It also requires Gate 1 and all its artifact hashes to remain valid. The user must send exactly `APPROVE APP FLOW`. In the same Control File update that sets Gate 2 APPROVED, set `gate_2.approved_state_seq` and `gate_2.decision_log_sha256`, and append `GATE_2_APPROVED` with the exact command, approved path/hash pairs for 03–06 and the current Decision Log path/hash. Event sequence, gate sequence and new committed `state_seq` must be identical. Read back and verify.
 
 Stop after Gate 2. Do not start Tab 03 automatically.
 
@@ -216,18 +254,19 @@ Stop after Gate 2. Do not start Tab 03 automatically.
 Entry in a fresh conversation:
 - Re-verify Process 03 source and initiative identity.
 - Verify Gate 1 and Gate 2 are APPROVED and recompute every artifact hash stored in both gates.
-- Verify current decision-log hash matches Gate 2.
-- If any check fails, reopen affected gate(s), append an invalidation event, and stop.
+- Verify Decision Log identity/hash match `decision_log.latest_sha256` and `gate_2.decision_log_sha256`; require the latest `GATE_2_APPROVED` event and `gate_2.approved_state_seq` to match. No `DECISION_LOG_UPDATED` event may follow Gate 2 approval. If any post-approval log update exists, reopen Gates 2–3 at minimum; if its verified scope is GATE_1, reopen Gates 1–3. Append canonical `INVALIDATED` and stop.
+- If any other check fails, reopen affected gate(s), append an invalidation event, and stop.
 
 Reviewer permissions:
-- Read-only for artifacts 01–06, 09 and all Process 03 sources.
+- Read-only for artifacts 01–06, 09 and all Process 03 sources, including all Decision Log outcomes.
 - May append to 07, create/update complete draft 08, and update the Control File only for review state, user-authorized risk acceptance, invalidation and explicit freeze.
-- Must not edit 01–06, 09 or Process 03 sources.
+- Must not edit 01–06, 09 or Process 03 sources. Tab 03 must never append a proposal or status event to 09.
+- If a flow-policy outcome is requested during review, pause the affected decision, record it as unresolved in 07, identify the owning tab (Gate 1 → Tab 01; Gate 2/3 → Tab 02), and return it for user resolution. Run a fresh independent review after the owner tab updates the log and re-approves affected gates.
 - Remediation returns to the owning tab. Changed artifacts invalidate affected gates and require re-approval plus a new independent review round.
 
 Review:
 - Review all artifacts in full, not only the draft or README.
-- Build the complete freeze candidate `08_APP_FLOW_DRAFT.md` from the exact structure in `templates/04-APP-FLOW/09-APP-FLOW.md`. It must contain full detail from 01–06 and 09; it is not a summary.
+- Build the complete freeze candidate `08_APP_FLOW_DRAFT.md` from the exact structure in `templates/04-APP-FLOW/08-APP-FLOW-DRAFT.md`. It must contain full detail from 01–06 and 09; it is not a summary.
 - The draft begins with the exact line `> Status: REVIEWED CANDIDATE — NOT FROZEN`.
 - Independently audit the source artifacts and complete candidate. Do not introduce, resolve or invent product decisions while assembling it.
 - Append a new review round to `07_FLOW_REVIEW.md`; never overwrite prior rounds. Record hashes of Process 03 source, artifacts 01–06, decision log 09 and draft 08 in the round and Control File.
@@ -249,7 +288,7 @@ Before writing the canonical output, verify:
 1. Process 03 source remains VERIFIED; actual Product Definition hash equals Process 03 `gate_3.frozen_artifact.sha256`.
 2. Gates 1 and 2 are APPROVED and every stored approved-artifact hash matches.
 3. `review.round >= 1`; `07_FLOW_REVIEW.md` exists and its current hash equals `review.latest_review_sha256`.
-4. Latest review records hashes matching current artifacts 01–06 and 09.
+4. Latest review records hashes matching current artifacts 01–06 and 09. Gate 1 and Gate 2 approval events exist and their `approved_state_seq` fields match event sequences. No Decision Log update follows Gate 2 approval; its hash equals both `decision_log.latest_sha256` and `gate_2.decision_log_sha256`.
 5. `08_APP_FLOW_DRAFT.md` exists and its hash equals both `review.reviewed_draft_sha256` and the latest review round's draft hash.
 6. Latest review status is READY_FOR_FREEZE; open BLOCKER, CRITICAL, MAJOR and MINOR counts are all zero. Accepted MAJOR/MINOR risks have separate user-originated records and review addenda.
 7. Every decision required for the current flow is approved or explicitly recorded as an unresolved question that does not alter the frozen contract.
@@ -272,7 +311,7 @@ Before re-freezing:
 - Never overwrite an existing archive. If it exists, verify it is byte-identical; otherwise stop.
 - Hash and record the archive before replacing the canonical file.
 
-Then write APP_FLOW.md, compute its SHA-256, read it back and verify it differs from the draft only by the exact status-line replacement. Update Gate 3 = APPROVED and lifecycle_status = FROZEN; record command, timestamp, source/review/draft/canonical hashes, version and archive metadata; increment state_seq; read the Control File back and recompute the canonical hash. Report success only after all checks pass.
+Then write APP_FLOW.md, compute its SHA-256, read it back and verify it differs from the draft only by the exact status-line replacement. Update Gate 3 = APPROVED and lifecycle_status = FROZEN; set `gate_3.approved_state_seq` and append `GATE_3_FROZEN` with `exact_user_command: FREEZE APP FLOW`, draft hash, canonical path/hash and version in that same Control File update. Event sequence, gate sequence and new committed `state_seq` must be identical. Read the Control File back and recompute the canonical hash. Report success only after all checks pass.
 
 If canonical output is written but Control File write/read-back fails, report **INCOMPLETE — NOT FROZEN**. An orphan APP_FLOW.md is not eligible downstream. File presence or a FROZEN status line alone is never proof of freeze.
 
@@ -287,7 +326,8 @@ If the user sends `ABANDON APP FLOW`, record command and rationale, set lifecycl
 | 01_TASK_MODEL.md or 02_FLOW_ARCHITECTURE.md | Gates 1–3 REOPENED |
 | 03_NAVIGATION_MODEL.md, 04_SCREEN_INVENTORY.md, 05_FLOW_SPECIFICATION.md or 06_STATE_AND_EXCEPTION_MATRIX.md | Gates 2–3 REOPENED; Gate 1 remains valid |
 | 07_FLOW_REVIEW.md or 08_APP_FLOW_DRAFT.md | Gate 3 REOPENED; new review round required |
-| 09_DECISION_LOG.md | Reopen earliest gate named by appended decision's affected_gate and all downstream gates |
+| 09_DECISION_LOG.md before Gate 2 approval | Reopen earliest independently verified affected gate and all downstream gates: GATE_1 → 1–3; GATE_2 → 2–3; GATE_3 → 3 |
+| Any 09_DECISION_LOG.md byte change after Gate 2 approval | Always reopen Gates 2–3 because Gate 2 binds the whole file; additionally reopen Gate 1 when independent scope classification is GATE_1 |
 | APP_FLOW.md after freeze | Gate 3 REOPENED; lifecycle REVIEW_REQUIRED; downstream use prohibited |
 
 Reopening Gate 1 also reopens Gates 2 and 3. Reopening Gate 2 also reopens Gate 3. Every invalidation appends timestamp, state_seq, changed paths, previous/new hashes, affected gates and reason. Never silently overwrite an approval.
