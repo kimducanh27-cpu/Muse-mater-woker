@@ -21,6 +21,10 @@ This checklist distinguishes repository/paper checks from live runtime verificat
 | Initiative IDs conflict | Stop; do not overwrite either initiative |
 | Process 03 frozen and hash matches | Eligible to initialize Process 04 |
 | Process 04 source_status still NOT_VERIFIED | Gate 1 must refuse |
+| Decision Log missing/unreadable or `decision_log.latest_sha256` is null | Gate 1 and Tab 02 refuse; NOT_VERIFIED |
+| Actual Decision Log SHA-256 differs from `decision_log.latest_sha256` | Reopen Gates 1–3, invalidate review, record expected/observed hashes and stop |
+| `DECISION_LOG_UPDATED` with `affected_gate: GATE_1` occurs after the latest Gate 1 approval | Reopen Gates 1–3 and return to Tab 01 |
+| Decision Log approval/update events cannot be ordered by `state_seq` | NOT_VERIFIED; do not assume Gate 1 is current |
 
 ## Template and capability coverage simulations
 | Scenario | Expected behavior |
@@ -36,6 +40,9 @@ This checklist distinguishes repository/paper checks from live runtime verificat
 | Scenario | Expected behavior |
 |---|---|
 | Gate 1 absent | Tab 02 and Tab 03 blocked |
+| Decision Log hash is correct and no later GATE_1 update exists | Tab 02 may pass the Decision Log entry check |
+| Decision Log changes with affected_gate GATE_1 after Gate 1 approval | Gates 1–3 reopened; Tab 02 stops |
+| Decision Log changes with affected_gate GATE_2 after Gate 1 approval | Gates 2–3 reopened; Gate 1 may remain valid |
 | Gate 1 artifact hash changed | Gate 1 and downstream gates REOPENED |
 | Gate 2 absent | Tab 03 and freeze blocked |
 | Tab 02 artifact hash changed after Gate 2 | Gate 2/3 and review invalidated |
