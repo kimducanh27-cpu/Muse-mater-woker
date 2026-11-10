@@ -6,6 +6,8 @@ This file is append-only. Never delete, replace or silently rewrite a prior revi
 
 ### Review round <N>
 - Review date/time:
+- Control File state_seq before append:
+- Previous full review-history SHA-256 before append:
 - Reviewer conversation: FRESH
 - Process 03 initiative_id:
 - Process 03 Control File status:
