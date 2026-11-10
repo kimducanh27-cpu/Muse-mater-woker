@@ -66,6 +66,10 @@ Existing schema-v2 initiative workspaces cannot be silently reused. Migration to
 
 The Decision Log identity header must match the initiative ID in both Process 03 and Process 04 Control Files. Each proposal has an immutable PROPOSED entry and unique DLE ID; each later user outcome is a separate append-only status event with a unique DLE ID. Every DLE ID must pair one-to-one with a `DECISION_LOG_UPDATED` Control File event, and current status is reconstructed from the valid event chain ordered by Control File `state_seq`. Legacy inline status fields are not proof of approval. Gate 1/2/3 approvals are append-only typed events (`GATE_1_APPROVED`, `GATE_2_APPROVED`, `GATE_3_FROZEN`) with required hashes and committed sequence numbers. Any Decision Log byte change after Gate 2 approval reopens Gates 2–3 because Gate 2 binds the whole file. See the governing Skill and Control template for classification and bounded recovery rules.
 
+## Review-history integrity
+
+Before Round 1, initialize `07_FLOW_REVIEW.md` from its exact template, compute/read back its SHA-256, and bind it in the Control File with `REVIEW_HISTORY_INITIALIZED`. Each appended round is bound by `REVIEW_ROUND_RECORDED`; an interrupted append may be recovered only with `RECOVER REVIEW ROUND [N]` and the Skill's exact preimage-hash checks. Do not append the same round twice.
+
 ## Freeze integrity
 The reviewed draft 08 is the complete canonical content candidate. Freeze copies it byte-for-byte to APP_FLOW.md and changes only the exact status line from REVIEWED CANDIDATE — NOT FROZEN to FROZEN. It does not rebuild or re-summarize content.
 
