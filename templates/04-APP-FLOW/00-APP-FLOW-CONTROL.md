@@ -104,7 +104,7 @@ The authoritative comparison target is Process 03 `gate_3.frozen_artifact.sha256
 
 ## Append-only event and review records
 
-Append objects to `event_log`; never delete or rewrite prior events. Record approvals, rejections, revision requests, invalidations, decision-log updates, decision outcomes, risk acceptances, review rounds, freezes, archives and abandonment. Each event should include local timestamp, state_seq, event type, exact user command (or NOT_APPLICABLE), reason, changed paths and relevant hashes. For decision-log events also include decision_id (or NOT_APPLICABLE) and affected_gate. Use event state_seq values to establish whether a GATE_1 decision-log change occurred before or after the latest Gate 1 approval.
+Append objects to `event_log`; never delete or rewrite prior events. Record approvals, rejections, revision requests, invalidations, decision-log updates, decision outcomes, risk acceptances, review rounds, freezes, archives and abandonment. Each event should include local timestamp, event type, exact user command (or NOT_APPLICABLE), reason, changed paths, relevant hashes and the new committed `state_seq` (previous value + 1). For decision-log events also include `decision_id` (or NOT_APPLICABLE), `decision_status_after_update` (or NOT_APPLICABLE) and `affected_gate`. Use event `state_seq` values to establish whether a GATE_1 decision-log change occurred before or after the latest Gate 1 approval.
 
 The review history `07_FLOW_REVIEW.md` is append-only. Every round records source/artifact/draft hashes, verdict, status, finding counts and set/graph evidence.
 
