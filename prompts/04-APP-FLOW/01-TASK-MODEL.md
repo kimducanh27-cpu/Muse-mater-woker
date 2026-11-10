@@ -35,6 +35,16 @@ Use the templates as structural contracts. Preserve every required heading, tabl
 - `templates/04-APP-FLOW/02-FLOW-ARCHITECTURE.md` → `product/app-flow/02_FLOW_ARCHITECTURE.md`
 - `templates/04-APP-FLOW/10-DECISION-LOG.md` → initialize `product/app-flow/09_DECISION_LOG.md` if absent; append only.
 
+## Decision Log integrity baseline
+
+After initializing the Decision Log and after every appended proposal or user outcome:
+1. Write the log, read it back, and compute its actual SHA-256.
+2. Update `decision_log.latest_sha256` in `product/app-flow/00_APP_FLOW_CONTROL.md` to that verified hash.
+3. Append a `DECISION_LOG_UPDATED` event containing the decision ID (if applicable), `affected_gate: GATE_1`, log path, resulting hash, timestamp and state sequence.
+4. Increment `state_seq`, read the Control File back, and verify the hash and event.
+
+Gate 1 cannot be requested while the Decision Log is missing, unreadable, unhashed, or its actual SHA-256 differs from the non-null `decision_log.latest_sha256`. Do not treat an unresolved decision that changes the task model as settled.
+
 ## Mandatory capability completeness
 Read the complete approved capability scope from the frozen Process 03 Product Definition. Enumerate every approved CAP ID. For each CAP ID:
 - map it to at least one TASK ID; or
