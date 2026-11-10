@@ -104,6 +104,7 @@ Every `event_log` object MUST include `event_type`, `state_seq`, `timestamp_loca
 - `GATE_3_FROZEN`: `gate: GATE_3`, `exact_user_command: FREEZE APP FLOW`, `draft_sha256`, `frozen_artifact_path`, `frozen_artifact_sha256`, `frozen_version`.
 - `INVALIDATED`: `reopened_gates`, `affected_gate` when known, `expected_hashes`, `observed_hashes` and reason.
 - `DECISION_LOG_RECOVERED`: `decision_id`, `recovered_from_event_seq`, `resulting_sha256`, `affected_gate`, `reopened_gates`.
+- `SCHEMA_MIGRATED`: `from_schema_version: 2`, `to_schema_version: 3`, archived workspace path and per-file hashes, exact user command.
 - `REVIEW_ROUND_RECORDED`, `RESIDUAL_RISK_ACCEPTED`, `GATE_REJECTED`, `REVISION_REQUESTED` and `APP_FLOW_ABANDONED`: include the exact target IDs/paths, reason and hashes needed to reconstruct the transition.
 
 The Control File's `gate_1.approved_state_seq`, `gate_2.approved_state_seq` and `gate_3.approved_state_seq` must equal the sequence of their latest corresponding approval/freeze event. A gate may not be treated as approved/frozen from its status field alone. Never infer an approval event from `approved_command` or prose.
@@ -218,7 +219,7 @@ Stop after Gate 1. Do not start Tab 02 automatically.
 ### Tab 02 — Navigation & Screen Flow Specification
 Entry in a fresh conversation:
 - Re-verify Process 03 control, canonical Product Definition hash and initiative ID.
-- Verify Gate 1 = APPROVED; require the latest valid `GATE_1_APPROVED` event with `gate: GATE_1`, `exact_user_command: APPROVE TASK MODEL` and maximum applicable `state_seq`. Require `gate_1.approved_state_seq` to equal that event's `state_seq`; recompute every hash in `gate_1.approved_artifacts`.
+- Verify Gate 1 = APPROVED; require the latest valid `GATE_1_APPROVED` event with `gate: GATE_1`, `exact_user_command: APPROVE TASK MODEL` and maximum applicable `state_seq`. Require `gate_1.approved_state_seq` to equal that event's `state_seq` and `gate_1.decision_log_sha256` to equal that event's `decision_log_sha256`; recompute every hash in `gate_1.approved_artifacts`.
 - Read `09_DECISION_LOG.md`; require immutable `Process: 04` / `Initiative ID` to match both Control Files, `latest_sha256` to be non-null, and actual SHA-256 to match exactly.
 - Independently classify every Decision Log entry from its text and affected paths/IDs. Confirm no GATE_1-affecting update occurred after the latest `GATE_1_APPROVED` event. Require canonical event types/fields and exact committed sequence values. Missing, malformed, mislabeled or unorderable events mean NOT_VERIFIED; never infer approval from `gate_1.approved_command` alone.
 - Treat only APPROVED decisions as active flow policy. REJECTED, DEFERRED and PROPOSED entries must not be used as approved rules. A PROPOSED or unresolved GATE_1 decision that changes the task model blocks Tab 02 and must return to Tab 01/user resolution; preserve it as an open question only when it does not determine the approved task model.
@@ -263,7 +264,7 @@ Stop after Gate 2. Do not start Tab 03 automatically.
 Entry in a fresh conversation:
 - Re-verify Process 03 source and initiative identity.
 - Verify Gate 1 and Gate 2 are APPROVED and recompute every artifact hash stored in both gates.
-- Verify Decision Log identity/hash match `decision_log.latest_sha256` and `gate_2.decision_log_sha256`; require the latest `GATE_2_APPROVED` event and `gate_2.approved_state_seq` to match. No `DECISION_LOG_UPDATED` event may follow Gate 2 approval. If any post-approval log update exists, reopen Gates 2–3 at minimum; if its verified scope is GATE_1, reopen Gates 1–3. Append canonical `INVALIDATED` and stop.
+- Verify Decision Log identity/hash match `decision_log.latest_sha256` and `gate_2.decision_log_sha256`; require the latest `GATE_2_APPROVED` event's `decision_log_sha256` to equal `gate_2.decision_log_sha256` and `gate_2.approved_state_seq` to equal that event's `state_seq`. No `DECISION_LOG_UPDATED` event may follow Gate 2 approval. If any post-approval log update exists, reopen Gates 2–3 at minimum; if its verified scope is GATE_1, reopen Gates 1–3. Append canonical `INVALIDATED` and stop.
 - If any other check fails, reopen affected gate(s), append an invalidation event, and stop.
 
 Reviewer permissions:
