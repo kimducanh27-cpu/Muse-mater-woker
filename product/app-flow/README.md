@@ -13,7 +13,7 @@ All artifacts for one initiative live in this folder. Initialize `00_APP_FLOW_CO
 | 06_STATE_AND_EXCEPTION_MATRIX.md | Tab 02 | System states, failures and recovery |
 | 07_FLOW_REVIEW.md | Tab 03 | Append-only independent review history |
 | 08_APP_FLOW_DRAFT.md | Tab 03 | Complete review-ready canonical content candidate |
-| 09_DECISION_LOG.md | Tab 01/02 | Append-only material decisions; exact user approval required |
+| 09_DECISION_LOG.md | Tab 01/02 | Immutable proposals and append-only status events; DLE IDs pair with Control File events |
 | APP_FLOW.md | Tab 03 after explicit freeze command | Canonical frozen output |
 | APP_FLOW.v<N>.md | Tab 03 before re-freeze | Immutable archive of a prior frozen version |
 
@@ -21,4 +21,4 @@ Never overwrite a Control File from another initiative. Do not store participant
 
 Process 04 requires a frozen Process 03 Product Definition and matching SHA-256. The authoritative expected hash is Process 03 Control File `gate_3.frozen_artifact.sha256`. Process 04's initiative ID must equal Process 03's initiative ID.
 
-Gate approvals bind exact artifact hashes. Gate 1 snapshots the Decision Log hash at approval; Gate 2 binds the entire Decision Log hash and any later byte change reopens Gates 2–3. The immutable Decision Log identity header must match this initiative ID. Tab 03 is read-only on Tab 01/02 source artifacts; remediation invalidates affected approvals and requires re-approval and a new review round. The frozen output is eligible downstream only when Gate 3 is APPROVED, lifecycle_status is FROZEN, and its actual hash matches the Control File.
+Gate approvals bind exact artifact hashes and event snapshots. Gate 1 and Gate 2 stored Decision Log hashes must equal the snapshots in their corresponding approval events; Gate 2 binds the entire Decision Log hash and any later byte change reopens Gates 2–3. The immutable Decision Log identity header must match this initiative ID. Each proposal/status event must pair one-to-one with a Control File `DECISION_LOG_UPDATED` event; current status is reconstructed by committed `state_seq`, never by editing a proposal. Tab 03 is read-only on Decision Log 09 and Tab 01/02 source artifacts. Review rounds are append-only and use bounded recovery; remediation invalidates affected approvals and requires re-approval plus a new review round. The frozen output is eligible downstream only when Gate 3 is APPROVED, lifecycle_status is FROZEN, and its actual hash matches the Control File.
