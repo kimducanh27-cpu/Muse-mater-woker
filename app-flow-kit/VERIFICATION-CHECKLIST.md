@@ -27,7 +27,7 @@ This checklist distinguishes repository/paper checks from live runtime verificat
 | Actual Decision Log SHA-256 differs from `decision_log.latest_sha256` | Reopen Gates 1–3, invalidate review, record expected/observed hashes and stop |
 | `DECISION_LOG_UPDATED` with `affected_gate: GATE_1` occurs after the latest Gate 1 approval | Reopen Gates 1–3 and return to Tab 01 |
 | Decision Log approval/update events cannot be ordered by `state_seq` | NOT_VERIFIED; do not assume Gate 1 is current |
-| Gate 1 status is APPROVED but no well-formed `GATE_1_APPROVED` event exists | NOT_VERIFIED; `gate_1.approved_state_seq` must equal the event sequence |
+| Gate 1 status is APPROVED but no well-formed `GATE_1_APPROVED` event exists | NOT_VERIFIED; `gate_1.approved_state_seq` and `gate_1.decision_log_sha256` must equal the event sequence and hash snapshot |
 | Gate 1 event exists but its Decision Log hash or approved artifact hashes differ | Reopen Gates 1–3; stop |
 | A decision affecting 01/02 or capability-to-task mapping is labeled GATE_2/GATE_3 | NOT_VERIFIED; classify by semantic scope, do not trust the label |
 
@@ -50,6 +50,7 @@ This checklist distinguishes repository/paper checks from live runtime verificat
 | Decision Log changes with affected_gate GATE_2 after Gate 1 approval but before Gate 2 approval | Gates 2–3 reopened; Gate 1 may remain valid only after scope validation |
 | Any Decision Log byte change after Gate 2 approval, including a GATE_3-labeled change | Gates 2–3 reopened because Gate 2 binds the whole file; also Gate 1 if scope is actually GATE_1 |
 | Gate 2 status is APPROVED but no well-formed `GATE_2_APPROVED` event exists | NOT_VERIFIED; `gate_2.approved_state_seq` and `decision_log_sha256` must match the event |
+| Gate 2 event snapshot differs from `gate_2.decision_log_sha256` or the current Decision Log SHA-256 | Reopen Gates 2–3; stop |
 | Tab 03 is asked to approve/reject/defer a flow decision | It must not edit 09; hand the decision back to Tab 01/02 |
 | Decision Log actual hash matches `resulting_sha256` in one valid persisted update event but baseline refresh failed | Recovery only after exact `RECOVER DECISION LOG [DECISION-ID]`; record `DECISION_LOG_RECOVERED` and reopen affected gates |
 | Decision Log append succeeded but Control File update is ambiguous; a matching valid update event is already persisted | Stop all writers; do not repeat the append; require exact recovery command and bounded recovery procedure |
