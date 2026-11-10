@@ -22,7 +22,7 @@ In a fresh conversation:
 6. Build the state/exception matrix. Include only applicable states, but justify every exclusion.
 7. Identify dead ends, loops, duplicate paths, unreachable nodes, orphan screens/transitions and ambiguous completion.
 8. Maintain traceability from each task, flow, node, screen and transition to approved capability IDs and source sections.
-9. Record material policy decisions in the append-only decision log. A proposed decision is not approved until the user sends `APPROVE FLOW DECISION [DECISION-ID]`.
+9. Record material policy decisions in the append-only decision log. Use exactly one user decision command: `APPROVE FLOW DECISION [DECISION-ID]`, `REJECT FLOW DECISION [DECISION-ID]`, or `DEFER FLOW DECISION [DECISION-ID]`, with a rationale. Only APPROVED decisions define current flow policy; rejected and deferred proposals must remain visible but must not be treated as approved.
 10. Record assumptions and unresolved questions. Never silently make product-policy decisions or expand scope.
 
 ## Required templates and output paths
