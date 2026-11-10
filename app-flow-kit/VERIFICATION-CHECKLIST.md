@@ -7,6 +7,8 @@ This checklist distinguishes repository/paper checks from live runtime verificat
 - [ ] All three prompts exist at their fully qualified paths under `prompts/04-APP-FLOW/`.
 - [ ] Every prompt names the exact templates it must use.
 - [ ] Control and artifact templates exist under `templates/04-APP-FLOW/`.
+- [ ] Decision Log template defines immutable proposal entries and canonical append-only status events with unique DLE IDs.
+- [ ] Review template records pre-append Control File sequence and previous review-history hash.
 - [ ] Process 03 source files are readable in the same workspace.
 - [ ] Process 04 initiative ID equals Process 03 initiative ID.
 - [ ] No prompt-name collision causes the wrong review prompt to be selected.
@@ -20,7 +22,8 @@ This checklist distinguishes repository/paper checks from live runtime verificat
 | Product Definition or Process 03 Control File missing/unreadable | Stop |
 | Initiative IDs conflict | Stop; do not overwrite either initiative |
 | Existing Decision Log has a missing/wrong Process 04 initiative identity | Stop; do not adopt it by computing a new baseline |
-| Existing Control File uses schema version 2 | Stop; migrate only after exact `MIGRATE APP FLOW CONTROL V2 TO V3`; archive the entire old workspace with a verified per-file SHA-256 manifest, remove old frozen/review files from active paths and re-approve all gates |
+| Existing Control File uses schema version 2 | Stop; migrate only after exact `MIGRATE APP FLOW CONTROL V2 TO V3`; archive the entire old workspace with a verified per-file SHA-256 manifest, remove old frozen/review files from active paths, restore the tracked active `product/app-flow/README.md` from checked-out HEAD, and re-approve all gates |
+| `SCHEMA_MIGRATED` event lacks exact archive directory/manifest/control/log fields | Migration NOT_VERIFIED; do not activate schema-v3 workspace |
 | Process 03 frozen and hash matches | Eligible to initialize Process 04 |
 | Process 04 source_status still NOT_VERIFIED | Gate 1 must refuse |
 | Decision Log missing/unreadable or `decision_log.latest_sha256` is null | Gate 1 and Tab 02 refuse; NOT_VERIFIED |
@@ -29,6 +32,7 @@ This checklist distinguishes repository/paper checks from live runtime verificat
 | Decision Log approval/update events cannot be ordered by `state_seq` | NOT_VERIFIED; do not assume Gate 1 is current |
 | Gate 1 status is APPROVED but no well-formed `GATE_1_APPROVED` event exists | NOT_VERIFIED; `gate_1.approved_state_seq` and `gate_1.decision_log_sha256` must equal the event sequence and hash snapshot |
 | Gate 1 event exists but its Decision Log hash or approved artifact hashes differ | Reopen Gates 1–3; stop |
+| Tab 03 sees Gate 1 sequence matches but `gate_1.decision_log_sha256` differs from the `GATE_1_APPROVED` event snapshot | Reopen Gates 1–3; freeze blocked |
 | A decision affecting 01/02 or capability-to-task mapping is labeled GATE_2/GATE_3 | NOT_VERIFIED; classify by semantic scope, do not trust the label |
 
 ## Template and capability coverage simulations
@@ -40,6 +44,11 @@ This checklist distinguishes repository/paper checks from live runtime verificat
 | A task has no approved capability | Gate 1 refuses and flags scope mismatch |
 | Deferred capability has no approved Decision ID | Gate 1 refuses |
 | Decision is only PROPOSED | It is not treated as approved product/flow policy |
+| Proposal has no unique DLE Proposal Event ID or no matching `DECISION_LOG_UPDATED` Control File event | Decision is LEGACY_UNVERIFIED / NOT_VERIFIED; do not treat it as active policy |
+| A status event has no matching Control File event with the same DLE ID, DEC ID, kind, before/after status, scope and resulting hash | Decision is NOT_VERIFIED; do not treat it as approved |
+| Status event chain has a duplicate DLE ID, wrong previous status or wrong superseded-event ID | Decision is NOT_VERIFIED; stop and reconcile |
+| Status event exact command does not map to its resulting status or rationale is missing | Reject the status update; no policy change |
+| Legacy inline `Status: APPROVED` exists without a canonical matched status event | LEGACY_UNVERIFIED; preserve bytes and require a new canonical decision if still needed |
 
 ## Gate and invalidation simulations
 | Scenario | Expected behavior |
@@ -59,6 +68,8 @@ This checklist distinguishes repository/paper checks from live runtime verificat
 | `affected_gate` conflicts with decision semantics or affected artifact IDs, or scope is ambiguous | NOT_VERIFIED; independently classify and reopen earliest affected gate plus downstream gates |
 | Tab 03 receives an approve/reject/defer decision command during review | Tab 03 remains read-only on 09; record unresolved review item and route outcome to owning Tab 01/02 |
 | Decision Log hash mismatch has no matching persisted update event | Do not adopt observed bytes; restore trusted bytes matching old baseline or remain NOT_VERIFIED |
+| Proposal/status DLE ID is paired with more than one Control File event | NOT_VERIFIED; stop; IDs must pair one-to-one |
+| Current decision status is reconstructed from valid paired events | Highest committed `state_seq` event determines status; without a status event the proposal remains PROPOSED |
 | Gate 1 artifact hash changed | Gate 1 and downstream gates REOPENED |
 | Gate 2 absent | Tab 03 and freeze blocked |
 | Tab 02 artifact hash changed after Gate 2 | Gate 2/3 and review invalidated |
@@ -74,6 +85,10 @@ This checklist distinguishes repository/paper checks from live runtime verificat
 |---|---|
 | No review file or review_round = 0 | Freeze refuses |
 | Review round 1 exists, then round 2 is appended | Round 1 remains byte-for-byte intact |
+| Review append succeeds but Control File update fails; pre-append state_seq and previous hash still match, and exactly one complete new round is appended | Recover only after exact `RECOVER REVIEW ROUND [N]`; register existing round with `REVIEW_ROUND_RECOVERED`; do not append again |
+| Review append exists but prefix hash does not reproduce the previously trusted review hash | NOT_VERIFIED; no automatic recovery |
+| Control File state_seq changed, round number changed, or a review event for N already exists | Stop; no recovery or duplicate event; human-led reconciliation |
+| Review round is partial, duplicated, or current source/artifact/draft hashes differ | NOT_VERIFIED; preserve review history and require reconciliation/new review |
 | Review file hash differs from Control File | Freeze refuses |
 | Draft 08 changes after review | Freeze refuses; new review round required |
 | Latest review status BLOCKERS_FOUND | Freeze refuses |
