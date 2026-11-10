@@ -47,7 +47,7 @@ PRODUCT_DEFINITION.md is the intended input to Process 04 — App Flow. Process 
 1. Place this repository at the project workspace root.
 2. Keep .agents/skills/ at that root.
 3. Check the active Skill in Antigravity's Customizations panel.
-4. Open a fresh conversation for each tab and paste only that tab's prompt.
+4. In each tab, read its active Skill and initialize/verify its canonical Control File and prerequisites first; then open a fresh conversation and paste only that tab's matching prompt.
 5. Transfer context through workspace artifacts, not chat history.
 
 Each process README contains its prerequisites, output contracts, gates and upstream register.
@@ -56,3 +56,13 @@ Each process README contains its prerequisites, output contracts, gates and upst
 ## Process 03 integrity note
 
 Process 03 uses a schema-version-2 canonical Control File. Before using a frozen Product Definition, verify Gate 3 = APPROVED, lifecycle_status = FROZEN and the stored SHA-256 matches product/definition/PRODUCT_DEFINITION.md. Process 03 accepts only PROCEED or NARROW from Process 02; READY FOR TESTING requires explicit persisted uncertainty acceptance. Tab 03 is read-only on source artifacts and review rounds are append-only. See product-definition-kit/VERIFICATION-CHECKLIST.md. Live Antigravity behavior remains unverified until tested in the actual workspace.
+
+
+## Process 03 path disambiguation
+
+For Process 03, use only the fully qualified prompt paths under prompts/03-PRODUCT-DEFINITION/:
+- 01-PRODUCT-INTENT.md
+- 02-PRODUCT-SHAPE-SCOPE.md
+- 03-INDEPENDENT-REVIEW.md
+
+Do not select prompts by a bare number or the phrase "Tab 03". The root-level prompts/03-TAB-INDEPENDENT-REVIEW.md and top-level templates/03-DECISION-LOG.md, templates/04-SEED-REVIEW.md and templates/05-SEED-FINAL.md are Seed-era resources, not Process 03 Product Definition prompts/templates.

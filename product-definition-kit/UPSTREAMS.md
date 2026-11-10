@@ -39,7 +39,7 @@ These copies are method references only. Process 03 may selectively borrow outco
 
 ### Immutable source identity
 
-- ferminrp/agent-skills product-shaping source file blob: 66afdf3d1fb4c6e40925ca768ccbe02571c45920. Upstream HEAD reported by the independent review: 5dac874 (short SHA only; full commit permalink not verified here). License status remains unresolved; see LICENSES/FERMINRP-LICENSE-STATUS.md. Do not invent a notice.
-- marfoerst/the-pragmatic-pm Product Brief blob: 46ffc5b69092cdccf6980d179344f140211b9ba2. MIT license blob: 5f63e803e2f9bdb0d2ec0c46f1e845e3e40167d6. Upstream HEAD reported by the independent review: 667676c (short SHA only; full commit permalink not verified here).
+- ferminrp/agent-skills product-shaping source file blob: 66afdf3d1fb4c6e40925ca768ccbe02571c45920. Verified upstream HEAD on 2026-11-10: 5dac874e248760c37c6647440b7b0223af1dd38a. Immutable source permalink: https://github.com/ferminrp/agent-skills/blob/5dac874e248760c37c6647440b7b0223af1dd38a/skills/product-shaping/SKILL.md. License status remains unresolved; see LICENSES/FERMINRP-LICENSE-STATUS.md. Do not invent a notice.
+- marfoerst/the-pragmatic-pm Product Brief blob: 46ffc5b69092cdccf6980d179344f140211b9ba2. MIT license blob: 5f63e803e2f9bdb0d2ec0c46f1e845e3e40167d6. Verified upstream HEAD on 2026-11-10: 667676c585fccfbc3fadd9c95270db3c5cd8a205. Immutable source permalink: https://github.com/marfoerst/the-pragmatic-pm/blob/667676c585fccfbc3fadd9c95270db3c5cd8a205/skills/pm-product-brief/SKILL.md.
 
-The blob hashes identify the vendored file contents. The short repository HEAD values above are review observations, not full commit identifiers. Replace them with full immutable commit permalinks only after verifying the upstream refs; do not infer missing SHA characters.
+The blob hashes identify the vendored file contents. The full upstream commit identifiers and immutable source permalinks above were checked against the public main refs on 2026-11-10.

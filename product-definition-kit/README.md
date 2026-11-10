@@ -83,3 +83,8 @@ Tab 03 is read-only on artifacts 01–06. Review history is append-only. Remedia
 PowerShell SHA-256 and Asia/Ho_Chi_Minh timestamp procedures are specified in the active Skill. If the terminal or hash verification is unavailable, approval/freeze remains NOT_VERIFIED. state_seq detects stale reads but is not a file lock; only one tab may write the Control File at a time.
 
 See VERIFICATION-CHECKLIST.md for paper failure simulations and live Antigravity checks. Paper simulations are not runtime tests.
+
+
+## Process 03 prompt selection
+
+Use the complete path under prompts/03-PRODUCT-DEFINITION/ rather than a bare prompt number. The third Process 03 tab is prompts/03-PRODUCT-DEFINITION/03-INDEPENDENT-REVIEW.md. Do not confuse it with the Seed-era root-level prompts/03-TAB-INDEPENDENT-REVIEW.md.
