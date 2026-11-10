@@ -113,19 +113,20 @@ Append objects to `event_log`; never delete or rewrite prior events. Record appr
 
 | Event type | Required type-specific fields |
 |---|---|
-| `DECISION_LOG_UPDATED` | `decision_id`, `decision_status_after_update`, `affected_gate`, `path`, `resulting_sha256` |
+| `DECISION_LOG_UPDATED` | `decision_id`, `decision_log_event_id`, `decision_event_kind` (`INITIALIZATION`, `PROPOSAL_CREATED`, `STATUS_CHANGED`), `decision_status_before_update`, `decision_status_after_update`, `affected_gate`, `path`, `resulting_sha256` |
 | `GATE_1_APPROVED` | `gate: GATE_1`, exact command `APPROVE TASK MODEL`, `approved_artifacts` (01 and 02 path/hash pairs), `decision_log_sha256` |
 | `GATE_2_APPROVED` | `gate: GATE_2`, exact command `APPROVE APP FLOW`, `approved_artifacts` (03–06 path/hash pairs), `decision_log_sha256` |
 | `GATE_3_FROZEN` | `gate: GATE_3`, exact command `FREEZE APP FLOW`, `draft_sha256`, `frozen_artifact_path`, `frozen_artifact_sha256`, `frozen_version` |
 | `INVALIDATED` | `reopened_gates`, `affected_gate` when known, `expected_hashes`, `observed_hashes` and reason |
-| `DECISION_LOG_RECOVERED` | `decision_id`, `recovered_from_event_seq`, `resulting_sha256`, `affected_gate`, `reopened_gates` |
-| `SCHEMA_MIGRATED` | `from_schema_version: 2`, `to_schema_version: 3`, `archive_directory`, `archive_manifest_path`, `archive_manifest_sha256`, archived Control File/Decision Log paths and hashes, exact user command |
-| `REVIEW_ROUND_RECORDED` | review round, review path/hash, draft path/hash and verdict/status |
+| `DECISION_LOG_RECOVERED` | `decision_id`, `decision_log_event_id`, `recovered_from_event_seq`, `resulting_sha256`, `affected_gate`, `reopened_gates` |
+| `SCHEMA_MIGRATED` | `from_schema_version: 2`, `to_schema_version: 3`, `archive_directory`, `archive_manifest_path`, `archive_manifest_sha256`, `archived_control_file_path`, `archived_control_file_sha256`, `archived_decision_log_path`, `archived_decision_log_sha256`, `exact_user_command` |
+| `REVIEW_ROUND_RECORDED` | `review_round`, `review_path`, `previous_review_sha256`, `review_sha256`, `draft_path`, `draft_sha256`, `verdict`, `review_status` |
+| `REVIEW_ROUND_RECOVERED` | `review_round`, `review_path`, `previous_review_sha256`, `review_sha256`, `draft_path`, `draft_sha256`, `verdict`, `review_status`, `recovered_from_state_seq` |
 | `RESIDUAL_RISK_ACCEPTED` | finding ID, severity, exact user command, rationale and acceptance timestamp |
 
 Use `decision_status_after_update: NOT_APPLICABLE` only for initial log creation. Gate 1, Gate 2 and Gate 3 `approved_state_seq` must equal the sequence of their latest corresponding approval/freeze event. For Gate 1 and Gate 2, the stored `gate_1.decision_log_sha256` / `gate_2.decision_log_sha256` must also equal the `decision_log_sha256` snapshot in that exact corresponding approval event; Gate 2's snapshot must additionally equal the current whole-file Decision Log hash while Gate 2 remains approved. A status field or `approved_command` alone is never proof of approval. Do not use free-form event names for these transitions.
 
-The review history `07_FLOW_REVIEW.md` is append-only. Every round records source/artifact/draft hashes, verdict, status, finding counts and set/graph evidence.
+The review history `07_FLOW_REVIEW.md` is append-only. Every round records source/artifact/draft hashes, verdict, status, finding counts and set/graph evidence. Each round records the pre-append Control File `state_seq` and previous full review-history SHA-256. A `REVIEW_ROUND_RECORDED` or `REVIEW_ROUND_RECOVERED` event binds the appended round to the full resulting history hash and draft hash. Recovery is permitted only through the exact `RECOVER REVIEW ROUND [N]` command and the bounded procedure in the Skill; never duplicate or rewrite a round.
 
 ## Invalidation matrix
 
