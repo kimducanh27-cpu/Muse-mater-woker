@@ -52,6 +52,11 @@ This checklist distinguishes repository/paper checks from live runtime verificat
 | Gate 2 status is APPROVED but no well-formed `GATE_2_APPROVED` event exists | NOT_VERIFIED; `gate_2.approved_state_seq` and `decision_log_sha256` must match the event |
 | Tab 03 is asked to approve/reject/defer a flow decision | It must not edit 09; hand the decision back to Tab 01/02 |
 | Decision Log actual hash matches `resulting_sha256` in one valid persisted update event but baseline refresh failed | Recovery only after exact `RECOVER DECISION LOG [DECISION-ID]`; record `DECISION_LOG_RECOVERED` and reopen affected gates |
+| Decision Log append succeeded but Control File update is ambiguous; a matching valid update event is already persisted | Stop all writers; do not repeat the append; require exact recovery command and bounded recovery procedure |
+| Decision Log append succeeded but no matching valid update event is persisted | Do not adopt observed bytes; restore trusted bytes matching old baseline or remain NOT_VERIFIED |
+| Control File event history is partial, malformed or unreadable during recovery | Restore a trusted Control File copy or stop for human-led reconciliation; never synthesize events |
+| `affected_gate` conflicts with decision semantics or affected artifact IDs, or scope is ambiguous | NOT_VERIFIED; independently classify and reopen earliest affected gate plus downstream gates |
+| Tab 03 receives an approve/reject/defer decision command during review | Tab 03 remains read-only on 09; record unresolved review item and route outcome to owning Tab 01/02 |
 | Decision Log hash mismatch has no matching persisted update event | Do not adopt observed bytes; restore trusted bytes matching old baseline or remain NOT_VERIFIED |
 | Gate 1 artifact hash changed | Gate 1 and downstream gates REOPENED |
 | Gate 2 absent | Tab 03 and freeze blocked |
