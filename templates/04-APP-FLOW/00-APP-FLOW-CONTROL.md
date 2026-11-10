@@ -123,7 +123,7 @@ Append objects to `event_log`; never delete or rewrite prior events. Record appr
 | `REVIEW_ROUND_RECORDED` | review round, review path/hash, draft path/hash and verdict/status |
 | `RESIDUAL_RISK_ACCEPTED` | finding ID, severity, exact user command, rationale and acceptance timestamp |
 
-Use `decision_status_after_update: NOT_APPLICABLE` only for initial log creation. Gate 1, Gate 2 and Gate 3 `approved_state_seq` must equal the sequence of their latest corresponding approval/freeze event. A status field or `approved_command` alone is never proof of approval. Do not use free-form event names for these transitions.
+Use `decision_status_after_update: NOT_APPLICABLE` only for initial log creation. Gate 1, Gate 2 and Gate 3 `approved_state_seq` must equal the sequence of their latest corresponding approval/freeze event. For Gate 1 and Gate 2, the stored `gate_1.decision_log_sha256` / `gate_2.decision_log_sha256` must also equal the `decision_log_sha256` snapshot in that exact corresponding approval event; Gate 2's snapshot must additionally equal the current whole-file Decision Log hash while Gate 2 remains approved. A status field or `approved_command` alone is never proof of approval. Do not use free-form event names for these transitions.
 
 The review history `07_FLOW_REVIEW.md` is append-only. Every round records source/artifact/draft hashes, verdict, status, finding counts and set/graph evidence.
 
