@@ -1,6 +1,6 @@
 # Process 04 — App Flow artifacts
 
-All artifacts for one initiative live in this folder. Initialize \`00_APP_FLOW_CONTROL.md\` from \`templates/04-APP-FLOW/00-APP-FLOW-CONTROL.md\`.
+All artifacts for one initiative live in this folder. Initialize `00_APP_FLOW_CONTROL.md` from `templates/04-APP-FLOW/00-APP-FLOW-CONTROL.md`.
 
 | File | Owner | Purpose |
 |---|---|---|
@@ -19,6 +19,6 @@ All artifacts for one initiative live in this folder. Initialize \`00_APP_FLOW_C
 
 Never overwrite a Control File from another initiative. Do not store participant identifiers, private transcripts, credentials or secrets in a public repository.
 
-Process 04 requires a frozen Process 03 Product Definition and matching SHA-256. The authoritative expected hash is Process 03 Control File \`gate_3.frozen_artifact.sha256\`. Process 04's initiative ID must equal Process 03's initiative ID.
+Process 04 requires a frozen Process 03 Product Definition and matching SHA-256. The authoritative expected hash is Process 03 Control File `gate_3.frozen_artifact.sha256`. Process 04's initiative ID must equal Process 03's initiative ID.
 
 Gate approvals bind exact artifact hashes. Tab 03 is read-only on Tab 01/02 source artifacts; remediation invalidates affected approvals and requires re-approval and a new review round. The frozen output is eligible downstream only when Gate 3 is APPROVED, lifecycle_status is FROZEN, and its actual hash matches the Control File.

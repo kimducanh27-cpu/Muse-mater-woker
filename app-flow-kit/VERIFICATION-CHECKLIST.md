@@ -3,10 +3,10 @@
 This checklist distinguishes repository/paper checks from live runtime verification. A checked paper scenario is not proof that Antigravity executed it correctly.
 
 ## Repository and workspace setup
-- [ ] Repository is at workspace root; \`.agents/skills/app-flow/SKILL.md\` is discoverable.
-- [ ] All three prompts exist at their fully qualified paths under \`prompts/04-APP-FLOW/\`.
+- [ ] Repository is at workspace root; `.agents/skills/app-flow/SKILL.md` is discoverable.
+- [ ] All three prompts exist at their fully qualified paths under `prompts/04-APP-FLOW/`.
 - [ ] Every prompt names the exact templates it must use.
-- [ ] Control and artifact templates exist under \`templates/04-APP-FLOW/\`.
+- [ ] Control and artifact templates exist under `templates/04-APP-FLOW/`.
 - [ ] Process 03 source files are readable in the same workspace.
 - [ ] Process 04 initiative ID equals Process 03 initiative ID.
 - [ ] No prompt-name collision causes the wrong review prompt to be selected.
@@ -16,7 +16,7 @@ This checklist distinguishes repository/paper checks from live runtime verificat
 |---|---|
 | Process 03 Gate 3 not APPROVED | Stop; NOT_VERIFIED / ineligible |
 | Process 03 lifecycle not FROZEN | Stop |
-| Product Definition hash differs from Process 03 \`gate_3.frozen_artifact.sha256\` | Stop; do not initialize approval |
+| Product Definition hash differs from Process 03 `gate_3.frozen_artifact.sha256` | Stop; do not initialize approval |
 | Product Definition or Process 03 Control File missing/unreadable | Stop |
 | Initiative IDs conflict | Stop; do not overwrite either initiative |
 | Process 03 frozen and hash matches | Eligible to initialize Process 04 |

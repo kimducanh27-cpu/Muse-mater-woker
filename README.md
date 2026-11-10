@@ -45,7 +45,7 @@ Translates the frozen Product Definition into user tasks, flow architecture, nav
 Three tabs:
 1. User Tasks & Flow Architecture
 2. Navigation & Screen Flow Specification
-3. Independent Flow Review and authorized freeze (only after the separate exact command \`FREEZE APP FLOW\`).
+3. Independent Flow Review and authorized freeze (only after the separate exact command `FREEZE APP FLOW`).
 
 Canonical state: product/app-flow/00_APP_FLOW_CONTROL.md.
 Working artifacts: 01–09, including append-only review history and decision log.
