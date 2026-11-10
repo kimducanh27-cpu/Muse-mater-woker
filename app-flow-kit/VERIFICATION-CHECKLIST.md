@@ -19,12 +19,16 @@ This checklist distinguishes repository/paper checks from live runtime verificat
 | Product Definition hash differs from Process 03 `gate_3.frozen_artifact.sha256` | Stop; do not initialize approval |
 | Product Definition or Process 03 Control File missing/unreadable | Stop |
 | Initiative IDs conflict | Stop; do not overwrite either initiative |
+| Existing Decision Log has a missing/wrong Process 04 initiative identity | Stop; do not adopt it by computing a new baseline |
 | Process 03 frozen and hash matches | Eligible to initialize Process 04 |
 | Process 04 source_status still NOT_VERIFIED | Gate 1 must refuse |
 | Decision Log missing/unreadable or `decision_log.latest_sha256` is null | Gate 1 and Tab 02 refuse; NOT_VERIFIED |
 | Actual Decision Log SHA-256 differs from `decision_log.latest_sha256` | Reopen Gates 1–3, invalidate review, record expected/observed hashes and stop |
 | `DECISION_LOG_UPDATED` with `affected_gate: GATE_1` occurs after the latest Gate 1 approval | Reopen Gates 1–3 and return to Tab 01 |
 | Decision Log approval/update events cannot be ordered by `state_seq` | NOT_VERIFIED; do not assume Gate 1 is current |
+| Gate 1 status is APPROVED but no well-formed `GATE_1_APPROVED` event exists | NOT_VERIFIED; `gate_1.approved_state_seq` must equal the event sequence |
+| Gate 1 event exists but its Decision Log hash or approved artifact hashes differ | Reopen Gates 1–3; stop |
+| A decision affecting 01/02 or capability-to-task mapping is labeled GATE_2/GATE_3 | NOT_VERIFIED; classify by semantic scope, do not trust the label |
 
 ## Template and capability coverage simulations
 | Scenario | Expected behavior |
@@ -42,7 +46,12 @@ This checklist distinguishes repository/paper checks from live runtime verificat
 | Gate 1 absent | Tab 02 and Tab 03 blocked |
 | Decision Log hash is correct and no later GATE_1 update exists | Tab 02 may pass the Decision Log entry check |
 | Decision Log changes with affected_gate GATE_1 after Gate 1 approval | Gates 1–3 reopened; Tab 02 stops |
-| Decision Log changes with affected_gate GATE_2 after Gate 1 approval | Gates 2–3 reopened; Gate 1 may remain valid |
+| Decision Log changes with affected_gate GATE_2 after Gate 1 approval but before Gate 2 approval | Gates 2–3 reopened; Gate 1 may remain valid only after scope validation |
+| Any Decision Log byte change after Gate 2 approval, including a GATE_3-labeled change | Gates 2–3 reopened because Gate 2 binds the whole file; also Gate 1 if scope is actually GATE_1 |
+| Gate 2 status is APPROVED but no well-formed `GATE_2_APPROVED` event exists | NOT_VERIFIED; `gate_2.approved_state_seq` and `decision_log_sha256` must match the event |
+| Tab 03 is asked to approve/reject/defer a flow decision | It must not edit 09; hand the decision back to Tab 01/02 |
+| Decision Log actual hash matches `resulting_sha256` in one valid persisted update event but baseline refresh failed | Recovery only after exact `RECOVER DECISION LOG [DECISION-ID]`; record `DECISION_LOG_RECOVERED` and reopen affected gates |
+| Decision Log hash mismatch has no matching persisted update event | Do not adopt observed bytes; restore trusted bytes matching old baseline or remain NOT_VERIFIED |
 | Gate 1 artifact hash changed | Gate 1 and downstream gates REOPENED |
 | Gate 2 absent | Tab 03 and freeze blocked |
 | Tab 02 artifact hash changed after Gate 2 | Gate 2/3 and review invalidated |
@@ -50,6 +59,7 @@ This checklist distinguishes repository/paper checks from live runtime verificat
 | User says "looks good" without exact approval command | No gate approval |
 | Hash/read-back fails | INCOMPLETE / NOT_VERIFIED; no success claim |
 | state_seq stale | Stop, reload and reconcile; no concurrent write |
+| Two tabs may have written concurrently | Stop all writers; `state_seq` is not a lock/CAS and cannot prove no event was lost; reconcile against trusted persisted state |
 | Change request without exact user decision | Log request; do not infer approval |
 
 ## Review-history and freeze simulations
@@ -73,6 +83,7 @@ This checklist distinguishes repository/paper checks from live runtime verificat
 | Re-freeze requested | Verify and archive prior version as APP_FLOW.v<N>.md before replacement |
 | Existing archive contains different bytes | Stop; never overwrite archive |
 | Frozen APP_FLOW.md is modified | Gate 3 REOPENED; lifecycle REVIEW_REQUIRED; downstream use blocked |
+| Freeze event missing or `gate_3.approved_state_seq` differs from its event sequence | NOT_VERIFIED; frozen output is not eligible downstream |
 | ABANDON APP FLOW command | Lifecycle ABANDONED; terminal for that initiative |
 
 ## Structural integrity tests
@@ -90,7 +101,7 @@ This checklist distinguishes repository/paper checks from live runtime verificat
 - [ ] All material decisions are approved or unresolved questions.
 
 ## Live Antigravity test record
-Run in the actual Windows workspace. Do not mark these passed based only on repository inspection.
+Run in the actual Windows workspace. Do not mark these passed based only on repository inspection. All rows intentionally remain `NOT RUN` until actual runtime evidence is supplied; repository/document edits do not change these results.
 
 | Test | Result (PASS/FAIL/NOT RUN) | Evidence path | Notes |
 |---|---|---|---|
