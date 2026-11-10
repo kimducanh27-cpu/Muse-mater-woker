@@ -2,7 +2,7 @@
 
 > Status: REVIEWED CANDIDATE — NOT FROZEN
 > Lifecycle authority: product/definition/00_PRODUCT_DEFINITION_CONTROL.md
-> At freeze, replace only the status line above with: Status: FROZEN
+> At freeze, replace only the status line above with the exact line `> Status: FROZEN`.
 
 ## Product at a glance
 - Product name:
