@@ -101,8 +101,8 @@ The authoritative comparison target is Process 03 `gate_3.frozen_artifact.sha256
 
 ## Gate rules
 
-- Gate 1 binds exact SHA-256 values for `01_TASK_MODEL.md` and `02_FLOW_ARCHITECTURE.md`. It requires source status VERIFIED, complete template structure, full capability coverage or user-approved deferral, no unresolved policy decision being treated as settled, and a readable Decision Log whose actual SHA-256 matches non-null `decision_log.latest_sha256`.
-- Gate 2 binds exact SHA-256 values for `03_NAVIGATION_MODEL.md`, `04_SCREEN_INVENTORY.md`, `05_FLOW_SPECIFICATION.md`, `06_STATE_AND_EXCEPTION_MATRIX.md`, and current `09_DECISION_LOG.md`. It requires Gate 1 and every Gate 1 artifact hash to remain valid.
+- Gate 1 binds exact SHA-256 values for `01_TASK_MODEL.md` and `02_FLOW_ARCHITECTURE.md`. At approval, `gate_1.decision_log_sha256` snapshots the actual Decision Log SHA-256; this is an audit snapshot, not a requirement that the log remain byte-identical after an independently verified GATE_2/GATE_3 update. Gate 1 requires source status VERIFIED, complete template structure, full capability coverage or user-approved deferral, no unresolved GATE_1 policy decision being treated as settled, and a readable Decision Log whose actual SHA-256 matches non-null `decision_log.latest_sha256`.
+- Gate 2 binds exact SHA-256 values for `03_NAVIGATION_MODEL.md`, `04_SCREEN_INVENTORY.md`, `05_FLOW_SPECIFICATION.md`, `06_STATE_AND_EXCEPTION_MATRIX.md`, and current `09_DECISION_LOG.md`. `gate_2.decision_log_sha256` must equal the current log hash at approval. It requires Gate 1 and every Gate 1 artifact hash to remain valid.
 - Gate 3 requires Gate 1 and Gate 2 APPROVED with matching hashes; at least one append-only review round; latest review and draft hashes matching the Control File; zero open BLOCKER, CRITICAL, MAJOR and MINOR findings; user-originated acceptance records for accepted risks; decision log reviewed; and the exact reviewed draft frozen by status-line substitution only.
 - No missing review is equivalent to a clean review. `review.round` must be at least 1 and the latest review artifact must exist and hash-match.
 - A hash proves identity/integrity of bytes, not correctness of content. Completeness, template conformance and graph/traceability checks need explicit evidence.
@@ -119,6 +119,7 @@ Append objects to `event_log`; never delete or rewrite prior events. Record appr
 | `GATE_3_FROZEN` | `gate: GATE_3`, exact command `FREEZE APP FLOW`, `draft_sha256`, `frozen_artifact_path`, `frozen_artifact_sha256`, `frozen_version` |
 | `INVALIDATED` | `reopened_gates`, `affected_gate` when known, `expected_hashes`, `observed_hashes` and reason |
 | `DECISION_LOG_RECOVERED` | `decision_id`, `recovered_from_event_seq`, `resulting_sha256`, `affected_gate`, `reopened_gates` |
+| `SCHEMA_MIGRATED` | `from_schema_version: 2`, `to_schema_version: 3`, archived Control File/Decision Log paths and hashes, exact user command |
 | `REVIEW_ROUND_RECORDED` | review round, review path/hash, draft path/hash and verdict/status |
 | `RESIDUAL_RISK_ACCEPTED` | finding ID, severity, exact user command, rationale and acceptance timestamp |
 
