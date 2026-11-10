@@ -33,6 +33,8 @@ If any check is missing, unreadable, contradictory or mismatched, set/retain `so
 
 At every tab entry and immediately before each approval/freeze, re-read the source Control File and recompute the canonical Product Definition hash. If the Process 03 source changes, mark the handoff REOPENED, reopen all dependent Process 04 gates and set lifecycle to REVIEW_REQUIRED. Do not continue against a superseded definition.
 
+If the Process 04 Control File says `lifecycle_status = FROZEN` or contains a previously frozen canonical artifact hash, every subsequent Process 04 tab entry, re-freeze attempt and downstream handoff must also recompute the actual SHA-256 of `product/app-flow/APP_FLOW.md` and compare it with `gate_3.frozen_artifact.sha256`. If the canonical file is missing, unreadable or mismatched, append a canonical `INVALIDATED` event, set `gate_3.status = REOPENED`, set `lifecycle_status = REVIEW_REQUIRED`, retain the expected hash (never replace it with the observed hash), block downstream use, read the Control File back and stop. This is detection on the next tab entry/downstream read, not a background watcher; the manual three-tab model does not monitor files continuously.
+
 Preserve all approved capability IDs, IN / NOT NOW / OUT boundaries, target segment, customer outcomes, constraints, risks and non-goals. A missing flow requirement is not permission to invent a capability. Record it as an OPEN QUESTION or CHANGE REQUEST and ask the user whether it requires returning to Process 03.
 
 ## Canonical state, templates and artifacts
