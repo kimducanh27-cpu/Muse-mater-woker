@@ -23,7 +23,8 @@
 - Baseline:
 - Target:
 - Measurement source:
-[Use UNKNOWN where no defensible metric/baseline exists.]
+
+Use UNKNOWN where no defensible metric/baseline exists. Do not invent a numerical target.
 
 ## 4. Discovery question
 [The decision question this discovery must answer.]
@@ -37,7 +38,5 @@
 | ID | Assumption | Category | Current evidence | Unknown |
 |---|---|---|---|---|
 
-## 7. Approval
-- Opportunity focus: PENDING
-- Exact approval phrase:
-- User decision/date:
+## 7. Control reference
+Canonical approval, evidence and lifecycle state lives only in product/discovery/00_DISCOVERY_CONTROL.md. Do not duplicate gate approval state in this brief.

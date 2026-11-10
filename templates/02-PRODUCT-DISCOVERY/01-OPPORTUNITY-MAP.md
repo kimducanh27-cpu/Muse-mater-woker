@@ -13,23 +13,19 @@
 - Confidence / limitation:
 
 ## 3. Current behavior and alternatives
-| Current approach | When used | Benefit | Friction / unmet need | Evidence |
-|---|---|---|---|---|
-
-## 4. Opportunity statements
-| ID | User need / pain / desire | Context | Importance evidence | Satisfaction evidence | Unknown |
+| Current approach | When used | Benefit | Friction / unmet need | Evidence IDs | Evidence basis |
 |---|---|---|---|---|---|
 
+## 4. Opportunity statements
+| ID | User need / pain / desire | Context | Importance evidence | Satisfaction evidence | Evidence IDs | Evidence basis | Confidence / limitation | Counter-evidence |
+|---|---|---|---|---|---|---|---|---|
+
+Evidence basis must distinguish PRIMARY evidence, SECONDARY source, INTERPRETATION, HYPOTHESIS or UNKNOWN. If unsupported by customer evidence, label the opportunity HYPOTHESIS or UNKNOWN. Do not present a brainstormed statement as a discovered customer need.
+
 ## 5. Opportunity Solution Tree
-```text
-Desired outcome
-├── Opportunity A
-│   ├── Solution hypothesis A1
-│   │   └── Experiment question
-│   └── Solution hypothesis A2
-└── Opportunity B
-    └── Solution hypothesis B1
-```
+Desired outcome → opportunity → solution hypothesis → experiment question.
+
+Use a text tree or diagram. Preserve traceability from each solution hypothesis to its parent opportunity and evidence.
 
 ## 6. Candidate directions
 | Direction | Mechanism | Opportunity served | Why distinct | Risks / unknowns |
@@ -46,5 +42,5 @@ Desired outcome
 ## 9. Human decision
 - Opportunity focus selected:
 - Rejected / deferred alternatives:
-- Exact command: APPROVE OPPORTUNITY FOCUS
-- Date:
+- Exact approval command: APPROVE OPPORTUNITY FOCUS
+- Canonical approval state and timestamp: product/discovery/00_DISCOVERY_CONTROL.md
