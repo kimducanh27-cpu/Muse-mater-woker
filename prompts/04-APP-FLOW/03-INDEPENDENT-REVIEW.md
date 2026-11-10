@@ -5,16 +5,16 @@ Read the active Skill at `.agents/skills/app-flow/SKILL.md` in full. The Skill i
 Act as an adversarial Principal Product Designer, Information Architect and QA Flow Auditor. Find structural defects; do not defend previous tabs or optimize for a GO verdict.
 
 ## Entry verification
-In a fresh conversation, independently re-read Process 03 Control File and Product Definition, Process 04 Control File, artifacts 01–06 and decision log 09. Recompute the Product Definition SHA-256 and compare it with Process 03 `gate_3.frozen_artifact.sha256`. Recompute all approved-artifact hashes and verify initiative IDs. If anything is missing, stale, unreadable or contradictory, reopen affected gate(s), append an invalidation event, report NOT_VERIFIED and stop.
+In a fresh conversation, independently re-read Process 03 Control File and Product Definition, Process 04 Control File, artifacts 01–06 and decision log 09. Recompute the Product Definition SHA-256 and compare it with Process 03 `gate_3.frozen_artifact.sha256`. Recompute all approved-artifact hashes and verify initiative IDs, including the immutable Process 04 Decision Log identity header. Require its current SHA-256 to match both `decision_log.latest_sha256` and `gate_2.decision_log_sha256`, and require no `DECISION_LOG_UPDATED` event after the latest `GATE_2_APPROVED` event. If anything is missing, stale, unreadable or contradictory, reopen affected gate(s), append a canonical invalidation event, report NOT_VERIFIED and stop.
 
 ## Permissions
 - Read-only for Process 03 sources and Process 04 artifacts 01–06 and 09.
-- May append review rounds/addenda to 07, create/update complete draft 08, and update the Control File only for review metadata, user-authorized residual-risk acceptance, invalidation and explicit freeze.
-- Must not edit 01–06, 09 or Process 03 sources.
+- May append review rounds/addenda to 07, create/update complete draft 08, and update the Control File only for review metadata, user-authorized residual-risk acceptance, invalidation and explicit freeze. Tab 03 is read-only on Decision Log 09.
+- Must not edit 01–06, 09 or Process 03 sources, including when the user gives a decision outcome during review.
 - Remediation belongs to Tab 01 or Tab 02. Changed artifacts invalidate affected gate(s), require re-approval and a new review round.
 
 ## Step 1 — Build the complete freeze candidate
-Use `templates/04-APP-FLOW/09-APP-FLOW.md` as the exact structure for `product/app-flow/08_APP_FLOW_DRAFT.md`. The draft is the complete canonical output candidate, not a summary. Populate every section with full content from 01–06 and approved decisions from 09. Do not invent or silently resolve decisions.
+Use `templates/04-APP-FLOW/08-APP-FLOW-DRAFT.md` as the exact structure for `product/app-flow/08_APP_FLOW_DRAFT.md`. The draft is the complete canonical output candidate, not a summary. Populate every section with full content from 01–06 and approved decisions from 09. Do not invent or silently resolve decisions.
 
 Its first lines must be exactly:
 ```markdown
@@ -57,7 +57,7 @@ Set READY_FOR_FREEZE only when every finding is RESOLVED or explicitly ACCEPTED_
 
 ## Step 4 — Remediation, user decisions and residual-risk acceptance
 
-When a proposed flow-policy decision needs an outcome, the user must send exactly one command with a rationale: `APPROVE FLOW DECISION [DECISION-ID]`, `REJECT FLOW DECISION [DECISION-ID]`, or `DEFER FLOW DECISION [DECISION-ID]`. Append the matching status event to `09_DECISION_LOG.md`; never rewrite the proposal. Only APPROVED decisions may define current flow policy. A DEFERRED capability requires an explicit affected CAP ID and scope rationale.
+When a proposed flow-policy decision needs an outcome, do not append to or otherwise edit `09_DECISION_LOG.md`. Record the item as unresolved in the review round, identify the owning tab (Gate 1 → Tab 01; Gate 2/3 → Tab 02), and stop the affected review decision. The user resolves it in that owning tab with exactly one command and rationale: `APPROVE FLOW DECISION [DECISION-ID]`, `REJECT FLOW DECISION [DECISION-ID]`, or `DEFER FLOW DECISION [DECISION-ID]`. The owning tab performs the append/read-back/hash/Control File event transaction. Only APPROVED decisions may define current flow policy. A DEFERRED capability requires an explicit affected CAP ID and scope rationale. After the owner tab updates and re-approves affected gates, run a fresh independent review.
 
 
 - BLOCKER/CRITICAL must be fixed; they cannot be accepted.
@@ -75,7 +75,8 @@ When—and only when—the user sends `FREEZE APP FLOW`, execute the complete Fr
 
 Preconditions:
 - Source status VERIFIED; Product Definition hash equals Process 03 `gate_3.frozen_artifact.sha256`.
-- Gates 1 and 2 APPROVED and every stored hash matches.
+- Gates 1 and 2 APPROVED and every stored hash matches; latest canonical approval events and `approved_state_seq` fields agree.
+- No Decision Log update follows Gate 2 approval; its identity is correct and actual SHA-256 equals both `decision_log.latest_sha256` and `gate_2.decision_log_sha256`.
 - At least one review round exists; latest review file hash matches the Control File.
 - Latest review status READY_FOR_FREEZE.
 - Latest round's 01–06, decision-log and draft hashes match current files.
@@ -91,7 +92,7 @@ with:
 
 Do not rebuild, summarize, edit, add a self-hash or insert a timestamp. Verify final bytes differ from the reviewed candidate only by that one line.
 
-For re-freeze, first verify and archive the prior canonical artifact as `APP_FLOW.v<N>.md`; never overwrite an existing archive. Then write, hash and read back the new canonical output, update Gate 3/lifecycle/version/archive metadata, increment state_seq, read the Control File back and verify every hash. If any step fails, report INCOMPLETE — NOT FROZEN. A canonical file without a matching approved Control File is an orphan and is not eligible downstream.
+For re-freeze, first verify and archive the prior canonical artifact as `APP_FLOW.v<N>.md`; never overwrite an existing archive. Then write, hash and read back the new canonical output, update Gate 3/lifecycle/version/archive metadata, set `gate_3.approved_state_seq` to the new committed sequence, and append `GATE_3_FROZEN` with `exact_user_command: FREEZE APP FLOW`, draft hash, canonical path/hash and version in that same Control File update. Event sequence, gate sequence and committed `state_seq` must match. Read the Control File back and verify every hash. If any step fails, report INCOMPLETE — NOT FROZEN. A canonical file without a matching approved Control File is an orphan and is not eligible downstream.
 
 ## Strict read-only restriction
-This is an independent review, not an implementation task. Do not modify 01–06, 09 or Process 03. Do not silently remediate findings. The only allowed writes are review history, the complete draft candidate and documented Control File state transitions after required exact user commands.
+This is an independent review, not an implementation task. Do not modify 01–06, 09 or Process 03. Do not silently remediate findings or append decision outcomes. The only allowed writes are review history, the complete draft candidate and documented Control File state transitions after required exact user commands. If a decision is needed, hand it back to Tab 01/02; never bypass this ownership rule.
