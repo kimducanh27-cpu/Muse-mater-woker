@@ -38,6 +38,8 @@ Frozen output: `product/app-flow/APP_FLOW.md`
 Frozen-output schema: `templates/04-APP-FLOW/09-APP-FLOW.md`  
 Decision-log template: `templates/04-APP-FLOW/10-DECISION-LOG.md`
 
+Template numbering is local to the template directory and is not the working-artifact number. In particular, template `10-DECISION-LOG.md` initializes working file `09_DECISION_LOG.md`; template `08-APP-FLOW-DRAFT.md` initializes working file `08_APP_FLOW_DRAFT.md`; template `09-APP-FLOW.md` is the frozen-output schema.
+
 ## Human gates
 | Tab | Gate | Exact command |
 |---|---|---|
@@ -54,7 +56,11 @@ Additional exact commands:
 - `REQUEST APP FLOW CHANGE [description]`
 - `ABANDON APP FLOW`
 
-Tab 03 must not freeze automatically after a GO verdict. The user must issue the separate exact freeze command. No automatic handoff; each tab runs in a fresh conversation and reads persisted workspace artifacts.
+Tab 03 must not freeze automatically after a GO verdict. The user must issue the separate exact freeze command. Tab 03 is read-only on Decision Log 09; decision outcomes must return to their owning writer tab. Gate approvals/freeze require canonical event types and matching `approved_state_seq` values. No automatic handoff; each tab runs in a fresh conversation and reads persisted workspace artifacts.
+
+## Decision Log integrity
+
+The Decision Log identity header must match the initiative ID in both Process 03 and Process 04 Control Files. Gate 1/2/3 approvals are append-only typed events (`GATE_1_APPROVED`, `GATE_2_APPROVED`, `GATE_3_FROZEN`) with required hashes and committed sequence numbers. Any Decision Log byte change after Gate 2 approval reopens Gates 2–3 because Gate 2 binds the whole file. See the governing Skill and Control template for classification and bounded recovery rules.
 
 ## Freeze integrity
 The reviewed draft 08 is the complete canonical content candidate. Freeze copies it byte-for-byte to APP_FLOW.md and changes only the exact status line from REVIEWED CANDIDATE — NOT FROZEN to FROZEN. It does not rebuild or re-summarize content.
