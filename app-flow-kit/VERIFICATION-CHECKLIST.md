@@ -20,7 +20,7 @@ This checklist distinguishes repository/paper checks from live runtime verificat
 | Product Definition or Process 03 Control File missing/unreadable | Stop |
 | Initiative IDs conflict | Stop; do not overwrite either initiative |
 | Existing Decision Log has a missing/wrong Process 04 initiative identity | Stop; do not adopt it by computing a new baseline |
-| Existing Control File uses schema version 2 | Stop; migrate only after exact `MIGRATE APP FLOW CONTROL V2 TO V3`, archive old files and re-approve all gates |
+| Existing Control File uses schema version 2 | Stop; migrate only after exact `MIGRATE APP FLOW CONTROL V2 TO V3`; archive the entire old workspace with a verified per-file SHA-256 manifest, remove old frozen/review files from active paths and re-approve all gates |
 | Process 03 frozen and hash matches | Eligible to initialize Process 04 |
 | Process 04 source_status still NOT_VERIFIED | Gate 1 must refuse |
 | Decision Log missing/unreadable or `decision_log.latest_sha256` is null | Gate 1 and Tab 02 refuse; NOT_VERIFIED |
