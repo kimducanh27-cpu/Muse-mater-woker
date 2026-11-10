@@ -54,7 +54,7 @@ Read the complete approved capability scope from the frozen Process 03 Product D
 Do not omit a capability because no task was immediately obvious. Do not invent a capability to fill a gap. Show both directions: every task maps to one or more approved capabilities; every approved capability is covered or explicitly deferred with an approved decision.
 
 ## Decision commands
-For each material flow-policy decision, ask the user to issue exactly one command with a rationale: `APPROVE FLOW DECISION [DECISION-ID]`, `REJECT FLOW DECISION [DECISION-ID]`, or `DEFER FLOW DECISION [DECISION-ID]`. Append the outcome to `09_DECISION_LOG.md`; only APPROVED decisions may define the task model or justify a capability deferral.
+Tab 01 is the owning writer only for GATE_1-scope decisions: changes to 01/02, actors/tasks, approved capability interpretation or capability-to-task coverage. Derive the scope from the decision text and affected artifact IDs. If a decision is GATE_2/GATE_3 or mixed beyond Tab 01 ownership, do not append it here; return it to Tab 02. For a GATE_1 decision, ask the user to issue exactly one command with a rationale: `APPROVE FLOW DECISION [DECISION-ID]`, `REJECT FLOW DECISION [DECISION-ID]`, or `DEFER FLOW DECISION [DECISION-ID]`. Append the outcome to `09_DECISION_LOG.md`; only APPROVED decisions may define the task model or justify a capability deferral.
 
 ## Gate 1 checks
 Before asking for approval:
@@ -64,7 +64,7 @@ Before asking for approval:
 - No unresolved decision that changes the task model is treated as approved.
 - Process 03 source remains VERIFIED.
 - The user sends exactly `APPROVE TASK MODEL`.
-- Control File records exact hashes of 01 and 02, the current Decision Log SHA-256, command and timestamp; sets `gate_1.approved_state_seq` to the new committed `state_seq`; and appends `GATE_1_APPROVED` in the same update. Required event fields: `event_type: GATE_1_APPROVED`, `gate: GATE_1`, `exact_user_command: APPROVE TASK MODEL`, `state_seq`, `timestamp_local`, 01/02 approved-artifact path/hash pairs, `decision_log_sha256`, `changed_paths`, `relevant_hashes` and `reason`. Event sequence, `gate_1.approved_state_seq` and Control File `state_seq` must be identical. `approved_command` or `status: APPROVED` without this event is invalid.
+- Control File records exact hashes of 01 and 02, sets `gate_1.decision_log_sha256` to the actual Decision Log SHA-256 at approval time, and sets `gate_1.approved_state_seq` to the new committed `state_seq`; and appends `GATE_1_APPROVED` in the same update. Required event fields: `event_type: GATE_1_APPROVED`, `gate: GATE_1`, `exact_user_command: APPROVE TASK MODEL`, `state_seq`, `timestamp_local`, 01/02 approved-artifact path/hash pairs, `decision_log_sha256`, `changed_paths`, `relevant_hashes` and `reason`. Event sequence, `gate_1.approved_state_seq` and Control File `state_seq` must be identical. `approved_command` or `status: APPROVED` without this event is invalid.
 
 Show the actual capability-to-task matrix and any deferred capability before asking for approval.
 
