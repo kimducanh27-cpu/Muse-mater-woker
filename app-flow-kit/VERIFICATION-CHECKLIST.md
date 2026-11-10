@@ -89,7 +89,8 @@ This checklist distinguishes repository/paper checks from live runtime verificat
 | Canonical write succeeds but Control File write/read-back fails | INCOMPLETE — NOT FROZEN |
 | Re-freeze requested | Verify and archive prior version as APP_FLOW.v<N>.md before replacement |
 | Existing archive contains different bytes | Stop; never overwrite archive |
-| Frozen APP_FLOW.md is modified | Gate 3 REOPENED; lifecycle REVIEW_REQUIRED; downstream use blocked |
+| Frozen APP_FLOW.md is modified | At the next Process 04 tab entry or downstream read, Gate 3 REOPENED; lifecycle REVIEW_REQUIRED; expected hash retained; downstream use blocked |
+| Frozen APP_FLOW.md is modified but no tab/downstream consumer has read it yet | No background watcher exists; immediate detection is not claimed |
 | Freeze event missing or `gate_3.approved_state_seq` differs from its event sequence | NOT_VERIFIED; frozen output is not eligible downstream |
 | ABANDON APP FLOW command | Lifecycle ABANDONED; terminal for that initiative |
 
