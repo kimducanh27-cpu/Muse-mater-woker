@@ -1,4 +1,4 @@
-# APP FLOW — Frozen Process 04 Output
+# APP FLOW — Process 04 Output
 > Status: FROZEN
 
 ## Document control

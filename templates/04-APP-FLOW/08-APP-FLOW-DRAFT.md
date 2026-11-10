@@ -1,4 +1,4 @@
-# APP FLOW — Reviewed Candidate
+# APP FLOW — Process 04 Output
 > Status: REVIEWED CANDIDATE — NOT FROZEN
 
 ## Document control

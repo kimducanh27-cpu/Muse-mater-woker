@@ -18,7 +18,7 @@ Use \`templates/04-APP-FLOW/09-APP-FLOW.md\` as the exact structure for \`produc
 
 Its first lines must be exactly:
 \`\`\`markdown
-# APP FLOW — Reviewed Candidate
+# APP FLOW — Process 04 Output
 > Status: REVIEWED CANDIDATE — NOT FROZEN
 \`\`\`
 The candidate contains no self-referential App Flow hash and no freeze timestamp; those are stored in the Control File.

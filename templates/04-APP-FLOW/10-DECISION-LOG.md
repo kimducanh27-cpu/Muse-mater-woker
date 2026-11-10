@@ -16,7 +16,7 @@ This file is append-only. Never edit or delete an earlier decision entry. To cha
 - Recommended option:
 - User decision:
 - Rationale:
-- Exact user command: APPROVE FLOW DECISION <DEC-ID> / REJECTED / NOT_APPLICABLE
+- Exact user command: APPROVE FLOW DECISION <DEC-ID> / REJECT FLOW DECISION <DEC-ID> / DEFER FLOW DECISION <DEC-ID>
 - Decided by:
 - Decided at local time:
 - Evidence/source:
