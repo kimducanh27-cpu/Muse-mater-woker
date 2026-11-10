@@ -42,6 +42,9 @@ Read the complete approved capability scope from the frozen Process 03 Product D
 
 Do not omit a capability because no task was immediately obvious. Do not invent a capability to fill a gap. Show both directions: every task maps to one or more approved capabilities; every approved capability is covered or explicitly deferred with an approved decision.
 
+## Decision commands
+For each material flow-policy decision, ask the user to issue exactly one command with a rationale: `APPROVE FLOW DECISION [DECISION-ID]`, `REJECT FLOW DECISION [DECISION-ID]`, or `DEFER FLOW DECISION [DECISION-ID]`. Append the outcome to `09_DECISION_LOG.md`; only APPROVED decisions may define the task model or justify a capability deferral.
+
 ## Gate 1 checks
 Before asking for approval:
 - Required template sections and columns are present and populated.

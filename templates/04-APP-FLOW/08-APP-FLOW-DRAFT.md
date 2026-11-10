@@ -62,4 +62,4 @@ List unresolved questions without silently resolving policy. List only user-appr
 - Freeze eligibility:
 
 ## Next-process handoff
-This is a frozen functional-flow contract. A later product-design process may derive UX/UI and visual design but must not silently change approved capabilities, user tasks, navigation rules, functional behavior or scope. Any structural change returns to Process 04 through a recorded change request.
+When this artifact is frozen, it becomes the functional-flow contract for a later product-design process. That process may derive UX/UI and visual design but must not silently change approved capabilities, user tasks, navigation rules, functional behavior or scope. Any structural change returns to Process 04 through a recorded change request.

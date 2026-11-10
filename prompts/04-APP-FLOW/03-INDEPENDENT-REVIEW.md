@@ -55,7 +55,11 @@ Record Process 03 source hash, initiative IDs, hashes of artifacts 01–06, deci
 
 Set READY_FOR_FREEZE only when every finding is RESOLVED or explicitly ACCEPTED_BY_USER under the rules below; otherwise BLOCKERS_FOUND. In the Control File store round, open counts, latest review path/hash, reviewed source hashes and reviewed draft path/hash. Increment state_seq and verify read-back.
 
-## Step 4 — Remediation and user risk acceptance
+## Step 4 — Remediation, user decisions and residual-risk acceptance
+
+When a proposed flow-policy decision needs an outcome, the user must send exactly one command with a rationale: `APPROVE FLOW DECISION [DECISION-ID]`, `REJECT FLOW DECISION [DECISION-ID]`, or `DEFER FLOW DECISION [DECISION-ID]`. Append the matching status event to `09_DECISION_LOG.md`; never rewrite the proposal. Only APPROVED decisions may define current flow policy. A DEFERRED capability requires an explicit affected CAP ID and scope rationale.
+
+
 - BLOCKER/CRITICAL must be fixed; they cannot be accepted.
 - MAJOR/MINOR must be fixed or accepted individually by the user.
 - To accept one MAJOR/MINOR finding, the user must send exactly `ACCEPT RESIDUAL RISK [FINDING-ID]` and provide a rationale in the same message.
