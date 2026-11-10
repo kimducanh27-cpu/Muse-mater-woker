@@ -29,7 +29,7 @@ Read the YAML frontmatter of the Process 03 Control File. Verify:
 6. Process 04 `initiative_id` and `source_process_03.initiative_id` equal Process 03 `initiative_id`.
 7. The frozen Product Definition is readable and contains an identifiable approved capability scope.
 
-If any check is missing, unreadable, contradictory or mismatched, set/retain `source_process_03.status = NOT_VERIFIED`, stop, and report the exact missing evidence. Never infer approval from chat, filenames, a prior agent claim or a user saying that a file has not changed.
+If any check is missing, unreadable, contradictory or mismatched, set/retain `source_process_03.status = NOT_VERIFIED`, stop, and report the exact missing evidence. Never infer approval from chat, filenames, a prior agent claim or a user saying that a file has not changed. Any later process consuming `APP_FLOW.md` must independently recompute its SHA-256 and compare it with Process 04 `gate_3.frozen_artifact.sha256` while confirming Gate 3 APPROVED and lifecycle FROZEN. Process 04 has no background file watcher: post-freeze drift is detected at the next tab entry or downstream read, not asynchronously.
 
 At every tab entry and immediately before each approval/freeze, re-read the source Control File and recompute the canonical Product Definition hash. If the Process 03 source changes, mark the handoff REOPENED, reopen all dependent Process 04 gates and set lifecycle to REVIEW_REQUIRED. Do not continue against a superseded definition.
 
@@ -108,7 +108,15 @@ Every `event_log` object MUST include `event_type`, `state_seq`, `timestamp_loca
 
 The Control File's `gate_1.approved_state_seq`, `gate_2.approved_state_seq` and `gate_3.approved_state_seq` must equal the sequence of their latest corresponding approval/freeze event. A gate may not be treated as approved/frozen from its status field alone. Never infer an approval event from `approved_command` or prose.
 
-If a schema-version-2 Control File already exists, do not silently fill missing event fields or sequence anchors. Stop with NOT_VERIFIED, preserve the original, and require a separately reviewed migration before resuming.
+If a schema-version-2 Control File already exists, do not silently fill missing event fields or sequence anchors. Stop with NOT_VERIFIED. Migration is permitted only after the user sends exactly `MIGRATE APP FLOW CONTROL V2 TO V3`:
+
+1. Stop all tabs. Copy the schema-v2 Control File and old Decision Log byte-for-byte into a clearly named migration archive; compute and record both archive hashes. Never overwrite either archive.
+2. Re-verify the frozen Process 03 source and Process 04 initiative ID. Create a schema-v3 Control File from the current template for the same initiative ID, with lifecycle `REVIEW_REQUIRED`, source re-verified, all three gates `PENDING`, no inherited approval sequence anchors, and an empty event log except a `SCHEMA_MIGRATED` event recording archived paths/hashes, old/new schema versions and exact user command.
+3. Initialize a new schema-v3 Decision Log with the immutable `Process: 04` and matching Initiative ID. Do not alter the archived v2 log. Re-enter each still-relevant legacy decision as a new PROPOSED entry referencing its legacy DEC ID and archive location; no legacy APPROVED/REJECTED/DEFERRED status automatically carries forward. Obtain a fresh exact user outcome for each decision and record each append/hash transaction.
+4. Re-verify existing 01–06 artifacts against the current templates and frozen Process 03 scope. Re-approve Gate 1 and Gate 2 using canonical events and sequence anchors; run a new independent review before any freeze. Do not carry forward any v2 gate approval or frozen claim.
+5. Read back the schema-v3 Control File, identity-bound Decision Log and every recorded hash. If any archive, identity, artifact or event cannot be verified, remain NOT_VERIFIED.
+
+The migration event type `SCHEMA_MIGRATED` must include `from_schema_version: 2`, `to_schema_version: 3`, archived Control File/Decision Log paths and hashes, and the exact user command.
 
 Exact commands:
 - Gate 1: `APPROVE TASK MODEL`
@@ -122,6 +130,7 @@ Exact commands:
 - Reject: `REJECT TASK MODEL` / `REJECT APP FLOW`
 - Change request: `REQUEST APP FLOW CHANGE [description]`
 - Abandon this initiative: `ABANDON APP FLOW`
+- Migrate a schema-v2 workspace only under the procedure above: `MIGRATE APP FLOW CONTROL V2 TO V3`
 
 A command must be sent explicitly by the user. Natural-language praise, "looks good", "continue", silence, or a freeze request does not substitute for any other command. `FREEZE APP FLOW` never implies acceptance of a finding or decision.
 
@@ -187,7 +196,7 @@ Work:
 - Map each capability to one or more user tasks; if a capability cannot be mapped, record it as DEFERRED only after an explicit user-approved decision. Do not silently omit a capability.
 - Identify user goals, entry points, triggers, preconditions, decision points, task sequence, alternate paths, interruption/recovery needs, completion criteria and observable outcomes.
 - Distinguish evidence, interpretation, assumption and unresolved question.
-- Record material flow-policy decisions in `09_DECISION_LOG.md` using its template; seek the exact decision approval command before treating a proposal as settled.
+- Record only GATE_1-scope decisions in `09_DECISION_LOG.md`. If a proposed decision affects navigation/screens/flow/state artifacts (GATE_2/GATE_3), do not append it in Tab 01; return it to Tab 02. Classify scope from the actual decision and affected artifacts, not from the proposed label. Seek the exact decision approval command before treating a proposal as settled.
 
 Artifacts:
 - `product/app-flow/01_TASK_MODEL.md` from `templates/04-APP-FLOW/01-TASK-MODEL.md`
@@ -202,7 +211,7 @@ Gate 1 requires:
 - No unresolved decision that changes the task model is treated as approved.
 - Process 03 source remains VERIFIED.
 - The user sends exactly `APPROVE TASK MODEL`.
-- The Control File records exact hashes of 01 and 02, the current Decision Log SHA-256, command and timestamp; sets `gate_1.approved_state_seq` to the new committed `state_seq`; and appends `GATE_1_APPROVED` in the same update. Required event fields: `event_type: GATE_1_APPROVED`, `gate: GATE_1`, `exact_user_command: APPROVE TASK MODEL`, `state_seq`, `timestamp_local`, 01/02 approved-artifact path/hash pairs, `decision_log_sha256`, `changed_paths`, `relevant_hashes` and `reason`. Event sequence, `gate_1.approved_state_seq` and Control File `state_seq` must be identical. `approved_command` or `status: APPROVED` without this event is invalid.
+- The Control File records exact hashes of 01 and 02, sets `gate_1.decision_log_sha256` to the actual Decision Log SHA-256 at approval time, and sets `gate_1.approved_state_seq` to the new committed `state_seq`; and appends `GATE_1_APPROVED` in the same update. Required event fields: `event_type: GATE_1_APPROVED`, `gate: GATE_1`, `exact_user_command: APPROVE TASK MODEL`, `state_seq`, `timestamp_local`, 01/02 approved-artifact path/hash pairs, `decision_log_sha256`, `changed_paths`, `relevant_hashes` and `reason`. Event sequence, `gate_1.approved_state_seq` and Control File `state_seq` must be identical. `approved_command` or `status: APPROVED` without this event is invalid.
 
 Stop after Gate 1. Do not start Tab 02 automatically.
 
@@ -328,7 +337,7 @@ If the user sends `ABANDON APP FLOW`, record command and rationale, set lifecycl
 | 07_FLOW_REVIEW.md or 08_APP_FLOW_DRAFT.md | Gate 3 REOPENED; new review round required |
 | 09_DECISION_LOG.md before Gate 2 approval | Reopen earliest independently verified affected gate and all downstream gates: GATE_1 → 1–3; GATE_2 → 2–3; GATE_3 → 3 |
 | Any 09_DECISION_LOG.md byte change after Gate 2 approval | Always reopen Gates 2–3 because Gate 2 binds the whole file; additionally reopen Gate 1 when independent scope classification is GATE_1 |
-| APP_FLOW.md after freeze | Gate 3 REOPENED; lifecycle REVIEW_REQUIRED; downstream use prohibited |
+| APP_FLOW.md after freeze | Gate 3 REOPENED; lifecycle REVIEW_REQUIRED; downstream use prohibited; every downstream reader must independently rehash before use |
 
 Reopening Gate 1 also reopens Gates 2 and 3. Reopening Gate 2 also reopens Gate 3. Every invalidation appends timestamp, state_seq, changed paths, previous/new hashes, affected gates and reason. Never silently overwrite an approval.
 
