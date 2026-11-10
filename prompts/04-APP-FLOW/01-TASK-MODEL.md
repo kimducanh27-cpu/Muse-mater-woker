@@ -38,11 +38,12 @@ Use the templates as structural contracts. Preserve every required heading, tabl
 
 ## Decision Log integrity baseline
 
+Use the canonical append-only proposal/status-event formats in `templates/04-APP-FLOW/10-DECISION-LOG.md`. A proposal gets a unique `Proposal Event ID: DLE-<NNNN>` and immutable `Status at proposal: PROPOSED`. A user outcome is a separate status event; never edit the original proposal.
 After initializing the Decision Log and after every appended proposal or user outcome:
 1. Write the log, read it back, and compute its actual SHA-256.
 2. Update `decision_log.latest_sha256` in `product/app-flow/00_APP_FLOW_CONTROL.md` to that verified hash.
-3. Append a `DECISION_LOG_UPDATED` event with `event_type`, `decision_id` (or NOT_APPLICABLE), `decision_status_after_update` (or NOT_APPLICABLE), `affected_gate: GATE_1`, `path`, `resulting_sha256`, timestamp and the new committed `state_seq` (previous value + 1). The event sequence must equal the Control File's new committed sequence.
-4. Read the Control File back, and verify the hash, event and committed sequence. Do not record the stale pre-update sequence in the event.
+3. Append exactly one `DECISION_LOG_UPDATED` event with `decision_id`, `decision_log_event_id`, `decision_event_kind`, `decision_status_before_update`, `decision_status_after_update`, `affected_gate: GATE_1`, `path`, `resulting_sha256`, timestamp and the new committed `state_seq` (previous value + 1). For a proposal use kind `PROPOSAL_CREATED`, before `NOT_APPLICABLE`, after `PROPOSED`; for a user outcome use `STATUS_CHANGED` and the exact before/after statuses. For initialization use event ID/kind `INITIALIZATION` and NOT_APPLICABLE decision fields. The event sequence must equal the Control File's new committed sequence.
+4. Read the Control File back, and verify the hash, event, one-to-one Decision Log event ID pairing and committed sequence. Do not record the stale pre-update sequence in the event.
 
 If the Decision Log write/read-back succeeds but the Control File baseline/event update fails or is ambiguous, stop immediately and do not append the same proposal/outcome again. Follow the Skill's bounded recovery procedure only. Use `RECOVER DECISION LOG [DECISION-ID]` only when the actual log hash exactly matches one already-persisted, valid `DECISION_LOG_UPDATED` event for that decision; otherwise restore a trusted copy matching the old baseline or remain NOT_VERIFIED. Never adopt an unexplained hash or synthesize a missing event.
 
@@ -56,7 +57,7 @@ Read the complete approved capability scope from the frozen Process 03 Product D
 Do not omit a capability because no task was immediately obvious. Do not invent a capability to fill a gap. Show both directions: every task maps to one or more approved capabilities; every approved capability is covered or explicitly deferred with an approved decision.
 
 ## Decision commands
-Tab 01 is the owning writer only for GATE_1-scope decisions: changes to 01/02, actors/tasks, approved capability interpretation or capability-to-task coverage. Derive the scope from the decision text and affected artifact IDs. If a decision is GATE_2/GATE_3 or mixed beyond Tab 01 ownership, do not append it here; return it to Tab 02. For a GATE_1 decision, ask the user to issue exactly one command with a rationale: `APPROVE FLOW DECISION [DECISION-ID]`, `REJECT FLOW DECISION [DECISION-ID]`, or `DEFER FLOW DECISION [DECISION-ID]`. Append the outcome to `09_DECISION_LOG.md`; only APPROVED decisions may define the task model or justify a capability deferral.
+Tab 01 is the owning writer only for GATE_1-scope decisions: changes to 01/02, actors/tasks, approved capability interpretation or capability-to-task coverage. Derive the scope from the decision text and affected artifact IDs. If a decision is GATE_2/GATE_3 or mixed beyond Tab 01 ownership, do not append it here; return it to Tab 02. For a GATE_1 decision, ask the user to issue exactly one command with a rationale: `APPROVE FLOW DECISION [DECISION-ID]`, `REJECT FLOW DECISION [DECISION-ID]`, or `DEFER FLOW DECISION [DECISION-ID]`. Append a separate canonical status event to `09_DECISION_LOG.md` using the template; never edit the proposal block. Link its unique DLE event ID to exactly one `DECISION_LOG_UPDATED` Control File event and verify the status chain before using it. Only a current, verified APPROVED decision may define the task model or justify a capability deferral.
 
 ## Gate 1 checks
 Before asking for approval:
