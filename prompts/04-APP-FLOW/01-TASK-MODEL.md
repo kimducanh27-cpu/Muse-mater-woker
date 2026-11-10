@@ -44,6 +44,8 @@ After initializing the Decision Log and after every appended proposal or user ou
 3. Append a `DECISION_LOG_UPDATED` event with `event_type`, `decision_id` (or NOT_APPLICABLE), `decision_status_after_update` (or NOT_APPLICABLE), `affected_gate: GATE_1`, `path`, `resulting_sha256`, timestamp and the new committed `state_seq` (previous value + 1). The event sequence must equal the Control File's new committed sequence.
 4. Read the Control File back, and verify the hash, event and committed sequence. Do not record the stale pre-update sequence in the event.
 
+If the Decision Log write/read-back succeeds but the Control File baseline/event update fails or is ambiguous, stop immediately and do not append the same proposal/outcome again. Follow the Skill's bounded recovery procedure only. Use `RECOVER DECISION LOG [DECISION-ID]` only when the actual log hash exactly matches one already-persisted, valid `DECISION_LOG_UPDATED` event for that decision; otherwise restore a trusted copy matching the old baseline or remain NOT_VERIFIED. Never adopt an unexplained hash or synthesize a missing event.
+
 Gate 1 cannot be requested while the Decision Log is missing, unreadable, has a mismatched initiative identity, unhashed, or its actual SHA-256 differs from the non-null `decision_log.latest_sha256`. Independently verify each decision's `affected_gate` from its artifacts and semantic scope; any GATE_1 policy/mapping decision labeled otherwise blocks approval. Do not treat an unresolved decision that changes the task model as settled.
 
 ## Mandatory capability completeness
