@@ -119,7 +119,7 @@ Append objects to `event_log`; never delete or rewrite prior events. Record appr
 | `GATE_3_FROZEN` | `gate: GATE_3`, exact command `FREEZE APP FLOW`, `draft_sha256`, `frozen_artifact_path`, `frozen_artifact_sha256`, `frozen_version` |
 | `INVALIDATED` | `reopened_gates`, `affected_gate` when known, `expected_hashes`, `observed_hashes` and reason |
 | `DECISION_LOG_RECOVERED` | `decision_id`, `recovered_from_event_seq`, `resulting_sha256`, `affected_gate`, `reopened_gates` |
-| `SCHEMA_MIGRATED` | `from_schema_version: 2`, `to_schema_version: 3`, archived Control File/Decision Log paths and hashes, exact user command |
+| `SCHEMA_MIGRATED` | `from_schema_version: 2`, `to_schema_version: 3`, `archive_directory`, `archive_manifest_path`, `archive_manifest_sha256`, archived Control File/Decision Log paths and hashes, exact user command |
 | `REVIEW_ROUND_RECORDED` | review round, review path/hash, draft path/hash and verdict/status |
 | `RESIDUAL_RISK_ACCEPTED` | finding ID, severity, exact user command, rationale and acceptance timestamp |
 
