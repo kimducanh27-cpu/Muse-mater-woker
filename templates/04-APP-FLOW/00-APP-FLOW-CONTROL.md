@@ -96,7 +96,7 @@ The authoritative comparison target is Process 03 `gate_3.frozen_artifact.sha256
 
 ## Gate rules
 
-- Gate 1 binds exact SHA-256 values for `01_TASK_MODEL.md` and `02_FLOW_ARCHITECTURE.md`. It requires source status VERIFIED, complete template structure, full capability coverage or user-approved deferral, and no unresolved policy decision being treated as settled.
+- Gate 1 binds exact SHA-256 values for `01_TASK_MODEL.md` and `02_FLOW_ARCHITECTURE.md`. It requires source status VERIFIED, complete template structure, full capability coverage or user-approved deferral, no unresolved policy decision being treated as settled, and a readable Decision Log whose actual SHA-256 matches non-null `decision_log.latest_sha256`.
 - Gate 2 binds exact SHA-256 values for `03_NAVIGATION_MODEL.md`, `04_SCREEN_INVENTORY.md`, `05_FLOW_SPECIFICATION.md`, `06_STATE_AND_EXCEPTION_MATRIX.md`, and current `09_DECISION_LOG.md`. It requires Gate 1 and every Gate 1 artifact hash to remain valid.
 - Gate 3 requires Gate 1 and Gate 2 APPROVED with matching hashes; at least one append-only review round; latest review and draft hashes matching the Control File; zero open BLOCKER, CRITICAL, MAJOR and MINOR findings; user-originated acceptance records for accepted risks; decision log reviewed; and the exact reviewed draft frozen by status-line substitution only.
 - No missing review is equivalent to a clean review. `review.round` must be at least 1 and the latest review artifact must exist and hash-match.
@@ -104,7 +104,7 @@ The authoritative comparison target is Process 03 `gate_3.frozen_artifact.sha256
 
 ## Append-only event and review records
 
-Append objects to `event_log`; never delete or rewrite prior events. Record approvals, rejections, revision requests, invalidations, decision approvals, risk acceptances, review rounds, freezes, archives and abandonment. Each event should include local timestamp, state_seq, event type, exact user command (or NOT_APPLICABLE), reason, changed paths and relevant hashes.
+Append objects to `event_log`; never delete or rewrite prior events. Record approvals, rejections, revision requests, invalidations, decision-log updates, decision outcomes, risk acceptances, review rounds, freezes, archives and abandonment. Each event should include local timestamp, state_seq, event type, exact user command (or NOT_APPLICABLE), reason, changed paths and relevant hashes. For decision-log events also include decision_id (or NOT_APPLICABLE) and affected_gate. Use event state_seq values to establish whether a GATE_1 decision-log change occurred before or after the latest Gate 1 approval.
 
 The review history `07_FLOW_REVIEW.md` is append-only. Every round records source/artifact/draft hashes, verdict, status, finding counts and set/graph evidence.
 
@@ -134,6 +134,14 @@ If an artifact or Control File cannot be read, hashed or written, stop with NOT_
 ## Decision log
 
 `09_DECISION_LOG.md` is append-only. Each material flow-policy decision has a stable DEC ID, affected artifacts, affected gate, alternatives and rationale. The user records exactly one outcome using `APPROVE FLOW DECISION [DECISION-ID]`, `REJECT FLOW DECISION [DECISION-ID]`, or `DEFER FLOW DECISION [DECISION-ID]`, with a rationale. Append a status event; never rewrite the proposal. Only APPROVED decisions may define current flow policy. REJECTED and DEFERRED decisions remain visible and must not be treated as approved rules.
+
+### Decision Log hash baseline
+
+`decision_log.latest_sha256` stores the last verified SHA-256 of the current `09_DECISION_LOG.md` bytes. Populate it after initial file creation and refresh it after every append/status event. Each refresh must follow a successful file write and read-back, then update the Control File as a single-writer transaction: append a `DECISION_LOG_UPDATED` event with `decision_id` (or NOT_APPLICABLE), `affected_gate`, path, resulting hash, timestamp and `state_seq`; increment `state_seq`; read the Control File back and verify both the event and hash. Gate 1 and Tab 02 require a non-null baseline and exact match with the actual file hash.
+
+Never overwrite the expected hash merely because a later read detects a mismatch. A missing/unreadable log, null baseline or hash mismatch makes the decision state NOT_VERIFIED. Conservatively reopen Gates 1–3, invalidate the review, set lifecycle REVIEW_REQUIRED, append an invalidation event with expected/observed hashes, and stop until the discrepancy is reconciled.
+
+For Tab 02 entry, compare event sequence numbers: no `DECISION_LOG_UPDATED` event with `affected_gate: GATE_1` may occur after the latest `APPROVE TASK MODEL` event. If the relevant events are missing or cannot be ordered, fail closed and report NOT_VERIFIED. A `GATE_1` decision change reopens Gates 1–3; a `GATE_2` decision change reopens Gates 2–3; a `GATE_3` decision change reopens Gate 3. Event log rows must retain the decision ID, affected gate and state sequence so this ordering can be checked.
 
 ## Residual-risk acceptance
 
