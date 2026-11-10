@@ -121,7 +121,7 @@ Only MAJOR or MINOR findings may be accepted. BLOCKER and CRITICAL findings cann
 Append a matching user-decision addendum to the review history. Never accept on the user's behalf, infer acceptance, or accept multiple findings from a vague blanket statement.
 
 ### Decision log
-The append-only `09_DECISION_LOG.md` records material product/flow-policy decisions, alternatives, rationale, affected artifacts and affected gate. A proposal is not an approved decision. The user must send `APPROVE FLOW DECISION [DECISION-ID]`; then append a new status event for that ID. Never edit or delete an earlier decision row. Any resulting artifact change must follow the invalidation matrix.
+The append-only `09_DECISION_LOG.md` records material product/flow-policy decisions, alternatives, rationale, affected artifacts and affected gate. A proposal is not a decided policy. The user must send exactly one of `APPROVE FLOW DECISION [DECISION-ID]`, `REJECT FLOW DECISION [DECISION-ID]`, or `DEFER FLOW DECISION [DECISION-ID]` and provide a rationale in the same message. Append a new status event for that DEC ID with the matching status APPROVED, REJECTED or DEFERRED; never edit or delete the original proposal. Only APPROVED decisions may define current flow policy. A DEFERRED decision may justify omitting a capability from the current flow only when the affected capability and scope impact are explicit. Any resulting artifact change must follow the invalidation matrix.
 
 ## Three-tab workflow
 No automatic handoff. Each tab runs in a fresh conversation in the same workspace and reconstructs state from files, not chat history. The user manually opens the next tab only after the previous gate's exact approval and read-back succeed.
