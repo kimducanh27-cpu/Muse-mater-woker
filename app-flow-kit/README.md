@@ -58,6 +58,8 @@ Additional exact commands:
 
 Tab 03 must not freeze automatically after a GO verdict. The user must issue the separate exact freeze command. Tab 03 is read-only on Decision Log 09; decision outcomes must return to their owning writer tab. Gate approvals/freeze require canonical event types and matching `approved_state_seq` values. No automatic handoff; each tab runs in a fresh conversation and reads persisted workspace artifacts.
 
+Existing schema-v2 initiative workspaces cannot be silently reused. Migration to schema v3 requires the exact user command `MIGRATE APP FLOW CONTROL V2 TO V3`, archives the old Control File and Decision Log, reopens all gates and requires fresh approvals; see the governing Skill for the full migration sequence.
+
 ## Decision Log integrity
 
 The Decision Log identity header must match the initiative ID in both Process 03 and Process 04 Control Files. Gate 1/2/3 approvals are append-only typed events (`GATE_1_APPROVED`, `GATE_2_APPROVED`, `GATE_3_FROZEN`) with required hashes and committed sequence numbers. Any Decision Log byte change after Gate 2 approval reopens Gates 2–3 because Gate 2 binds the whole file. See the governing Skill and Control template for classification and bounded recovery rules.
