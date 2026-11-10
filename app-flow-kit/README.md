@@ -5,23 +5,23 @@ Process 04 follows Product Definition. It translates the frozen product contract
 **It defines functional user journeys and navigation. It does not define visual UI or implementation.**
 
 ## Three independent Antigravity tabs
-1. **Tab 01 — User Tasks & Flow Architecture:** \`prompts/04-APP-FLOW/01-TASK-MODEL.md\`
-2. **Tab 02 — Navigation & Screen Flow Specification:** \`prompts/04-APP-FLOW/02-NAVIGATION-FLOW.md\`
-3. **Tab 03 — Independent Flow Review and authorized freeze:** \`prompts/04-APP-FLOW/03-INDEPENDENT-REVIEW.md\`
+1. **Tab 01 — User Tasks & Flow Architecture:** `prompts/04-APP-FLOW/01-TASK-MODEL.md`
+2. **Tab 02 — Navigation & Screen Flow Specification:** `prompts/04-APP-FLOW/02-NAVIGATION-FLOW.md`
+3. **Tab 03 — Independent Flow Review and authorized freeze:** `prompts/04-APP-FLOW/03-INDEPENDENT-REVIEW.md`
 
-Active Skill: \`.agents/skills/app-flow/SKILL.md\`
+Active Skill: `.agents/skills/app-flow/SKILL.md`
 
-All paths are repository-root-relative. Do not confuse this Process 04 review prompt with \`prompts/03-TAB-INDEPENDENT-REVIEW.md\` or another process's similarly named prompt.
+All paths are repository-root-relative. Do not confuse this Process 04 review prompt with `prompts/03-TAB-INDEPENDENT-REVIEW.md` or another process's similarly named prompt.
 
 ## Input contract
 Require:
-- \`product/definition/00_PRODUCT_DEFINITION_CONTROL.md\`
-- \`product/definition/PRODUCT_DEFINITION.md\`
+- `product/definition/00_PRODUCT_DEFINITION_CONTROL.md`
+- `product/definition/PRODUCT_DEFINITION.md`
 
-Process 03 Gate 3 must be APPROVED, lifecycle_status FROZEN, initiative IDs must match, and actual Product Definition SHA-256 must equal Process 03 Control File \`gate_3.frozen_artifact.sha256\`. A missing, stale or unreadable source blocks entry.
+Process 03 Gate 3 must be APPROVED, lifecycle_status FROZEN, initiative IDs must match, and actual Product Definition SHA-256 must equal Process 03 Control File `gate_3.frozen_artifact.sha256`. A missing, stale or unreadable source blocks entry.
 
 ## Outputs
-Canonical state: \`product/app-flow/00_APP_FLOW_CONTROL.md\`
+Canonical state: `product/app-flow/00_APP_FLOW_CONTROL.md`
 
 Working artifacts:
 - 01_TASK_MODEL.md
@@ -34,23 +34,25 @@ Working artifacts:
 - 08_APP_FLOW_DRAFT.md (complete reviewed candidate, not a summary)
 - 09_DECISION_LOG.md (append-only, user-approved decisions)
 
-Frozen output: \`product/app-flow/APP_FLOW.md\`  
-Frozen-output schema: \`templates/04-APP-FLOW/09-APP-FLOW.md\`  
-Decision-log template: \`templates/04-APP-FLOW/10-DECISION-LOG.md\`
+Frozen output: `product/app-flow/APP_FLOW.md`  
+Frozen-output schema: `templates/04-APP-FLOW/09-APP-FLOW.md`  
+Decision-log template: `templates/04-APP-FLOW/10-DECISION-LOG.md`
 
 ## Human gates
 | Tab | Gate | Exact command |
 |---|---|---|
-| 01 | Task model approved | \`APPROVE TASK MODEL\` |
-| 02 | App flow approved | \`APPROVE APP FLOW\` |
-| 03 | Review completed; freeze only after all preconditions pass | \`FREEZE APP FLOW\` |
+| 01 | Task model approved | `APPROVE TASK MODEL` |
+| 02 | App flow approved | `APPROVE APP FLOW` |
+| 03 | Review completed; freeze only after all preconditions pass | `FREEZE APP FLOW` |
 
 Additional exact commands:
-- \`APPROVE FLOW DECISION [DECISION-ID]\`
-- \`ACCEPT RESIDUAL RISK [FINDING-ID]\` (MAJOR/MINOR only, with rationale)
-- \`REJECT TASK MODEL\` / \`REJECT APP FLOW\`
-- \`REQUEST APP FLOW CHANGE [description]\`
-- \`ABANDON APP FLOW\`
+- `APPROVE FLOW DECISION [DECISION-ID]`
+- `REJECT FLOW DECISION [DECISION-ID]`
+- `DEFER FLOW DECISION [DECISION-ID]`
+- `ACCEPT RESIDUAL RISK [FINDING-ID]` (MAJOR/MINOR only, with rationale)
+- `REJECT TASK MODEL` / `REJECT APP FLOW`
+- `REQUEST APP FLOW CHANGE [description]`
+- `ABANDON APP FLOW`
 
 Tab 03 must not freeze automatically after a GO verdict. The user must issue the separate exact freeze command. No automatic handoff; each tab runs in a fresh conversation and reads persisted workspace artifacts.
 
