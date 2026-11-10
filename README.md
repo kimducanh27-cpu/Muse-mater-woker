@@ -45,10 +45,13 @@ Translates the frozen Product Definition into user tasks, flow architecture, nav
 Three tabs:
 1. User Tasks & Flow Architecture
 2. Navigation & Screen Flow Specification
-3. Independent Flow Review
+3. Independent Flow Review and authorized freeze (only after the separate exact command \`FREEZE APP FLOW\`).
 
 Canonical state: product/app-flow/00_APP_FLOW_CONTROL.md.
+Working artifacts: 01–09, including append-only review history and decision log.
 Frozen output: product/app-flow/APP_FLOW.md.
+
+The frozen output is copied from the complete reviewed draft; freeze changes only its status line. The canonical SHA-256 is stored in the Control File. Re-freeze archives the previous output as APP_FLOW.v<N>.md.
 
 Process 04 defines functional user journeys and navigation. It does not create wireframes, visual layouts, design systems, UI/UX, APIs, database architecture or code.
 
@@ -58,7 +61,7 @@ Kit: app-flow-kit/README.md.
 - Process 01 → Process 02: approved Seed.
 - Process 02 → Process 03: eligible Discovery decision under Process 03's explicit handoff rules.
 - Process 03 → Process 04: frozen Product Definition with Gate 3 APPROVED and matching SHA-256.
-- Process 04 → Process 05: frozen App Flow with approved gates and matching hashes. Process 05 must not silently change product scope or functional flow.
+- Process 04 → a later product-design process: frozen App Flow with Gate 1, Gate 2 and Gate 3 approved, lifecycle FROZEN and matching canonical hash. A downstream process must verify the Process 04 Control File and frozen artifact hash; filename/status text alone is not proof of freeze.
 
 ## Antigravity setup
 1. Place this repository at the project workspace root.

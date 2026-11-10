@@ -7,6 +7,8 @@ For every FLOW-ID:
 - Actor:
 - User goal:
 - Trigger:
+- Entry node:
+- Terminal node:
 - Preconditions:
 - Capability IDs:
 
@@ -22,4 +24,13 @@ For every FLOW-ID:
 - Success condition:
 - Failure/abandon condition:
 - Data or progress preservation expectation:
-- Open questions:
+- Observable user outcome:
+- Open questions / approved Decision IDs:
+
+## Flow graph validation
+- Entry node exists:
+- Terminal node exists:
+- All referenced nodes exist:
+- Reachability traversal evidence:
+- Unreachable nodes / orphan branches:
+- Result: PASS / FAIL / NOT_VERIFIED

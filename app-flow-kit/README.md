@@ -1,37 +1,68 @@
 # Process 04 — App Flow Kit
 
-Process 04 follows Product Definition and precedes UX/UI design. It translates the frozen product contract into user tasks, navigation, functional screen nodes, transitions, states and recovery paths.
+Process 04 follows Product Definition. It translates the frozen product contract into user tasks, navigation, functional screen nodes, transitions, states and recovery paths.
 
-**It defines how users move through the product functionally. It does not define visual UI or implementation.**
+**It defines functional user journeys and navigation. It does not define visual UI or implementation.**
 
 ## Three independent Antigravity tabs
-1. User Tasks & Flow Architecture — prompts/04-APP-FLOW/01-TASK-MODEL.md
-2. Navigation & Screen Flow Specification — prompts/04-APP-FLOW/02-NAVIGATION-FLOW.md
-3. Independent Flow Review — prompts/04-APP-FLOW/03-INDEPENDENT-REVIEW.md
+1. **Tab 01 — User Tasks & Flow Architecture:** \`prompts/04-APP-FLOW/01-TASK-MODEL.md\`
+2. **Tab 02 — Navigation & Screen Flow Specification:** \`prompts/04-APP-FLOW/02-NAVIGATION-FLOW.md\`
+3. **Tab 03 — Independent Flow Review and authorized freeze:** \`prompts/04-APP-FLOW/03-INDEPENDENT-REVIEW.md\`
 
-Active Skill: .agents/skills/app-flow/SKILL.md
+Active Skill: \`.agents/skills/app-flow/SKILL.md\`
+
+All paths are repository-root-relative. Do not confuse this Process 04 review prompt with \`prompts/03-TAB-INDEPENDENT-REVIEW.md\` or another process's similarly named prompt.
 
 ## Input contract
-Require product/definition/00_PRODUCT_DEFINITION_CONTROL.md and product/definition/PRODUCT_DEFINITION.md. Gate 3 must be APPROVED, lifecycle_status FROZEN and the Product Definition SHA-256 must match. If not verifiable, stop.
+Require:
+- \`product/definition/00_PRODUCT_DEFINITION_CONTROL.md\`
+- \`product/definition/PRODUCT_DEFINITION.md\`
+
+Process 03 Gate 3 must be APPROVED, lifecycle_status FROZEN, initiative IDs must match, and actual Product Definition SHA-256 must equal Process 03 Control File \`gate_3.frozen_artifact.sha256\`. A missing, stale or unreadable source blocks entry.
 
 ## Outputs
-Canonical state: product/app-flow/00_APP_FLOW_CONTROL.md
-Working artifacts: 01_TASK_MODEL.md through 08_APP_FLOW_DRAFT.md
-Frozen output: product/app-flow/APP_FLOW.md (based on templates/04-APP-FLOW/09-APP-FLOW.md)
+Canonical state: \`product/app-flow/00_APP_FLOW_CONTROL.md\`
+
+Working artifacts:
+- 01_TASK_MODEL.md
+- 02_FLOW_ARCHITECTURE.md
+- 03_NAVIGATION_MODEL.md
+- 04_SCREEN_INVENTORY.md
+- 05_FLOW_SPECIFICATION.md
+- 06_STATE_AND_EXCEPTION_MATRIX.md
+- 07_FLOW_REVIEW.md (append-only rounds)
+- 08_APP_FLOW_DRAFT.md (complete reviewed candidate, not a summary)
+- 09_DECISION_LOG.md (append-only, user-approved decisions)
+
+Frozen output: \`product/app-flow/APP_FLOW.md\`  
+Frozen-output schema: \`templates/04-APP-FLOW/09-APP-FLOW.md\`  
+Decision-log template: \`templates/04-APP-FLOW/10-DECISION-LOG.md\`
 
 ## Human gates
 | Tab | Gate | Exact command |
 |---|---|---|
-| 01 | Task model approved | APPROVE TASK MODEL |
-| 02 | App flow approved | APPROVE APP FLOW |
-| 03 | Freeze | FREEZE APP FLOW |
+| 01 | Task model approved | \`APPROVE TASK MODEL\` |
+| 02 | App flow approved | \`APPROVE APP FLOW\` |
+| 03 | Review completed; freeze only after all preconditions pass | \`FREEZE APP FLOW\` |
 
-No automatic handoff. Each tab runs in a fresh conversation and reads persisted workspace artifacts.
+Additional exact commands:
+- \`APPROVE FLOW DECISION [DECISION-ID]\`
+- \`ACCEPT RESIDUAL RISK [FINDING-ID]\` (MAJOR/MINOR only, with rationale)
+- \`REJECT TASK MODEL\` / \`REJECT APP FLOW\`
+- \`REQUEST APP FLOW CHANGE [description]\`
+- \`ABANDON APP FLOW\`
+
+Tab 03 must not freeze automatically after a GO verdict. The user must issue the separate exact freeze command. No automatic handoff; each tab runs in a fresh conversation and reads persisted workspace artifacts.
+
+## Freeze integrity
+The reviewed draft 08 is the complete canonical content candidate. Freeze copies it byte-for-byte to APP_FLOW.md and changes only the exact status line from REVIEWED CANDIDATE — NOT FROZEN to FROZEN. It does not rebuild or re-summarize content.
+
+Before freeze, require Gate 1 and Gate 2 hashes, at least one append-only review round, matching review/draft hashes, zero open findings and user-originated acceptance records for accepted MAJOR/MINOR risks. The final SHA-256 is stored in the Control File, not inside APP_FLOW.md (avoids a self-referential hash).
+
+Before re-freezing, archive the prior verified canonical output as APP_FLOW.v<N>.md. If canonical write succeeds but Control File write/read-back fails, report INCOMPLETE — NOT FROZEN. An orphan APP_FLOW.md is not eligible downstream.
 
 ## Boundaries
 Do not create wireframes, visual layouts, colors, typography, design systems, polished UI mockups, APIs, database schemas, implementation plans or code. Screen inventory is functional, not visual. Any new capability or scope expansion returns to Process 03 for a product change decision.
 
-## Freeze requirements
-Source and gate hashes must match; review must have no unresolved BLOCKER/CRITICAL findings; MAJOR/MINOR findings must be fixed or explicitly accepted by the user; graph and traceability checks must pass; frozen output must be hashed and read back.
-
-Live Antigravity runtime behavior is not verified by this repository-only setup. Run the verification checklist in the actual workspace before production use.
+## Verification status
+This checklist distinguishes repository/paper verification from live Antigravity runtime verification. Do not label Process 04 production-ready until live tests in the actual Windows workspace have evidence.

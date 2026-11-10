@@ -18,9 +18,13 @@
 | Task ID | Condition | Expected user/system outcome | Recovery/resume | Open question |
 |---|---|---|---|---|
 
-## Traceability
-| Product outcome | Capability ID | Task IDs | Coverage |
-|---|---|---|---|
+## Bidirectional capability coverage
+Enumerate every approved CAP ID from the frozen Product Definition. No approved capability may disappear from this matrix.
+
+| Capability ID | Product outcome | Task IDs | Coverage: COVERED / DEFERRED_BY_USER / MISSING | Approved Decision ID / rationale |
+|---|---|---|---|---|
+
+A capability is DEFERRED_BY_USER only when an explicit user-approved decision exists in 09_DECISION_LOG.md. MISSING blocks Gate 1.
 
 ## Assumptions and open questions
 | ID | Statement | Evidence vs inference | Impact if wrong | Owner/decision needed |
