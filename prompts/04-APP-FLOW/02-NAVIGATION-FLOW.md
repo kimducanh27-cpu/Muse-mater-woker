@@ -10,11 +10,11 @@ In a fresh conversation:
 2. Verify Gate 3 APPROVED, lifecycle FROZEN, initiative identity and output path.
 3. Compute the actual Product Definition SHA-256 and compare it with Process 03 `gate_3.frozen_artifact.sha256`, not only Process 04's cached hash.
 4. Verify Process 04 source status VERIFIED and both initiative IDs match.
-5. Verify Gate 1 = APPROVED and recompute hashes of every path in `gate_1.approved_artifacts`.
-6. Read `product/app-flow/09_DECISION_LOG.md` and the Process 04 Control File. Require the log to be readable, `decision_log.latest_sha256` to be non-null, and the actual SHA-256 to match that recorded value exactly.
-7. Inspect Decision Log entries and Control File `event_log`. Confirm that every decision affecting `GATE_1` was settled before the latest `APPROVE TASK MODEL` event, and that no later `DECISION_LOG_UPDATED` event with `affected_gate: GATE_1` exists. Compare event `state_seq` values; each event must carry the new committed sequence (previous value + 1), and the latest Gate 1 approval event must be unambiguously identifiable. If approval/update events are missing or cannot be ordered reliably, stop with NOT_VERIFIED.
+5. Verify Gate 1 = APPROVED. Require a `GATE_1_APPROVED` event with `gate: GATE_1`, `exact_user_command: APPROVE TASK MODEL` and maximum applicable `state_seq`; require `gate_1.approved_state_seq` to equal that event sequence. Recompute hashes of every path in `gate_1.approved_artifacts`.
+6. Read `product/app-flow/09_DECISION_LOG.md` and the Process 04 Control File. Require the log's immutable `Process: 04` / `Initiative ID` header to match both Control Files, require `decision_log.latest_sha256` to be non-null, and require actual SHA-256 to match it exactly.
+7. Inspect all Decision Log entries and Control File `event_log`. Independently classify each decision's scope from its affected artifacts and text. Confirm that no GATE_1-affecting update occurred after the latest `GATE_1_APPROVED` event. Compare event sequences; require canonical event types/fields, `state_seq` equal to the committed sequence, and no ambiguity. If the approval/update event is missing, malformed, mislabeled or unorderable, stop with NOT_VERIFIED.
 8. Only APPROVED decisions may define current flow policy. REJECTED, DEFERRED and PROPOSED entries are not approved rules. An unresolved PROPOSED decision affecting Gate 1 that changes the approved task model must return to Tab 01/user resolution; it may remain an open question only when it does not determine that model.
-9. If the Decision Log is missing/unreadable, `latest_sha256` is null, the hash mismatches, or a GATE_1 decision changed after Gate 1 approval, conservatively reopen Gates 1–3, invalidate the review, set lifecycle REVIEW_REQUIRED, append an invalidation event with expected/observed hash and affected decision/gate where known, read the Control File back, and stop. Never overwrite `latest_sha256` with the observed hash to make the check pass.
+9. If the Decision Log is missing/unreadable, has a wrong/missing initiative identity, `latest_sha256` is null, the hash mismatches, a decision is misclassified, or a GATE_1 decision changed after Gate 1 approval, conservatively reopen Gates 1–3, invalidate the review, set lifecycle REVIEW_REQUIRED, append canonical `INVALIDATED` with expected/observed hashes and `reopened_gates`, read the Control File back, and stop. Use only the bounded recovery procedure in the Skill; never overwrite `latest_sha256` to make an unexplained change pass.
 10. If any source or Gate 1 artifact is missing, stale, unreadable or mismatched, reopen affected and downstream gates, append an invalidation event, set lifecycle REVIEW_REQUIRED, and stop. Do not continue from chat history.
 
 ## Work
@@ -26,7 +26,7 @@ In a fresh conversation:
 6. Build the state/exception matrix. Include only applicable states, but justify every exclusion.
 7. Identify dead ends, loops, duplicate paths, unreachable nodes, orphan screens/transitions and ambiguous completion.
 8. Maintain traceability from each task, flow, node, screen and transition to approved capability IDs and source sections.
-9. Record material policy decisions in the append-only decision log. Use exactly one user decision command: `APPROVE FLOW DECISION [DECISION-ID]`, `REJECT FLOW DECISION [DECISION-ID]`, or `DEFER FLOW DECISION [DECISION-ID]`, with a rationale. Only APPROVED decisions define current flow policy; rejected and deferred proposals must remain visible but must not be treated as approved.
+9. Record material GATE_2/GATE_3 policy decisions in the append-only Decision Log. Derive `affected_gate` from scope and artifact IDs: 01/02 or capability-to-task policy = GATE_1; only 03–06 = GATE_2; only 07/08 = GATE_3; mixed scope takes the earliest gate. Any Process 03 scope/capability change returns to Process 03. Tab 02 must not approve or append a GATE_1 decision; route it to Tab 01. After every proposal or status append, perform the complete write → read-back → SHA-256 → Control File baseline + `DECISION_LOG_UPDATED` event transaction defined in the Skill, including `decision_status_after_update`, `resulting_sha256` and the same new committed `state_seq`. Use exactly one user decision command: `APPROVE FLOW DECISION [DECISION-ID]`, `REJECT FLOW DECISION [DECISION-ID]`, or `DEFER FLOW DECISION [DECISION-ID]`, with a rationale. Only APPROVED decisions define current flow policy; rejected and deferred proposals must remain visible but must not be treated as approved.
 10. Record assumptions and unresolved questions. Never silently make product-policy decisions or expand scope.
 
 ## Required templates and output paths
@@ -36,7 +36,7 @@ Use each template as a structural contract. Preserve every heading, required tab
 - `templates/04-APP-FLOW/04-SCREEN-INVENTORY.md` → `product/app-flow/04_SCREEN_INVENTORY.md`
 - `templates/04-APP-FLOW/05-FLOW-SPECIFICATION.md` → `product/app-flow/05_FLOW_SPECIFICATION.md`
 - `templates/04-APP-FLOW/06-STATE-AND-EXCEPTION-MATRIX.md` → `product/app-flow/06_STATE_AND_EXCEPTION_MATRIX.md`
-- Append decisions to `product/app-flow/09_DECISION_LOG.md` using `templates/04-APP-FLOW/10-DECISION-LOG.md`.
+- Append decisions to `product/app-flow/09_DECISION_LOG.md` using `templates/04-APP-FLOW/10-DECISION-LOG.md`; the immutable log identity header must already match the verified initiative ID. Never adopt another initiative's log.
 
 ## Mandatory cross-artifact validation
 Perform explicit set comparisons and show actual sets and differences:
@@ -55,6 +55,6 @@ Perform explicit set comparisons and show actual sets and differences:
 Report counts of tasks, capabilities, flows, nodes, screens, transitions, states and unresolved questions. Never claim graph validation unless you actually performed set/graph checks and show the evidence.
 
 ## Gate 2
-Gate 2 binds exact hashes of artifacts 03–06 and the current decision-log file. It also requires Gate 1 and all its hashes to remain valid. Before approval, show set-comparison outputs, reachability results, template conformance, open decisions and exact paths/hashes.
+Gate 2 binds exact hashes of artifacts 03–06 and the current entire Decision Log file. It also requires Gate 1 and all its hashes to remain valid. Before approval, show set-comparison outputs, reachability results, template conformance, open decisions and exact paths/hashes. In the same Control File update that sets Gate 2 APPROVED, set `gate_2.approved_state_seq`, set `gate_2.decision_log_sha256`, and append a distinct `GATE_2_APPROVED` event with `exact_user_command: APPROVE APP FLOW`, approved-artifact path/hash pairs for 03–06, and current Decision Log path/hash. Event sequence, gate sequence and committed `state_seq` must match exactly. Read back and verify before reporting success.
 
 Stop at Gate 2. Present trade-offs and strongest counterargument. Ask the user for `APPROVE APP FLOW` or revision. Do not start Tab 03 automatically. Save Gate 2 only after the exact user command; record hashes, command and timestamp, increment state_seq, read back and verify. If any check fails, report INCOMPLETE / NOT_VERIFIED.
