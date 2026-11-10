@@ -123,6 +123,16 @@ Append a matching user-decision addendum to the review history. Never accept on 
 ### Decision log
 The append-only `09_DECISION_LOG.md` records material product/flow-policy decisions, alternatives, rationale, affected artifacts and affected gate. A proposal is not a decided policy. The user must send exactly one of `APPROVE FLOW DECISION [DECISION-ID]`, `REJECT FLOW DECISION [DECISION-ID]`, or `DEFER FLOW DECISION [DECISION-ID]` and provide a rationale in the same message. Append a new status event for that DEC ID with the matching status APPROVED, REJECTED or DEFERRED; never edit or delete the original proposal. Only APPROVED decisions may define current flow policy. A DEFERRED decision may justify omitting a capability from the current flow only when the affected capability and scope impact are explicit. Any resulting artifact change must follow the invalidation matrix.
 
+#### Decision Log hash tracking
+
+`decision_log.latest_sha256` is the last verified SHA-256 of the current bytes in `product/app-flow/09_DECISION_LOG.md`; it is not a value to be regenerated merely to make a mismatch disappear.
+
+- When the Decision Log is first initialized, compute its actual SHA-256 and record it in `decision_log.latest_sha256` before Gate 1 can be approved.
+- After every append or status event, write and read back the Decision Log, recompute its SHA-256, then update `decision_log.latest_sha256` in the same single-writer Control File transaction. Append a `DECISION_LOG_UPDATED` event with the decision ID (if applicable), `affected_gate`, path, resulting hash, timestamp and state sequence. Increment `state_seq`, read the Control File back and verify both the event and hash.
+- Do not update `latest_sha256` before the Decision Log write/read-back succeeds. If either file or the Control File cannot be verified, stop with NOT_VERIFIED; do not claim the hash baseline was refreshed.
+- A changed Decision Log reopens the earliest gate named by the appended decision's `affected_gate` and all downstream gates. A `GATE_1` change reopens Gates 1–3; a `GATE_2` change reopens Gates 2–3; a `GATE_3` change reopens Gate 3. Record the invalidation in the append-only event log.
+- At Tab 02 entry, compare the actual Decision Log hash with the non-null `decision_log.latest_sha256`. Never repair a mismatch by copying the observed hash into the Control File; a mismatch is an unverified, potentially out-of-band edit.
+
 ## Three-tab workflow
 No automatic handoff. Each tab runs in a fresh conversation in the same workspace and reconstructs state from files, not chat history. The user manually opens the next tab only after the previous gate's exact approval and read-back succeed.
 
@@ -148,6 +158,7 @@ Artifacts:
 
 Gate 1 requires:
 - All required template sections and columns are present and populated.
+- `09_DECISION_LOG.md` exists, is readable, has been hashed, and its actual SHA-256 equals the non-null `decision_log.latest_sha256` recorded in the Control File. The latest hash baseline and a `DECISION_LOG_UPDATED` event must be read back successfully.
 - Every approved capability is covered by at least one task or a user-approved DEFERRED decision.
 - Every task maps to one or more approved capability IDs.
 - No unresolved decision that changes the task model is treated as approved.
@@ -161,7 +172,11 @@ Stop after Gate 1. Do not start Tab 02 automatically.
 Entry in a fresh conversation:
 - Re-verify Process 03 control, canonical Product Definition hash and initiative ID.
 - Verify Gate 1 = APPROVED and recompute the exact hashes stored in `gate_1.approved_artifacts`.
-- If any source or Gate 1 artifact differs, reopen Gate 1 and downstream gates, append an invalidation event and stop.
+- Read `product/app-flow/09_DECISION_LOG.md` and the Process 04 Control File. Require the log to be readable, `decision_log.latest_sha256` to be non-null, and the actual log SHA-256 to match that recorded value exactly.
+- Inspect Decision Log entries and the append-only Control File `event_log`. Confirm that every decision affecting Gate 1 was settled before the latest `APPROVE TASK MODEL` event, and that no later `DECISION_LOG_UPDATED` event with `affected_gate: GATE_1` exists. Compare event `state_seq` values; if the relevant approval/update events are missing or cannot be ordered reliably, report NOT_VERIFIED.
+- Treat only APPROVED decisions as active flow policy. REJECTED, DEFERRED and PROPOSED entries must not be used as approved rules. A PROPOSED or unresolved GATE_1 decision that changes the task model blocks Tab 02 and must return to Tab 01/user resolution; preserve it as an open question only when it does not determine the approved task model.
+- If the Decision Log is missing/unreadable, `latest_sha256` is null, the hashes mismatch, or a GATE_1 decision changed after Gate 1 approval, conservatively reopen Gates 1–3, invalidate the review, set lifecycle to REVIEW_REQUIRED, append an invalidation event with expected/observed hash and affected decision/gate where known, read back the Control File, and stop. Do not refresh the expected hash to bless the changed file.
+- If any Process 03 source or Gate 1 artifact differs, reopen the affected and downstream gates, append an invalidation event and stop.
 
 Work:
 - Define stable FLOW, NODE, SCREEN and TRANSITION IDs.
