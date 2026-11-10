@@ -22,7 +22,7 @@ This file is append-only. Never edit or delete an earlier decision entry. To cha
 - Evidence/source:
 - Supersedes / superseded by:
 
-A proposal remains PROPOSED until the user sends exact command `APPROVE FLOW DECISION [DECISION-ID]`. Append a new status event for approval; do not rewrite the proposal. A rejected or deferred option must not be treated as an approved policy. If the decision changes a source artifact, update that artifact and follow the invalidation matrix.
+A proposal remains PROPOSED until the user sends exactly one outcome command with a rationale: `APPROVE FLOW DECISION [DECISION-ID]`, `REJECT FLOW DECISION [DECISION-ID]`, or `DEFER FLOW DECISION [DECISION-ID]`. Append a new status event for the matching status APPROVED, REJECTED or DEFERRED; never rewrite the original proposal. Only APPROVED decisions may define current flow policy. A DEFERRED decision may justify omitting an approved capability from the current flow only when the affected capability and scope impact are explicit and the Process 03 boundary is preserved. If the decision changes a source artifact, update that artifact and follow the invalidation matrix.
 
 ## Initial state
 No material flow-policy decisions recorded yet.
