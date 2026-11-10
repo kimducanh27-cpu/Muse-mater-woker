@@ -133,7 +133,7 @@ If an artifact or Control File cannot be read, hashed or written, stop with NOT_
 
 ## Decision log
 
-`09_DECISION_LOG.md` is append-only. Each material flow-policy decision has a stable DEC ID, affected artifacts, affected gate, alternatives, rationale and user approval. A proposal is not an approved decision. The exact command `APPROVE FLOW DECISION [DECISION-ID]` is required before a proposal is treated as an approved rule.
+`09_DECISION_LOG.md` is append-only. Each material flow-policy decision has a stable DEC ID, affected artifacts, affected gate, alternatives and rationale. The user records exactly one outcome using `APPROVE FLOW DECISION [DECISION-ID]`, `REJECT FLOW DECISION [DECISION-ID]`, or `DEFER FLOW DECISION [DECISION-ID]`, with a rationale. Append a status event; never rewrite the proposal. Only APPROVED decisions may define current flow policy. REJECTED and DEFERRED decisions remain visible and must not be treated as approved rules.
 
 ## Residual-risk acceptance
 
