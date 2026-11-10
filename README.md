@@ -1,82 +1,53 @@
-# THE SEED — Human-Gated Product Discovery
+# THE SEED — Human-Gated Product Building Workflow
 
 **Cấu hình The Seed đã chốt:** AI = **Sparring** · Research = **Deep** · Antigravity = **3 tabs**.
 
-The Seed là quy trình đầu tiên: biến ý tưởng thô thành một problem/idea seed có cấu trúc và được con người duyệt. Nó không thay thế Product Discovery và không tạo PRD, App Flow, UX/UI hay code.
+This repository currently contains three defined processes in a seven-process workflow. Later process contracts must be added explicitly; do not infer them from process numbering.
 
-## Kiến trúc
+## Architecture
+Principles: **upstream-first, orchestration-second**.
+- Preserve suitable upstream Skills verbatim where license allows; record source, SHA and license.
+- Put workspace-specific behavior in custom adapters, prompts and templates.
+- Never relabel a rewrite as an upstream Skill.
+- No automatic process handoff. Each stage has human gates and file-persisted state.
 
-Nguyên tắc chung: **upstream-first, orchestration-second**.
+## Process 01 — The Seed
+The Seed turns a rough idea into a structured problem/idea seed approved by the user. Three tabs: Explore / Sparring, Deep Research, Independent Review. The frozen product/seed/SEED.md is the preferred input to Process 02.
 
-- Skill upstream phù hợp được giữ nguyên văn và có nguồn/license.
-- Logic riêng của workspace nằm trong adapter và prompt riêng.
-- Không đổi tên một bản viết lại thành Skill upstream.
-- Không tự động chuyển quy trình; mỗi giai đoạn có human gate và trạng thái được lưu vào artifact.
+## Process 02 — Product Discovery
+Active Skill: .agents/skills/product-discovery/SKILL.md
 
-## Quy trình 01 — The Seed
+Product Discovery explores opportunities, gathers customer evidence, maps assumptions and designs experiments. Three independent tabs: Opportunity Discovery, Customer Evidence, Solution & Experiments.
 
-### Cấu trúc
+Canonical state: product/discovery/00_DISCOVERY_CONTROL.md. Gate 2 approval is not validation. Gate 3 approves the experiment plan, not execution. If no experiment has run, 07_DISCOVERY_DECISION.md remains READY FOR TESTING; do not create an Outcome based only on a test plan.
 
-```
-.agents/skills/
-├── product-brainstorming/       # Anthropic upstream — unchanged
-├── seed-explore/                # Tab 01 adapter
-├── seed-research/               # The Seed's deep-research gate
-├── seed-independent-review/     # Fresh-context review
-└── product-discovery/           # Process 02 — separate kit
+Kit: product-discovery-kit/README.md.
 
-upstream/ferminrp/product-shaping/ # Reference-only upstream
-prompts/                           # Three The Seed tab prompts
-templates/                         # The Seed artifact templates
-product/seed/                      # Per-idea The Seed artifacts
-product-discovery-kit/             # Process 02 kit documentation
-```
+## Process 03 — Product Definition
+Active Skill: .agents/skills/product-definition/SKILL.md
 
-Chi tiết Skill upstream và nguồn: [UPSTREAMS.md](UPSTREAMS.md).
+Product Definition turns the eligible Process 02 decision into a product direction: target segment, customer outcome, positioning, product concept, principles, first-release capability scope, success measures and explicit non-goals.
 
-### Quy trình 3 tab
+Three independent tabs:
+1. Product Intent & Positioning
+2. Product Shape & Scope
+3. Independent Definition Review
 
-**Tab 01 — Explore / Sparring**
-- Làm rõ người dùng, bối cảnh, vấn đề, workaround và outcome.
-- Chỉ divergent brainstorm sau khi framing đủ rõ.
-- Không external research.
-- Tạo product/seed/01_SEED_CANDIDATE.md.
-- Dừng tại Gate 1; chỉ chấp nhận lệnh APPROVE GATE 1.
+Canonical state: product/definition/00_PRODUCT_DEFINITION_CONTROL.md.
+Frozen output: product/definition/PRODUCT_DEFINITION.md.
 
-**Tab 02 — Deep Research**
-- Chỉ chạy sau Gate 1.
-- Thu thập bằng chứng về vấn đề, lựa chọn thay thế, repo/open source, Android constraints và giả định rủi ro.
-- Ưu tiên nguồn gốc, evidence traceability, phản chứng và giới hạn.
-- Tạo product/seed/02_RESEARCH_DOSSIER.md.
-- Dừng tại Gate 2.
+Process 03 defines WHAT the product is and WHY. It does not create App Flow, screens, UX/UI, technical architecture, an engineering-ready PRD or code.
 
-**Tab 03 — Independent Review**
-- Fresh context, chỉ đọc artifact và evidence.
-- Review tối đa ba vòng.
-- Không tự sửa quyết định của người dùng.
-- Chỉ tạo product/seed/SEED.md khi người dùng ra lệnh FREEZE SEED.
+Kit: product-definition-kit/README.md.
 
-### Ranh giới bàn giao
+## Handoff
+PRODUCT_DEFINITION.md is the intended input to Process 04 — App Flow. Process 04 must derive user/navigation flows from the approved product capabilities without silently changing the product promise or scope. The Process 04 contract has not yet been created in this repository.
 
-SEED.md là đầu vào cho **Quy trình 02 — Product Discovery**, không phải chỉ thị tự động tạo App Flow. Xem [Product Discovery Kit](product-discovery-kit/README.md).
+## Antigravity setup
+1. Place this repository at the project workspace root.
+2. Keep .agents/skills/ at that root.
+3. Check the active Skill in Antigravity's Customizations panel.
+4. Open a fresh conversation for each tab and paste only that tab's prompt.
+5. Transfer context through workspace artifacts, not chat history.
 
----
-
-## Quy trình 02 — Product Discovery
-
-Kit độc lập tại [.agents/skills/product-discovery/SKILL.md](.agents/skills/product-discovery/SKILL.md).
-
-Product Discovery lấy Seed làm đầu vào, sau đó khám phá cơ hội, thu thập bằng chứng từ người dùng, phân tích giả định và thiết kế thí nghiệm kiểm chứng. Bộ này có ba tab riêng: Opportunity Discovery, Customer Evidence, Solution & Experiments.
-
-Canonical gate state is persisted in product/discovery/00_DISCOVERY_CONTROL.md. Gate 2 approval does not mean validation; Gate 3 approval does not authorize experiment execution. If no experiment has run, the current artifact is a READY FOR TESTING decision brief, not a Discovery Outcome.
-
-Đầu ra của Process 02 **không phải Product Definition/PRD, App Flow, UX/UI hay code**. Xem [README của kit](product-discovery-kit/README.md).
-
-## Cài vào Antigravity
-
-1. Clone repo hoặc đưa nội dung vào workspace root của dự án.
-2. Giữ thư mục .agents/skills/ ở workspace root.
-3. Mở Agent side panel → **Customizations** để kiểm tra Skills.
-4. Mỗi process dùng đúng prompt và artifact trong workspace; không dựa vào chat history của tab khác.
-
-Antigravity IDE hỗ trợ workspace skills tại .agents/skills/<skill-folder>/. Tài liệu: https://antigravity.google/docs/skills
+Each process README contains its prerequisites, output contracts, gates and upstream register.
