@@ -88,8 +88,8 @@ Gate 3 status remains APPROVED after a successful freeze; only `lifecycle_status
 Every Control File update is single-writer:
 1. Read the current Control File and record `state_seq`.
 2. Recompute prerequisite hashes and verify the current state.
-3. Apply one state update and append an event to `event_log`; never delete or rewrite prior events.
-4. Increment `state_seq` and update the real local timestamp.
+3. Calculate the next committed sequence (`current state_seq + 1`), apply one state update and append an event to `event_log`; never delete or rewrite prior events. The event's `state_seq` must equal that new committed sequence, not the stale value read before the update.
+4. Persist the new `state_seq` and real local timestamp.
 5. Read the Control File back and verify the expected state, event and hashes.
 6. Report success only after read-back succeeds.
 
