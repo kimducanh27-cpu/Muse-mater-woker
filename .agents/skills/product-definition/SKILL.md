@@ -96,6 +96,8 @@ Use exact commands:
 - READY FOR TESTING acceptance: ACCEPT RESIDUAL UNCERTAINTY
 - Individual residual risk acceptance: ACCEPT RESIDUAL RISK [FINDING-ID]
 
+When the user accepts a MAJOR/MINOR finding, append a record to the top-level accepted_residual_risks array in the Control File with finding_id, severity, accepted_by, exact command, rationale and accepted_at_local. Mirror that record in the review history and canonical artifact. The reviewer cannot create this acceptance record on the user's behalf.
+
 Any non-approval feedback requesting revision must be logged as REVISION_REQUESTED with its reason. It does not approve a gate. A rejection command records REJECTED; a later approval requires new hashes and a fresh exact approval command.
 
 ## Three-tab workflow
@@ -171,6 +173,7 @@ Review independently:
 7. Check contradictions, dependencies, risks, ethics/privacy and scope creep.
 8. Identify what would make the product direction wrong or not worth building.
 9. Produce BLOCKER / MAJOR / MINOR findings with exact file, section, evidence, consequence and required correction.
+10. Test positioning specificity: could the positioning statement describe any competing product without meaningful change? If yes, record the missing differentiation as a finding.
 
 Append a new review round to product/definition/07_DEFINITION_REVIEW.md. Never delete or overwrite prior rounds. Keep finding IDs stable. Record hashes of artifacts 01–06 reviewed in each round.
 
@@ -196,7 +199,7 @@ Before freeze:
 4. Confirm every remaining MAJOR/MINOR finding is resolved or has explicit user acceptance recorded with ACCEPT RESIDUAL RISK [FINDING-ID].
 5. Confirm the draft consistency check passed.
 
-Create product/definition/PRODUCT_DEFINITION.md from the reviewed draft. The only allowed content transformation is replacing the single metadata line "Status: REVIEWED CANDIDATE — NOT FROZEN" with "Status: FROZEN". Do not make any other editorial change during freeze.
+Create product/definition/PRODUCT_DEFINITION.md from the reviewed draft. The only allowed content transformation is replacing the exact Markdown line "> Status: REVIEWED CANDIDATE — NOT FROZEN" with "> Status: FROZEN". Do not make any other editorial change during freeze.
 
 Before re-freezing, preserve the previous canonical artifact as PRODUCT_DEFINITION.v<N>.md; never overwrite an earlier frozen version without archiving it.
 

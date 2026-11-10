@@ -22,6 +22,7 @@ residual_uncertainty_acceptance:
   accepted_at_local: null
   evidence_status_at_acceptance: null
   decision_note: null
+accepted_residual_risks: []
 existing_product_context:
   command: null
   source_path: null
@@ -78,6 +79,7 @@ Copy this template to product/definition/00_PRODUCT_DEFINITION_CONTROL.md when s
 - Handoff route: PROCESS_02, EXISTING_PRODUCT_CONTEXT.
 - Handoff status: VERIFIED, NOT_VERIFIED, REOPENED.
 - Evidence status: PRIMARY_EVIDENCE_PRESENT, SECONDARY_ONLY, NOT_COLLECTED, NOT_VERIFIED.
+- Discovery status snapshot: FROZEN_OUTCOME, READY_FOR_TESTING, EXISTING_PRODUCT_CONTEXT, NOT_VERIFIED.
 - Review status: NOT_STARTED, BLOCKERS_FOUND, READY_FOR_FREEZE.
 
 Gate 3 status remains APPROVED after freeze. Only lifecycle_status becomes FROZEN.
@@ -107,6 +109,7 @@ EXISTING_PRODUCT_CONTEXT route:
 8. A non-approval revision request is REVISION_REQUESTED. Only exact rejection commands set REJECTED.
 9. Recompute Process 02 hashes at Tab 02, Tab 03 and before freeze. A mismatch makes the handoff NOT_VERIFIED and reopens dependent gates.
 10. Recompute approved Process 03 artifact hashes at every downstream tab entry and before freeze.
+11. Each accepted MAJOR/MINOR residual risk must be a separate accepted_residual_risks record with finding_id, severity, accepted_by, exact_command, rationale and accepted_at_local. The record must be user-originated, not reviewer-inferred.
 
 ## Invalidation matrix
 

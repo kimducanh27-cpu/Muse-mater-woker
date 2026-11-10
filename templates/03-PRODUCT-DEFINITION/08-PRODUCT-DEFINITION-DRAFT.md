@@ -59,6 +59,12 @@
 | Item | Impact | Evidence / unknown | Response or owner |
 |---|---|---|---|
 
+## Stop criteria and kill conditions
+- Conditions that would make this product direction not worth continuing:
+- Evidence or threshold required to trigger a stop/revisit:
+- Decision owner:
+- Status: UNKNOWN / HYPOTHESIS / COMMITTED
+
 ## Key decisions and deferred unknowns
 Embed material decisions, rejected alternatives, mutability classification and deferred unknowns. Do not rely only on a link to a separately mutable decision log.
 
