@@ -8,7 +8,8 @@ This checklist distinguishes repository/paper checks from live runtime verificat
 - [ ] Every prompt names the exact templates it must use.
 - [ ] Control and artifact templates exist under `templates/04-APP-FLOW/`.
 - [ ] Decision Log template defines immutable proposal entries and canonical append-only status events with unique DLE IDs.
-- [ ] Review template records pre-append Control File sequence and previous review-history hash.
+- [ ] Review template records pre-append Control File sequence/hash and previous review-history hash.
+- [ ] Review-history initialization stores the exact template SHA-256 and a `REVIEW_HISTORY_INITIALIZED` event before Round 1.
 - [ ] Process 03 source files are readable in the same workspace.
 - [ ] Process 04 initiative ID equals Process 03 initiative ID.
 - [ ] No prompt-name collision causes the wrong review prompt to be selected.
@@ -84,8 +85,11 @@ This checklist distinguishes repository/paper checks from live runtime verificat
 | Scenario | Expected behavior |
 |---|---|
 | No review file or review_round = 0 | Freeze refuses |
+| Review history is absent before Round 1 | Initialize from the exact review template, read back/hash it, store `review.latest_review_sha256` and append `REVIEW_HISTORY_INITIALIZED` before adding Round 1 |
+| Review history exists but baseline is null and bytes exactly equal the template with no round/addendum | It may be initialized through the same verified baseline transaction |
+| Review history exists with null baseline but contains any non-template round/addendum/content | NOT_VERIFIED; do not adopt an untrusted history |
 | Review round 1 exists, then round 2 is appended | Round 1 remains byte-for-byte intact |
-| Review append succeeds but Control File update fails; pre-append state_seq and previous hash still match, and exactly one complete new round is appended | Recover only after exact `RECOVER REVIEW ROUND [N]`; register existing round with `REVIEW_ROUND_RECOVERED`; do not append again |
+| Review append succeeds but Control File update fails; exact pre-append Control File SHA-256, state_seq, round number and previous review hash still match, and exactly one complete new round is appended | Recover only after exact `RECOVER REVIEW ROUND [N]`; register existing round with `REVIEW_ROUND_RECOVERED`; do not append again |
 | Review append exists but prefix hash does not reproduce the previously trusted review hash | NOT_VERIFIED; no automatic recovery |
 | Control File state_seq changed, round number changed, or a review event for N already exists | Stop; no recovery or duplicate event; human-led reconciliation |
 | Review round is partial, duplicated, or current source/artifact/draft hashes differ | NOT_VERIFIED; preserve review history and require reconciliation/new review |
