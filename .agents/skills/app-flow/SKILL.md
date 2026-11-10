@@ -109,7 +109,7 @@ Every `event_log` object MUST include `event_type`, `state_seq`, `timestamp_loca
 - `REVIEW_ROUND_RECORDED`: `review_round`, `review_path`, `previous_review_sha256`, `review_sha256`, `draft_path`, `draft_sha256`, `verdict`, `review_status`.
 - `REVIEW_ROUND_RECOVERED`: `review_round`, `review_path`, `previous_review_sha256`, `review_sha256`, `draft_path`, `draft_sha256`, `verdict`, `review_status`, `recovered_from_state_seq`.
 - `SCHEMA_MIGRATED`: `from_schema_version: 2`, `to_schema_version: 3`, `archive_directory`, `archive_manifest_path`, `archive_manifest_sha256`, `archived_control_file_path`, `archived_control_file_sha256`, `archived_decision_log_path`, `archived_decision_log_sha256`, `exact_user_command`.
-- `REVIEW_ROUND_RECORDED`, `RESIDUAL_RISK_ACCEPTED`, `GATE_REJECTED`, `REVISION_REQUESTED` and `APP_FLOW_ABANDONED`: include the exact target IDs/paths, reason and hashes needed to reconstruct the transition.
+- `RESIDUAL_RISK_ACCEPTED`, `GATE_REJECTED`, `REVISION_REQUESTED` and `APP_FLOW_ABANDONED`: include the exact target IDs/paths, reason and hashes needed to reconstruct the transition.
 
 The Control File's `gate_1.approved_state_seq`, `gate_2.approved_state_seq` and `gate_3.approved_state_seq` must equal the sequence of their latest corresponding approval/freeze event. A gate may not be treated as approved/frozen from its status field alone. Never infer an approval event from `approved_command` or prose.
 
@@ -190,7 +190,7 @@ Before trusting an entry, the owning tab must independently compare `affected_ga
 
 Recovery is not automatic. Stop all tabs and do not approve, freeze or append further decisions. Compute the actual log hash and inspect the complete Control File event history.
 
-1. If the actual hash exactly equals the `resulting_sha256` of one well-formed, already persisted `DECISION_LOG_UPDATED` event for the same DEC ID/status/path/affected gate, and that event has a valid committed sequence, the user may authorize `RECOVER DECISION LOG [DECISION-ID]`. Only then may the owning tab set `latest_sha256` to that already-recorded hash, append `DECISION_LOG_RECOVERED` referencing the original event sequence, reopen the affected gates (and Gates 2–3 if Gate 2 had already bound the prior whole-file hash), increment `state_seq`, read back and verify. Do not invent or rewrite the original event.
+1. If the actual hash exactly equals the `resulting_sha256` of one well-formed, already persisted `DECISION_LOG_UPDATED` event for the same DEC ID/status/path/affected gate, and that event has a valid committed sequence, the user may authorize `RECOVER DECISION LOG [DECISION-ID]`. Only then may the owning tab set `latest_sha256` to that already-recorded hash, append `DECISION_LOG_RECOVERED` referencing the original `decision_log_event_id` and Control File event sequence, reopen the affected gates (and Gates 2–3 if Gate 2 had already bound the prior whole-file hash), increment `state_seq`, read back and verify. Do not invent or rewrite the original event.
 2. If no exact matching event exists, do not adopt the observed bytes. Restore the Decision Log from a trusted copy whose actual hash equals the previously stored `latest_sha256`; read it back and verify. If no such copy exists, remain NOT_VERIFIED and require a human-led forensic reconciliation outside the active workflow.
 3. If the Control File itself is partial, malformed or lacks a verifiable event trail, do not synthesize missing events. Restore a trusted Control File copy or stop. Never use a new baseline to make an unexplained mismatch pass.
 
