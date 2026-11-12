@@ -75,11 +75,16 @@ An unexplained extra ID in any of these sets blocks the gate.
 
 | Upstream | Path | Use |
 |---|---|---|
+| `pbakaus/impeccable` | `skill/reference/layout.md` | Spacing, rhythm, visual hierarchy |
+| `pbakaus/impeccable` | `skill/reference/typeset.md` | Typography hierarchy within frozen tokens |
+| `pbakaus/impeccable` | `skill/reference/adapt.md`, `adapt.native.md` | Responsive and device adaptation |
+| `pbakaus/impeccable` | `skill/reference/android.md` | Android layout and insets rules |
+| `pbakaus/impeccable` | `skill/reference/craft-floor.md` | Ban list for the lexical audit |
 | `anthropics/knowledge-work-plugins` | `design/skills/design-handoff` | Handoff artifact structure and completeness |
 | `anthropics/knowledge-work-plugins` | `design/skills/design-critique` | Review method for Tab 03 |
 | `anthropics/knowledge-work-plugins` | `design/skills/accessibility-review` | Focus order and target-size verification during composition |
 
-Apache-2.0. Copy verbatim, record source, date, blob SHA and licence in `UPSTREAMS.md`.
+`impeccable` is Apache-2.0 and reference-only; see `UPSTREAMS.md` section 4. Its `colorize` and `animate` playbooks are deliberately **not** listed here: colour is frozen in Process 06, and per-screen motion choreography is already owned by artifact 05. A playbook that would let Process 07 reopen a Process 06 decision is not a source, it is a boundary leak.
 
 ## 9. Open questions — must be resolved before the contract is written
 

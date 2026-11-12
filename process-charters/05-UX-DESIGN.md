@@ -81,12 +81,14 @@ Gate 2 binds the exact hashes of artifacts 01–05 and the whole Decision Log. A
 
 | Upstream | Path | Use |
 |---|---|---|
+| `pbakaus/impeccable` | `skill/reference/shape.md` | Task discovery before any UI decision |
+| `pbakaus/impeccable` | `skill/reference/critique.md` | Heuristic scoring rubric for Tab 03 |
 | `anthropics/knowledge-work-plugins` | `design/skills/user-research` | Evidence discipline for usability claims |
 | `anthropics/knowledge-work-plugins` | `design/skills/ux-copy` | Copy-intent method for artifact 04 |
 | `anthropics/knowledge-work-plugins` | `design/skills/accessibility-review` | Accessibility requirement taxonomy for artifact 05 |
 | `anthropics/knowledge-work-plugins` | `design/skills/design-critique` | Review method for Tab 03 |
 
-All four are Apache-2.0. Copy verbatim into `.agents/skills/` or `upstream/`, record source URL, retrieval date, blob SHA and licence in `UPSTREAMS.md`. Custom gate behaviour goes in a `ux-design` adapter and is never described as upstream.
+`impeccable` is Apache-2.0 and is reference-only — it is a design agent that writes code and carries a runtime, so it cannot be an active Skill inside a three-tab gate model. See `UPSTREAMS.md` section 4. The Anthropic design skills are Apache-2.0 and may be copied verbatim into `.agents/skills/` or `upstream/`. Custom gate behaviour goes in a `ux-design` adapter and is never described as upstream.
 
 ## 8. Open questions — must be resolved before the contract is written
 

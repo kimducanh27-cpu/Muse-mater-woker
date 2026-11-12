@@ -66,11 +66,15 @@ Gate 2 binds foundations **and** the component library together. A component tha
 
 | Upstream | Path | Use |
 |---|---|---|
+| `pbakaus/impeccable` | `skill/reference/extract.md` | Token and component extraction method |
+| `pbakaus/impeccable` | `skill/reference/document.md` | `DESIGN.md` structure and completeness |
+| `pbakaus/impeccable` | `skill/reference/craft-floor.md` | Quality floor and absolute bans |
+| `pbakaus/impeccable` | `skill/reference/android.md` | Android platform rules for foundations |
 | `anthropics/knowledge-work-plugins` | `design/skills/design-system` | Foundations and token method |
 | `anthropics/knowledge-work-plugins` | `design/skills/accessibility-review` | Contrast and focus measurement discipline |
 | `anthropics/knowledge-work-plugins` | `design/skills/design-critique` | Review method for Tab 03 |
 
-Apache-2.0. Copy verbatim, record source URL, retrieval date, blob SHA and licence in `UPSTREAMS.md`. Gate behaviour lives in a `design-system` adapter.
+`impeccable` is Apache-2.0 and reference-only; see `UPSTREAMS.md` section 4. Gate behaviour lives in a `design-system` adapter.
 
 ## 8. Open questions — must be resolved before the contract is written
 

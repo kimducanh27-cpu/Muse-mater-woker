@@ -102,6 +102,18 @@ Before re-freeze, archive the prior canonical output as `UX_SPEC.v<N>.md`. If th
 
 Do not create colour, typography, spacing, elevation, iconography, components, design tokens, wireframes, images, prototypes, final copy, APIs, data models or code. Do not add a screen, a state or a capability. A needed screen or state returns to Process 04; a needed capability returns to Process 03.
 
+## Upstream method sources
+
+This kit supplies gates, hashes and handoff rules. It does not supply design method, and it does not pretend to. Method comes from two Apache-2.0 sources recorded in `UPSTREAMS.md`:
+
+| Source | Used for |
+|---|---|
+| `pbakaus/impeccable` → `skill/reference/shape.md` | Task discovery before any UI decision |
+| `pbakaus/impeccable` → `skill/reference/critique.md` | Heuristic scoring rubric for the Tab 03 review |
+| `anthropics/knowledge-work-plugins` → `design/skills/user-research`, `ux-copy`, `accessibility-review`, `design-critique` | Evidence discipline, copy intent, accessibility taxonomy, critique method |
+
+`impeccable` is **reference-only**. It is a design agent that writes production code and ships a runtime binary; adopting it as the active Skill would collapse Processes 05–07 into one command and make Gates 1 and 2 decorative. Read its playbooks, cite the playbook and the upstream commit in the artifact that uses it, and do not vendor it.
+
 ## Verification status
 
 The checklist distinguishes repository/paper checks from live runtime verification. Nothing in this kit has been executed against a real workspace. Do not label Process 05 production-ready until live tests have evidence.

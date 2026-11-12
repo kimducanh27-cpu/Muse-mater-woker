@@ -77,11 +77,15 @@ Gate 1 must be approved **before** any evidence is produced. A pass criterion in
 
 | Upstream | Path | Use |
 |---|---|---|
+| `pbakaus/impeccable` | `skill/reference/critique.md` | Heuristic scoring rubric for usability evidence |
+| `pbakaus/impeccable` | `skill/reference/audit.md`, `audit.native.md` | Accessibility, performance and responsive checks |
+| `pbakaus/impeccable` | `skill/reference/component-review.md` | Component consistency review |
+| `pbakaus/impeccable` | `skill/reference/android.md` | Platform conformance checklist |
 | `anthropics/knowledge-work-plugins` | `engineering/skills/testing-strategy` | Evidence planning and coverage reasoning |
 | `anthropics/knowledge-work-plugins` | `design/skills/accessibility-review` | WCAG audit method |
 | `anthropics/knowledge-work-plugins` | `design/skills/design-critique` | Structured critique for Tab 03 |
 
-Apache-2.0. Copy verbatim, record source, date, blob SHA and licence in `UPSTREAMS.md`.
+`impeccable` is Apache-2.0 and reference-only; see `UPSTREAMS.md` section 4. Its heuristic rubric is the closest thing found to a scored usability method, but a score is not evidence — this process still refuses to turn an unrun test into a `PASS`.
 
 ## 9. Open questions — must be resolved before the contract is written
 
