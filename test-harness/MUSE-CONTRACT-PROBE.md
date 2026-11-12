@@ -46,25 +46,27 @@ Record the `agy` version and the model name in the report. A probe result is mea
 
 ## How to invoke agy
 
-Headless only. `agy` has an interactive TUI mode, and a TUI launched from an orchestrator never returns — it waits for keystrokes that nobody sends, and the whole probe session hangs with no error.
+Verified against `agy` 1.5.6 on Windows on 2026-11-12. The flags below are the ones that exist; earlier drafts of this document omitted `-p` and were wrong.
 
 ```bash
-timeout 300 agy \
-  --output-format stream-json \
+timeout 300 agy -p "$(cat "$PROMPT_FILE")" \
+  --model gemini-3.8-flash-low \
   --dangerously-skip-permissions \
-  --model "$MODEL" \
-  < probe-prompt.md \
-  > "fixtures/probe-$N/transcript-$N.jsonl" 2>&1
+  --print-timeout 240s \
+  --output-format stream-json \
+  > "fixtures/_evidence/probe-$N/transcript.jsonl" 2>&1
 ```
 
 Rules for the invocation:
 
-- **Never** use a flag that opens an interactive session. If `agy --help` shows only an interactive entry point, run it under `timeout` anyway and treat a timeout as `UNEXECUTABLE` — that is a real finding about the environment, not a failed probe.
-- **Always** wrap in `timeout`. A hung worker with no timeout is indistinguishable from a slow one, and you will lose the session.
-- **Prompt on stdin.** Writing the prompt into a file and redirecting it keeps the prompt out of the agent's own workspace scan, and avoids argv length limits.
-- **Model from `agy models list`.** `agy` only accepts models it lists. Put the effort in the model name if it offers variants.
-- **Read the final result event, not the exit code.** `agy` exits `0` on most failures.
-- **Keep stderr.** Redirect `2>&1` into the transcript. The reason a run failed is usually on stderr, and a transcript without it cannot be audited.
+- **`-p` / `--print` is mandatory.** `--output-format` alone does not enter print mode; the process waits and produces nothing.
+- **Never** use `--prompt-interactive`. A TUI launched from an orchestrator waits for keystrokes nobody sends.
+- **`--print-timeout` is not a wall-clock guarantee.** A run stuck generating its final answer outlived a 150 s print timeout and had to be killed externally. Always wrap in `timeout`.
+- **Keep evidence outside the probe workspace.** If the transcript sits inside `fixtures/probe-N/`, the agent reads its own previous output and the probe observes itself. Use `fixtures/_evidence/probe-N/`.
+- **Model from `agy models list`.** Observed on 2026-11-12: `gemini-3.8-flash-{low,medium,high}`, `claude-sonnet-4-6`, `claude-opus-4-6-thinking`, `gpt-oss-120b-medium`.
+- **Effort matters more than expected.** `gemini-3.8-flash-high --effort high` entered a repeated `agent_response ACTIVE` loop at the answer step and never emitted a result. The same task on `gemini-3.8-flash-low` completed in one pass. Prefer the lower effort for structured reporting tasks.
+- **Read the `result` event, not the exit code.** `agy` exits `0` with `status: SUCCESS` inside the stream; a hung run is only distinguishable by the absence of a `result` event.
+- **Keep stderr.** Redirect `2>&1` into the transcript.
 
 If `agy` reports that it is updating itself mid-run, stop and pin the build. A probe that spans two binaries is not a controlled test.
 
