@@ -76,6 +76,7 @@ Gate 2 binds the exact hashes of artifacts 01–05 and the whole Decision Log. A
 - **No new capability.** Any capability absent from the frozen Product Definition returns to Process 03.
 - **No final copy.** Intent only. Final wording belongs to Process 07, where length and layout constraints exist.
 - **No code, no prototype, no wireframe image.**
+- **No platform vocabulary.** The product is Android (see `06-DESIGN-SYSTEMS.md` section 8a), but this process may not name the system back gesture, a Material component, a window size class or an Android-specific control. It states the requirement — "the user must be able to abandon this task without losing input" — and Process 06 decides how the platform satisfies it. Absorbing platform idioms here would pre-empt the design system with decisions nobody audited.
 
 ## 7. Upstream sources
 

@@ -30,6 +30,8 @@ All four, frozen and hash-verified against their own Control Files:
 
 Entry is blocked if any upstream has an open Change Request. Validating a chain with a known hole produces a report that must be thrown away.
 
+**Platform.** Android native — recorded in `06-DESIGN-SYSTEMS.md` section 8a. Platform conformance is audited here as evidence, not asserted: TalkBack coverage, 48dp minimum targets, predictive-back behaviour, window-size-class layout at compact and expanded widths, and Material 3 token usage. `impeccable` `android.md` and `audit.native.md` are the checklists; the report records what was measured and on which device or emulator configuration.
+
 ## 4. Output contract
 
 Proposed working artifacts (`product/validation/`):
@@ -38,7 +40,7 @@ Proposed working artifacts (`product/validation/`):
 |---|---|
 | `01_VALIDATION_PLAN.md` | What will be validated, how, by whom, and the pass criteria — written **before** any result is known |
 | `02_TRACEABILITY_MATRIX.md` | capability → task → screen → state → component → composition, every link explicit |
-| `03_ACCESSIBILITY_AUDIT.md` | Conformance measured per screen: contrast from token values, focus order, target size, keyboard reachability, announcement intent |
+| `03_ACCESSIBILITY_AUDIT.md` | Conformance measured per screen: contrast from token values, focus order, target size in dp, TalkBack announcement coverage, hardware-keyboard and switch-access reachability |
 | `04_USABILITY_EVIDENCE.md` | Heuristic evaluation and/or executed user testing, each finding labelled with its evidence strength |
 | `05_FINDINGS_REGISTER.md` | Append-only findings with severity, evidence, owning process and status |
 | `06_VALIDATION_REPORT_DRAFT.md` | Complete reviewed candidate with verdict |

@@ -78,11 +78,31 @@ Gate 2 binds foundations **and** the component library together. A component tha
 
 ## 8. Open questions — must be resolved before the contract is written
 
-1. **Theme support in v1.** A single theme is cheaper; retrofitting a second theme after 40 components exist is expensive. Recommendation: build the semantic token layer so a second theme is *possible*, but ship exactly one theme in v1 and say so explicitly in the Control File.
-2. **Target platform.** Web only, or web plus mobile? This changes minimum target size, type scale, motion budget and elevation semantics. It must be a recorded decision, not an assumption inherited from whoever writes the template.
+1. **Theme support in v1.** A single theme is cheaper; retrofitting a second theme after 40 components exist is expensive. Recommendation: build the semantic token layer so a second theme is *possible*, but ship exactly one theme in v1 and say so explicitly in the Control File. With Android chosen, the second theme is almost certainly dark mode, and Material 3 makes the semantic layer mandatory rather than optional.
+2. **Target platform.** **RESOLVED 2026-11-12 — Android native. See section 8a.**
 3. **Contrast measurement source.** Contrast must be computed from actual token values, not asserted. That requires tokens to carry concrete hex, which makes this the first artifact in the repo with real colour values — the charter must state that explicitly so no reviewer treats it as a boundary violation.
-4. **Icon system.** Icons are components with a grid and a stroke rule. Recommendation: include a named icon inventory in v1, but allow the set to be extended by Change Request rather than by per-screen invention in 07.
+4. **Icon system.** Icons are components with a grid and a stroke rule. Recommendation: include a named icon inventory in v1, but allow the set to be extended by Change Request rather than by per-screen invention in 07. On Android the Material icon set is a starting point, not a free pass: every icon still needs a citing screen.
 5. **Motion.** Durations and easing are tokens. Per-screen animation choreography is Process 07. The split must be written down or both processes will claim it.
+
+## 8a. Platform decision — Android native
+
+**Decision.** The product ships as a native Android application. The design system targets Jetpack Compose and Material 3. No web target, no iOS target, no cross-platform framework in v1.
+
+**Rationale.** The repository name, the project's origin as an Android app, and every design reference consulted assume Android. Leaving it unrecorded was the defect, not the choice.
+
+**Consequences that must appear in the Process 06 contract:**
+
+| Consequence | Where it binds |
+|---|---|
+| Minimum touch target, type scale and elevation follow Material 3, not a web scale | Foundations and component inventory |
+| Dynamic colour and dark theme are Material 3 platform behaviours, not optional extras | Token layer must be semantic, not literal |
+| System back, predictive back and window insets are platform contracts, not per-screen choices | Component and pattern inventory |
+| Elevation is tonal in Material 3, not a drop shadow | Elevation tokens |
+| Platform conformance is auditable against `impeccable` `android.md` | Gate 2 and Process 08 audit |
+
+**What this does not authorise.** A Material 3 component is not automatically in scope. The rule in section 6 still governs: a component exists only if a frozen Process 05 screen requires it, and it must cite the SCREEN IDs. Platform default is not demand.
+
+**Boundary note for neighbours.** Process 05 stays platform-neutral in its vocabulary — it may state a requirement such as "the user must be able to abandon this task without losing input", but it may not name the system back gesture or a Material component. Process 07 may use platform affordances because by then the system has frozen them. This ordering is deliberate: platform idioms absorbed at Process 05 would pre-empt Process 06 with decisions nobody audited.
 
 ## 9. Entry and exit in one line
 

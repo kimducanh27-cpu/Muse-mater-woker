@@ -26,6 +26,8 @@ Principles: **upstream-first, orchestration-second**.
 
 Charters are scope documents, not contracts. A chartered process has no Skill, prompts, templates, Control File or gates and cannot be executed. See `process-charters/README.md` for the admission test that decides whether a stage earns its own process or stays a tab inside an existing one.
 
+**Platform: Android native** — Jetpack Compose, Material 3, no web or iOS target in v1. Recorded as a decision in `process-charters/06-DESIGN-SYSTEMS.md` section 8a, because a platform assumption inherited from a folder name is not a decision. It binds Processes 06–08; Process 05 stays platform-neutral by design so that platform idioms cannot pre-empt the design system.
+
 ## Process 01 — The Seed
 Turns a rough idea into a structured problem/idea seed approved by the user. Three tabs: Explore / Sparring, Deep Research, Independent Review. Frozen output: product/seed/SEED.md.
 

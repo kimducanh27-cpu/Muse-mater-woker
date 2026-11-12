@@ -171,7 +171,7 @@ Before Gate 2, run explicit set comparisons and show the compared IDs:
 - Set of (screen, state) rows in 03 = the applicable projection of the Process 04 state matrix.
 - Every pattern ID cited exists in 02; every pattern in 02 is cited at least once, or is marked as reserved with a reason.
 - Every capability ID in the frozen Process 03 scope is served by at least one screen, or has an approved deferral decision.
-- No named UI component appears in 01–05. A component-name audit is mandatory: button, card, modal, dialog, toast, chip, tab, drawer, tooltip, badge, banner, accordion. An occurrence inside a quoted source excerpt is permitted and must be marked as quoted.
+- No named UI component appears in 01–05. A component-name audit is mandatory: button, card, modal, dialog, toast, chip, tab, drawer, tooltip, badge, banner, accordion. The target platform is Android, so the audit also covers platform affordances that an agent will otherwise absorb without noticing: app bar, top bar, bottom sheet, navigation rail, floating action button, FAB, snackbar, system back, predictive back, window size class, inset. An occurrence inside a quoted source excerpt is permitted and must be marked as quoted. A requirement may describe the need — "the user must be able to abandon this task without losing input" — but the affordance that satisfies it is chosen in Process 06, not named here.
 - No colour value, hex code, font family, font size, spacing value, radius or shadow appears anywhere in 01–05.
 
 Gate 2 binds hashes of 02–05 and the whole Decision Log. The user must send exactly `APPROVE UX SPEC`. One Control update sets `gate_2.approved_state_seq`, `gate_2.decision_log_sha256`, the coverage snapshot and appends `GATE_2_APPROVED`.

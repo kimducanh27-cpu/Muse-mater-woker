@@ -22,6 +22,8 @@ The measure of success is negative: **zero questions returned to the designer du
 
 Entry is blocked if either upstream has an open Change Request, or if the design system cannot express a screen required by the UX spec.
 
+**Platform.** Android native, Jetpack Compose, Material 3 — recorded as a decision in `06-DESIGN-SYSTEMS.md` section 8a. This is the process where that decision becomes visible on screen: system and predictive back, window insets, window size classes, foldable posture and Material motion are composition concerns here, not implementation details to be discovered later. Process 07 may use platform affordances because Process 06 froze them; it may not invent a platform behaviour the system does not define.
+
 ## 4. Output contract
 
 Proposed working artifacts (`product/ui-design/`):
@@ -29,7 +31,7 @@ Proposed working artifacts (`product/ui-design/`):
 | File | Purpose |
 |---|---|
 | `01_SCREEN_COMPOSITION.md` | Per SCREEN ID: layout structure, grid placement, ordered component instances with inventory IDs, visual hierarchy |
-| `02_RESPONSIVE_SPEC.md` | Breakpoints, reflow and collapse rules, min/max widths, what truncates and what wraps |
+| `02_RESPONSIVE_SPEC.md` | Window size classes, pane and reflow rules, foldable posture, what truncates and what wraps |
 | `03_STATE_COMPOSITION.md` | Every state composed, not described — including empty, loading, partial, error, permission-denied and destructive-confirmation |
 | `04_COPY_DECK.md` | Final strings per screen and state, with character budget and truncation behaviour |
 | `05_HANDOFF_SPEC.md` | Spacing and sizing values, asset inventory with hashes, motion choreography, edge cases |

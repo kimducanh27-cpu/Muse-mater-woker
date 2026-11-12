@@ -72,7 +72,7 @@ Tab 03 must not freeze automatically after a `GO` verdict. The user must issue t
 
 Process 05 is the easiest process in the sequence to contaminate. Three lexical audits are mandatory at Gate 2 and again at review:
 
-1. **No named components.** button, card, modal, dialog, toast, chip, tab, drawer, tooltip, badge, banner, accordion. Naming one pre-empts Process 06 and makes the design system a rubber stamp.
+1. **No named components.** button, card, modal, dialog, toast, chip, tab, drawer, tooltip, badge, banner, accordion — plus the Android affordances an agent absorbs without noticing: app bar, bottom sheet, navigation rail, FAB, snackbar, system back, window size class. Naming one pre-empts Process 06 and makes the design system a rubber stamp.
 2. **No visual values.** No hex, font family, font size, spacing, radius, shadow. The first process allowed to produce concrete visual values is Process 06.
 3. **No final copy.** Intent only. Final strings need layout constraints that do not exist until Process 07.
 
@@ -101,6 +101,8 @@ Before re-freeze, archive the prior canonical output as `UX_SPEC.v<N>.md`. If th
 ## Boundaries
 
 Do not create colour, typography, spacing, elevation, iconography, components, design tokens, wireframes, images, prototypes, final copy, APIs, data models or code. Do not add a screen, a state or a capability. A needed screen or state returns to Process 04; a needed capability returns to Process 03.
+
+The product is Android native (recorded in `process-charters/06-DESIGN-SYSTEMS.md` section 8a), and this process is deliberately platform-neutral anyway. That is not an oversight: a requirement stated in platform terms here would decide the design system before anyone audited the decision.
 
 ## Upstream method sources
 
