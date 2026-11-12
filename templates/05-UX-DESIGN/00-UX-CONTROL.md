@@ -121,6 +121,8 @@ Both source statuses must be `VERIFIED` before any artifact is written.
 
 Every `event_log` object MUST contain `event_type`, `state_seq`, `timestamp_local`, `exact_user_command` (or `NOT_APPLICABLE`), `reason`, `changed_paths` and `relevant_hashes`. `state_seq` is strictly increasing and equals the new committed Control File sequence.
 
+**Field names are normative in `templates/CONTROL-FIELDS-v1.yaml`, not in the table below.** The table describes intent; that file lists the exact key names. A read-back compares the event's key set to the contract, not to what the writer remembers writing. A key that is present but named differently is an extra key plus a missing key, and both fail.
+
 | Event type | Required type-specific fields |
 |---|---|
 | `DECISION_LOG_UPDATED` | decision_id; decision_log_event_id; decision_event_kind (`INITIALIZATION`, `PROPOSAL_CREATED`, `DECISION_STATUS_CHANGED`); status before/after; affected_gate; path; resulting_sha256 |

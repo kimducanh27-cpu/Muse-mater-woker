@@ -1,0 +1,125 @@
+# Control event field contract — schema v1
+#
+# Normative. Where this file and a Control template's prose table disagree,
+# this file wins. A read-back that compares an event to memory instead of to
+# this list is not verification.
+#
+# Applies to Processes 05 and 06, which both use Control schema v1 with an
+# identical event set. Process 04 schema v4 is not covered here; its events
+# are more numerous and need their own contract before a writer is built.
+
+schema_version: 1
+applies_to:
+  - "05-ux-design"
+  - "06-design-systems"
+
+# Present on every event, regardless of type.
+common:
+  - event_type
+  - state_seq
+  - timestamp_local
+  - exact_user_command
+  - reason
+  - changed_paths
+  - relevant_hashes
+
+# Type-specific fields, in addition to `common`. A key not listed for its
+# event type is an extra key and fails verification. An event missing a
+# listed key fails verification. There is no partial pass.
+events:
+  DECISION_LOG_UPDATED:
+    - decision_id
+    - decision_log_event_id
+    - decision_event_kind
+    - decision_status_before_update
+    - decision_status_after_update
+    - affected_gate
+    - path
+    - resulting_sha256
+
+  GATE_1_APPROVED:
+    - gate
+    - approved_artifacts
+    - decision_log_sha256
+    - coverage_snapshot
+
+  GATE_2_APPROVED:
+    - gate
+    - approved_artifacts
+    - decision_log_sha256
+    - coverage_snapshot
+
+  GATE_3_FROZEN:
+    - gate
+    - draft_sha256
+    - frozen_artifact_path
+    - frozen_artifact_sha256
+    - frozen_version
+
+  INVALIDATED:
+    - reopened_gates
+    - affected_gate
+    - expected_hashes
+    - observed_hashes
+
+  DECISION_LOG_RECOVERED:
+    - decision_id
+    - decision_log_event_id
+    - recovered_from_event_seq
+    - resulting_sha256
+    - affected_gate
+    - reopened_gates
+
+  REVIEW_HISTORY_INITIALIZED:
+    - review_path
+    - review_sha256
+
+  REVIEW_ROUND_RECORDED:
+    - review_round
+    - review_path
+    - previous_review_sha256
+    - review_sha256
+    - draft_path
+    - draft_sha256
+    - verdict
+    - review_status
+
+  REVIEW_ROUND_RECOVERED:
+    - review_round
+    - review_path
+    - previous_review_sha256
+    - review_sha256
+    - draft_path
+    - draft_sha256
+    - verdict
+    - review_status
+    - recovered_from_state_seq
+
+  RESIDUAL_RISK_ACCEPTED:
+    - finding_id
+    - severity
+    - rationale
+    - accepted_at_local
+
+# Events whose payload is described in prose rather than a fixed field set.
+# They still carry every `common` field. Any additional keys are free-form and
+# are not checked against a list, but they must be present in the transcript
+# of the run that produced them.
+prose_events:
+  - GATE_REJECTED
+  - REVISION_REQUESTED
+  - UX_SPEC_ABANDONED
+  - DESIGN_SYSTEM_ABANDONED
+
+# Field names that have been observed to drift. Kept here so a reviewer can
+# search for the wrong form directly.
+known_drift:
+  decision_status_before_update:
+    - status_before
+    - decision_status_before
+  decision_status_after_update:
+    - status_after
+    - decision_status_after
+  frozen_artifact_sha256:
+    - artifact_sha256
+    - frozen_sha256

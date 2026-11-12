@@ -10,6 +10,7 @@
 - The ordered hierarchy list is the contract. The structural block is illustrative only.
 - No named UI component, colour, typeface, size, spacing value or image.
 - Capability IDs must exist in the frozen Product Definition.
+- **Do not cite `NODE-` or `TRANSITION-` IDs.** The frozen App Flow does not carry them: its schema has no node or transition inventory, and freeze copies the draft byte-for-byte. A required column that no upstream artifact can fill is not a requirement, it is a defect. Describe the entry in words instead.
 
 ---
 
@@ -18,7 +19,8 @@
 | Field | Value |
 |---|---|
 | Screen ID | `SCREEN-<ID>` |
-| Source node / transition | `NODE-<ID>`, `TRANSITION-<ID>` |
+| Source screen | `SCREEN-<ID>` — must exist in the frozen Process 04 inventory |
+| Entry transition | How the user arrives, described in words. No ID: the frozen flow carries screens and states, not a node graph |
 | User goal on this screen | One sentence, outcome-shaped |
 | Primary action | Exactly one |
 | Secondary actions | Ordered list, may be empty |

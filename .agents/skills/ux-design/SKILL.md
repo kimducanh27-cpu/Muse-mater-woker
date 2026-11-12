@@ -97,7 +97,7 @@ Every update is single-writer:
 2. Recompute prerequisite hashes and verify current state.
 3. Compute the next committed sequence (`current + 1`), apply exactly one state change, and append one event whose `state_seq` equals that new value.
 4. Persist `state_seq` and a real local timestamp.
-5. Read the Control File back and verify state, event and hashes.
+5. Read the Control File back and verify state, event and hashes. **Compare the event's key set to `templates/CONTROL-FIELDS-v1.yaml` mechanically, key by key.** Do not compare it to what you remember writing: that comparison always passes, including when it is wrong. Report any missing key and any extra key by name.
 6. Report success only after read-back succeeds.
 
 `state_seq` is a stale-read detector, not a lock. Only one tab may write at a time. If concurrent writes may have occurred, stop all tabs and reconcile against the last trusted copy; do not certify the history from `state_seq` alone.
@@ -161,9 +161,21 @@ No automatic handoff. Each tab runs in a fresh conversation and reconstructs sta
 
 Entry: read this Skill, verify both sources, initialize or verify the Control File and the Decision Log identity.
 
+"Verify the Control File" means exactly these six checks. Nothing else counts as verification, and a Control File that fails any of them is `NOT_VERIFIED`:
+
+1. The YAML frontmatter parses. A file that does not parse is not state.
+2. `schema_version` is `1`. Any other value stops the process; there is no migration path.
+3. `state_seq` is a non-negative integer, and `len(event_log)` is either `state_seq` or `state_seq` minus the number of uncommitted events — if the two disagree by more than zero, report the discrepancy rather than reconciling it.
+4. Every event in `event_log` has exactly the keys its `event_type` requires in `templates/CONTROL-FIELDS-v1.yaml`. Report missing and extra keys by name.
+5. `decision_log.latest_sha256` is non-null and equals the actual SHA-256 of the file at `decision_log.path`.
+6. `lifecycle_status` is consistent with the gate states: `FROZEN` requires `gate_3.status = APPROVED`; `DRAFT` requires `gate_3.status` not `APPROVED`.
+
+Report the six results with observed values before writing anything.
+
 Work:
 - Enumerate **every** SCREEN ID from the frozen Process 04 inventory. A missing screen is a defect; an invented screen is a scope violation.
 - For each screen: the user's goal, the primary action, secondary actions, information hierarchy in reading order, entry expectation, exit guarantee, and the capability IDs it serves.
+- Describe how the user arrives in words. Do not cite `NODE-` or `TRANSITION-` IDs: the frozen App Flow carries neither, so such a citation can never be verified.
 - Name the single primary action. Two primary actions means the hierarchy is unresolved.
 - Record the cognitive load risk: what a first-time user is likely to misunderstand.
 - Record only `GATE_1` decisions in the Decision Log.
@@ -190,7 +202,21 @@ Before Gate 2, run explicit set comparisons and show the compared IDs:
 - Set of (screen, state) rows in 03 = the applicable projection of the Process 04 state matrix.
 - Every pattern ID cited exists in 02; every pattern in 02 is cited at least once, or is marked as reserved with a reason.
 - Every capability ID in the frozen Process 03 scope is served by at least one screen, or has an approved deferral decision.
-- No named UI component appears in 01–05. A component-name audit is mandatory: button, card, modal, dialog, toast, chip, tab, drawer, tooltip, badge, banner, accordion. The target platform is Android, so the audit also covers platform affordances that an agent will otherwise absorb without noticing: app bar, top bar, bottom sheet, navigation rail, floating action button, FAB, snackbar, system back, predictive back, window size class, inset. An occurrence inside a quoted source excerpt is permitted and must be marked as quoted. A requirement may describe the need — "the user must be able to abandon this task without losing input" — but the affordance that satisfies it is chosen in Process 06, not named here.
+- No named UI component appears in 01–05. The audit below is a **procedure**, not a word hunt. Run it exactly as written; a different procedure produces a different result on the same file, which makes the gate meaningless.
+
+  **Banned terms.** button, card, modal, dialog, toast, chip, tab, drawer, tooltip, badge, banner, accordion. The target platform is Android, so the list also covers affordances an agent absorbs without noticing: app bar, top bar, bottom sheet, navigation rail, floating action button, FAB, snackbar, system back, predictive back, window size class, inset.
+
+  **Procedure.**
+
+  1. Scope: the artifact body only. Exclude any section headed `Rules for this artifact`, any fenced block that states the rule, and any text inside a quoted source excerpt marked as quoted.
+  2. Matching: case-insensitive, whole word, on word boundaries. `card` matches `card` and `Card`; it does not match `discards` or `cardboard`. `tab` does not match `table`.
+  3. For every match, emit one row: the line number, the exact matched term, and the **full sentence** containing it.
+  4. Classify each row: `VIOLATION` if the term names an affordance the user interacts with, `FALSE POSITIVE` if it appears in prose that describes a need rather than an affordance. State the reason in one clause.
+  5. Report the count of `VIOLATION` rows. Gate 2 fails on any count above zero.
+
+  **Why the procedure exists.** Two failure modes were observed when the audit was a bare word list. A literal grep matched `card` inside `discards` and failed a correct artifact. A model matched `component`, which is not on the list, and passed the artifact for the wrong reason. Neither implemented the rule. The sentence requirement in step 3 is what makes a wrong match visible in the record instead of buried in a judgement.
+
+  A requirement may describe the need — "the user must be able to abandon this task without losing input" — but the affordance that satisfies it is chosen in Process 06, not named here.
 - No colour value, hex code, font family, font size, spacing value, radius or shadow appears anywhere in 01–05.
 
 Gate 2 binds hashes of 02–05 and the whole Decision Log. The user must send exactly `APPROVE UX SPEC`. One Control update sets `gate_2.approved_state_seq`, `gate_2.decision_log_sha256`, the coverage snapshot and appends `GATE_2_APPROVED`.

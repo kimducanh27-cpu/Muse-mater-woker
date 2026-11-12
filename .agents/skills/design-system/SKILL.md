@@ -109,7 +109,7 @@ Initialize the Control File from the template only after both sources are `VERIF
 2. Recompute prerequisite hashes and verify current state.
 3. Compute the next committed sequence, apply exactly one state change, append one event whose `state_seq` equals that value.
 4. Persist `state_seq` and a real local timestamp.
-5. Read back and verify state, event and hashes.
+5. Read back and verify state, event and hashes. **Compare the event's key set to `templates/CONTROL-FIELDS-v1.yaml` mechanically, key by key.** A read-back that compares the file to your memory of writing it always passes, including when it is wrong. Report missing and extra keys by name.
 6. Report success only after read-back succeeds.
 
 `state_seq` is a stale-read detector, not a lock. Only one tab may write at a time.
