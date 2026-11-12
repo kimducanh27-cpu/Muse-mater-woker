@@ -2,7 +2,7 @@
 
 **Cấu hình The Seed:** AI = **Sparring** · Research = **Deep** · Antigravity = **3 tabs**.
 
-This repository defines four processes in a seven-process workflow. Later contracts must be added explicitly; do not infer them from numbering.
+This repository defines four processes (01–04) of a numbered product-building sequence. Processes 05–08 are chartered in `process-charters/` and have no contract yet. The sequence is open-ended and no total count is asserted: a process is added only when it passes the admission test in `process-charters/README.md`. A number is a slot, not a promise.
 
 ## Architecture
 Principles: **upstream-first, orchestration-second**.
@@ -10,6 +10,21 @@ Principles: **upstream-first, orchestration-second**.
 - Put workspace-specific behavior in custom adapters, prompts and templates.
 - Never relabel a rewrite as an upstream Skill.
 - No automatic process handoff. Each stage has human gates and file-persisted state.
+
+## Process sequence
+
+| # | Process | Status | Entry artifact |
+|---|---|---|---|
+| 01 | The Seed | DEFINED | rough idea |
+| 02 | Product Discovery | DEFINED | approved Seed |
+| 03 | Product Definition | DEFINED | eligible Discovery decision |
+| 04 | App Flow | DEFINED | frozen Product Definition |
+| 05 | UX Design | CHARTER ONLY | frozen App Flow |
+| 06 | Design Systems | CHARTER ONLY | frozen UX Spec |
+| 07 | UI Design | CHARTER ONLY | frozen UX Spec + Design System |
+| 08 | Validation | CHARTER ONLY | all four frozen artifacts |
+
+Charters are scope documents, not contracts. A chartered process has no Skill, prompts, templates, Control File or gates and cannot be executed. See `process-charters/README.md` for the admission test that decides whether a stage earns its own process or stays a tab inside an existing one.
 
 ## Process 01 — The Seed
 Turns a rough idea into a structured problem/idea seed approved by the user. Three tabs: Explore / Sparring, Deep Research, Independent Review. Frozen output: product/seed/SEED.md.
@@ -61,7 +76,7 @@ Kit: app-flow-kit/README.md.
 - Process 01 → Process 02: approved Seed.
 - Process 02 → Process 03: eligible Discovery decision under Process 03's explicit handoff rules.
 - Process 03 → Process 04: frozen Product Definition with Gate 3 APPROVED and matching SHA-256.
-- Process 04 → a later product-design process: frozen App Flow with Gate 1, Gate 2 and Gate 3 approved, lifecycle FROZEN and matching canonical hash. A downstream process must verify the Process 04 Control File and frozen artifact hash; filename/status text alone is not proof of freeze.
+- Process 04 → Process 05 (chartered): frozen App Flow with Gate 1, Gate 2 and Gate 3 approved, lifecycle FROZEN and matching canonical hash, and no open Change Request in the freeze batch. A downstream process must verify the Process 04 Control File, the Register chain and the frozen artifact hash; filename/status text alone is not proof of freeze.
 
 ## Antigravity setup
 1. Place this repository at the project workspace root.
