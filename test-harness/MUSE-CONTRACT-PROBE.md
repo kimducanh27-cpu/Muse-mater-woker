@@ -44,6 +44,30 @@ Confirm: a model from `agy models list` is available; `GEMINI_API_KEY` is non-em
 
 Record the `agy` version and the model name in the report. A probe result is meaningless without them.
 
+## How to invoke agy
+
+Headless only. `agy` has an interactive TUI mode, and a TUI launched from an orchestrator never returns — it waits for keystrokes that nobody sends, and the whole probe session hangs with no error.
+
+```bash
+timeout 300 agy \
+  --output-format stream-json \
+  --dangerously-skip-permissions \
+  --model "$MODEL" \
+  < probe-prompt.md \
+  > "fixtures/probe-$N/transcript-$N.jsonl" 2>&1
+```
+
+Rules for the invocation:
+
+- **Never** use a flag that opens an interactive session. If `agy --help` shows only an interactive entry point, run it under `timeout` anyway and treat a timeout as `UNEXECUTABLE` — that is a real finding about the environment, not a failed probe.
+- **Always** wrap in `timeout`. A hung worker with no timeout is indistinguishable from a slow one, and you will lose the session.
+- **Prompt on stdin.** Writing the prompt into a file and redirecting it keeps the prompt out of the agent's own workspace scan, and avoids argv length limits.
+- **Model from `agy models list`.** `agy` only accepts models it lists. Put the effort in the model name if it offers variants.
+- **Read the final result event, not the exit code.** `agy` exits `0` on most failures.
+- **Keep stderr.** Redirect `2>&1` into the transcript. The reason a run failed is usually on stderr, and a transcript without it cannot be audited.
+
+If `agy` reports that it is updating itself mid-run, stop and pin the build. A probe that spans two binaries is not a controlled test.
+
 ## The five probes
 
 Each probe has a fixed setup, a fixed prompt, an expected behaviour, and a verdict vocabulary. Muse must not improvise new probes in the same run — add them to this file afterwards.
