@@ -33,6 +33,7 @@ Working artifacts:
 - 07_FLOW_REVIEW.md (append-only rounds)
 - 08_APP_FLOW_DRAFT.md (complete reviewed candidate, not a summary)
 - 09_DECISION_LOG.md (append-only, user-approved decisions)
+- 10_CHANGE_REQUEST_REGISTER.md (append-only sole source of CR business state; initialized from template 11)
 
 Frozen output: `product/app-flow/APP_FLOW.md`  
 Frozen-output schema: `templates/04-APP-FLOW/09-APP-FLOW.md`  
@@ -82,3 +83,16 @@ Do not create wireframes, visual layouts, colors, typography, design systems, po
 
 ## Verification status
 This checklist distinguishes repository/paper verification from live Antigravity runtime verification. Do not label Process 04 production-ready until live tests in the actual Windows workspace have evidence.
+
+## Schema v4 Change Request management
+
+- Control template: `templates/04-APP-FLOW/00-APP-FLOW-CONTROL.md` (schema v4).
+- Register template: `templates/04-APP-FLOW/11-CHANGE-REQUEST-REGISTER.md` → active artifact `product/app-flow/10_CHANGE_REQUEST_REGISTER.md` (Register v1).
+- Register owns CR business state; Control owns receipts, checkpoints, Gate state and frozen-output binding only.
+- Tab 01 is the sole CR Coordinator/Register writer. Tabs 02 and 03 are read-only for CR business state.
+- CR status and blocking obligations are reconstructed from the complete Register chain and matching Control receipts. A CR blocks downstream from RECORDED.
+- Only T01–T18 are legal. CL-04 is approved: no T19 and no ACCEPTED_FOR_IMPLEMENTATION → TRIAGE/NEEDS_CLARIFICATION edge. Use T14 for no-byte-change cancellation; T15/T16 after byte changes.
+- Normal commit = one Register event + one Control receipt. Abort unit = two Register events + one receipt; H(k) is an internal hash link, not a checkpoint.
+- Freeze and implementation-CR closure are separate stages. Tab 03 performs Freeze; Tab 01 closes each batch CR individually. A partial batch remains downstream-blocking.
+- v3→v4 migration requires an explicit attestation command, a full verified backup/manifest, and one complete Control replacement containing sequential migration and Register-initialization events.
+- The governing Skill defines the complete event, hash, state-machine, recovery, migration and downstream contract. This README is an index and must not redefine policy.

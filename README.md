@@ -47,8 +47,8 @@ Three tabs:
 2. Navigation & Screen Flow Specification
 3. Independent Flow Review and authorized freeze (only after the separate exact command `FREEZE APP FLOW`).
 
-Canonical state: product/app-flow/00_APP_FLOW_CONTROL.md.
-Working artifacts: 01–09, including append-only review history and decision log.
+Canonical state: `product/app-flow/00_APP_FLOW_CONTROL.md` (schema v4). CR business state is owned only by `product/app-flow/10_CHANGE_REQUEST_REGISTER.md`; Control stores receipts/checkpoints, not per-CR statuses.
+Working artifacts: 01–10, including append-only review history, decision log and Change Request Register (`10_CHANGE_REQUEST_REGISTER.md`).
 Frozen output: product/app-flow/APP_FLOW.md.
 
 The frozen output is copied from the complete reviewed draft; freeze changes only its status line. The canonical SHA-256 is stored in the Control File. Re-freeze archives the previous output as APP_FLOW.v<N>.md.
@@ -61,7 +61,7 @@ Kit: app-flow-kit/README.md.
 - Process 01 → Process 02: approved Seed.
 - Process 02 → Process 03: eligible Discovery decision under Process 03's explicit handoff rules.
 - Process 03 → Process 04: frozen Product Definition with Gate 3 APPROVED and matching SHA-256.
-- Process 04 → a later product-design process: frozen App Flow with Gate 1, Gate 2 and Gate 3 approved, lifecycle FROZEN and matching canonical hash. A downstream process must verify the Process 04 Control File and frozen artifact hash; filename/status text alone is not proof of freeze.
+- Process 04 → a later product-design process: frozen App Flow with Gate 1, Gate 2 and Gate 3 approved, lifecycle FROZEN and matching canonical hash; full Register chain verified; reconstructed blocking CR set empty; all implementation CRs in the freeze batch CLOSED_IMPLEMENTED against the same freeze tuple. A downstream process must verify Control receipts, Register chain and frozen artifact hashes; filename/status text alone is not proof of eligibility.
 
 ## Antigravity setup
 1. Place this repository at the project workspace root.
