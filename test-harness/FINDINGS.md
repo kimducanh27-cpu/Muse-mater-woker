@@ -13,6 +13,8 @@ Every finding below came from running the contract, not from reading it. Each ro
 | F-05 | Audit match set was defined by the reviewer (`component`) | Medium | FIXED | Procedure specifies scope, classification and required output |
 | F-06 | Read-back verified the artifact against the writer's memory | **Critical** | FIXED | Field contract plus a mechanical validator; probe re-run passes |
 | F-07 | Process 06 had never been executed | Coverage | PROBED — `COMPLIANT` | Probe 7; component admission rule held |
+| F-08 | Register event hash did not verify; agent reported success | **Critical** | FIXED BY SPEC, NOT RE-PROBED | `validate-register.py`; P04 Skill now requires recomputation |
+| F-09 | Register validator matched `### CRE-` inside prose | Tool | FIXED | Whole-line regex with a real ID |
 
 ## F-06 — the one that mattered
 

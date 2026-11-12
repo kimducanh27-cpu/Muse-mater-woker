@@ -417,6 +417,15 @@ Hashes use lowercase SHA-256 over exact on-disk bytes:
 - `previous_register_sha256`: whole Register bytes immediately before event append.
 - `event_block_sha256`: SHA-256 over the **normalized** event block. The preimage is the bytes from the first byte of `### CRE-<NNNN>` through the LF after `END_CRE`, excluding the following blank line, with the value of the `event_block_sha256` field replaced by the exact sentinel `<HASH_OMITTED>` before hashing. Writers hash the normalized block, then write the resulting lowercase digest into the field. Readers replace the stored value with the same sentinel before recomputing. The field never participates in its own preimage; a block hashed with the stored digest left in place is NOT_VERIFIED.
 - `resulting_register_sha256`: whole Register after append, including canonical separator.
+
+**Verify the digest before reporting a committed event.** Recompute the normalized block hash and compare it to the value you wrote. A digest you did not recompute is a number, not a hash. Observed failure: an agent wrote a well-formed event with correct field order, correct `previous_register_sha256` and a real timestamp, and stored a digest that verifies under neither the sentinel rule nor the naive rule. It reported success. Nothing in the contract would have caught it.
+
+Two mechanical notes that decide whether the check is even correct:
+
+- A block starts at a line that consists only of `### CRE-<digits>`. Do not match the bare string `### CRE-` anywhere in the file: it also appears inside prose and inside this contract's own schema example, and a match there produces a block that begins mid-sentence.
+- The preimage ends at the LF after `event_end_marker: END_CRE`. The blank separator line that follows is outside it.
+
+`test-harness/validate-register.py` performs both checks and reports the stored and computed digest on failure. Use it, or reproduce its logic. Do not trust a read-back that only confirms the file contains the value you wrote.
 - Verify the complete chain from the initialization anchor through the latest committed sequence; a matching final hash alone is insufficient.
 
 Each event contains as applicable: unique CRE-ID and CR-ID; contiguous register_seq; event_type; from/to status; exact user command; TAB_01; real local timestamp; submission ID/payload hash; source process/initiative/path/hash; affected Gate and paths; pre-append Control state_seq/hash; previous Register hash; transition evidence; event-block hash; end marker. Register events MUST NOT contain a predicted Control sequence or resulting whole-file hash.
