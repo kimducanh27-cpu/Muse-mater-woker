@@ -1,6 +1,6 @@
 # Process 06 — Design Systems (charter)
 
-> Status: **CHARTER — NO CONTRACT.** Scope only. No Skill, prompts, templates, Control File or gates exist.
+> Status: **REALIZED — SUPERSEDED BY CONTRACT.** The contract exists at `.agents/skills/design-system/SKILL.md` with `design-system-kit/` and `templates/06-DESIGN-SYSTEMS/`. This charter is retained for provenance: it records the scope argument, the platform decision, and the open questions the contract had to answer.
 
 ## 1. Why this process exists
 

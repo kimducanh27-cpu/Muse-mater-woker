@@ -13,7 +13,7 @@ A chartered process has no Skill, no prompts, no templates, no Control File and 
 | 03 | Product Definition | DEFINED | `.agents/skills/product-definition/SKILL.md` |
 | 04 | App Flow | DEFINED | `.agents/skills/app-flow/SKILL.md` |
 | 05 | UX Design | DEFINED | `.agents/skills/ux-design/SKILL.md` |
-| 06 | Design Systems | CHARTER ONLY | `process-charters/06-DESIGN-SYSTEMS.md` |
+| 06 | Design Systems | DEFINED | `.agents/skills/design-system/SKILL.md` |
 | 07 | UI Design | CHARTER ONLY | `process-charters/07-UI-DESIGN.md` |
 | 08 | Validation | CHARTER ONLY | `process-charters/08-VALIDATION.md` |
 

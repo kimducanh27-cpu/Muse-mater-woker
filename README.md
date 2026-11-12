@@ -20,7 +20,7 @@ Principles: **upstream-first, orchestration-second**.
 | 03 | Product Definition | DEFINED | eligible Discovery decision |
 | 04 | App Flow | DEFINED | frozen Product Definition |
 | 05 | UX Design | DEFINED | frozen App Flow |
-| 06 | Design Systems | CHARTER ONLY | frozen UX Spec |
+| 06 | Design Systems | DEFINED | frozen UX Spec |
 | 07 | UI Design | CHARTER ONLY | frozen UX Spec + Design System |
 | 08 | Validation | CHARTER ONLY | all four frozen artifacts |
 
@@ -94,12 +94,35 @@ Three lexical audits are enforced at Gate 2 and again at review: no named UI com
 
 Kit: ux-design-kit/README.md.
 
+## Process 06 — Design Systems
+Active Skill: .agents/skills/design-system/SKILL.md
+
+Defines the reusable visual language and the component contract: colour roles, type scale, spacing, radius, elevation, motion, a three-layer token system, and a component inventory in which every component cites the frozen screens that require it.
+
+Three tabs:
+1. Foundations and Tokens
+2. Tokens, Components, Accessibility
+3. Independent Review and authorized freeze (only after the separate exact command `FREEZE DESIGN SYSTEM`).
+
+Canonical state: `product/design-system/00_DS_CONTROL.md` (schema v1).
+Working artifacts: 01–07, including append-only review history and decision log.
+Frozen output: `product/design-system/DESIGN_SYSTEM.md`.
+
+This is the first process permitted to produce concrete visual values. Platform is recorded in the Control File (`android` / `jetpack-compose` / `material-3`) and is immutable per workspace.
+
+Three rules carry the process: a component exists only if a frozen screen cites it; tokens are layered primitive → semantic → component and a component token may not reach past the semantic layer; contrast is measured from resolved values, never declared.
+
+Process 06 defines a system. It does not place anything on a screen. Composition is Process 07.
+
+Kit: design-system-kit/README.md.
+
 ## Handoffs
 - Process 01 → Process 02: approved Seed.
 - Process 02 → Process 03: eligible Discovery decision under Process 03's explicit handoff rules.
 - Process 03 → Process 04: frozen Product Definition with Gate 3 APPROVED and matching SHA-256.
 - Process 04 → Process 05: frozen App Flow with Gate 1, Gate 2 and Gate 3 approved, lifecycle FROZEN and matching canonical hash; full Register chain verified; reconstructed blocking CR set empty; all implementation CRs in the freeze batch CLOSED_IMPLEMENTED against the same freeze tuple. A downstream process must verify Control receipts, Register chain and frozen artifact hashes; filename/status text alone is not proof of eligibility.
-- Process 05 → Process 06 (chartered): frozen UX Spec with Gate 1, Gate 2 and Gate 3 approved, lifecycle FROZEN and matching canonical hash. A downstream process must verify the Process 05 Control File and recompute the UX Spec hash; a status line is not proof of freeze.
+- Process 05 → Process 06: frozen UX Spec with Gate 1, Gate 2 and Gate 3 approved, lifecycle FROZEN and matching canonical hash. A downstream process must verify the Process 05 Control File and recompute the UX Spec hash; a status line is not proof of freeze.
+- Process 06 → Process 07 (chartered): frozen Design System with all three gates approved, lifecycle FROZEN, matching canonical hash, and `platform.target` equal to the platform Process 07 composes for.
 
 ## Antigravity setup
 1. Place this repository at the project workspace root.
