@@ -35,17 +35,17 @@
 | 2 | Control v4 + Register v1 | COMPLETE — static content created |
 | 3 | Canonical Skill + Review snapshot | COMPLETE — static content updated |
 | 4 | Three P04 prompts | COMPLETE — permission overlays added |
-| 5 | README/checklist/spec/decision record | IN PROGRESS |
-| 6 | Static verification + independent diff review | PENDING |
+| 5 | README/checklist/spec/decision record | COMPLETE — source plan and 15/15 Owner approvals archived |
+| 6 | Static verification + independent diff review | BLOCKED — P0 self-referential event hash definition (P04-IMP-01) |
 | 7 | Windows Antigravity runtime and Owner merge approval | NOT RUN / NOT AUTHORIZED |
 
 ## Commits
 
 - Phase 1: `16861152249e2c2983d8f067f677e32e22068db2`
-- Phase 2: pending
-- Phase 3: pending
-- Phase 4: pending
-- Phase 5: pending
+- Phase 2: `47b7777e9fdbc3c45bcea2f62ced86cfcbf9ad5f`
+- Phase 3: `d32c819e469bd483e2c32d47b53c2c720b3d98c4`
+- Phase 4: `086885fa11625768559c63a43d23c73994c089ea`
+- Phase 5: `0ba46747a36addff2d64a6003cd005f8c6c46fec`
 
 ## Open verification
 
@@ -54,3 +54,27 @@
 - Confirm no P03/out-of-scope path changed.
 - Run the independent DIFF-ONLY Hard Review on the actual branch diff.
 - Execute live Windows Antigravity runtime tests before any merge decision.
+
+## Static verification result — 2026-11-12
+
+- Compare `main` → `p04/implementation-v0.3.1`: 5 commits ahead, 0 behind, 15 changed files.
+- No changed file is in P03 or another excluded process.
+- Phase 1 exact-token check: one legacy `decision_event_kind: STATUS_CHANGED` corrected; zero remaining exact occurrences in affected canonical Skill/Decision Log; no `DECISION_DECISION_STATUS_CHANGED`.
+- Control template: schema v4; no `change_requests: []` duplicate CR state.
+- Register template: schema v1; 13 business states; T01–T18 present.
+- Verification checklist: 20 ST scenarios + 10 targeted AT scenarios, all NOT RUN.
+- Owner decisions: 10/10 ADR + 5/5 CL recorded APPROVED.
+- Live Antigravity runtime: NOT RUN.
+
+## P0 blocker — P04-IMP-01: Self-referential event block hash
+
+**Evidence:** The approved specification requires each Register event body to contain `event_block_sha256` (Section 4.3) and defines that hash as SHA-256 of the exact bytes from `### CRE-<NNNN>` through the LF after `event_end_marker: END_CRE` (Section 4.4). The hash field itself lies inside that byte range. The Register v1 template reproduces both requirements.
+
+**Why this blocks implementation:** To calculate the field value, the exact event bytes depend on the hash value being calculated. This creates a self-referential preimage with no deterministic ordinary SHA-256 construction. Therefore no conforming writer or reader can calculate and verify the specified event hash as written.
+
+**Required Owner resolution (choose one normative model):**
+
+1. **Preferred minimal correction:** Define the hash preimage as the canonical event block with the `event_block_sha256` value replaced by a fixed sentinel (for example `event_block_sha256: <HASH_OMITTED>`). Writers hash that normalized preimage, then write the digest into the field. Readers apply the same normalization before recomputing. This preserves the field and receipt structure but changes the 'exact bytes' rule.
+2. **Alternative:** Remove `event_block_sha256` from Register event bodies and store it only in the Control receipt, calculated over the exact Register event bytes excluding any self-hash field. This changes the event schema and receipt contract more substantially.
+
+Until the Owner approves one model and the spec/template/Skill are aligned, do not implement a Register writer, migration routine, or runtime hash tests, and do not mark Phase 6 PASS. Existing contract/template edits remain on the dedicated branch for review; `main` is unchanged.
