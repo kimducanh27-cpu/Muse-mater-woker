@@ -13,7 +13,7 @@ Every finding below came from running the contract, not from reading it. Each ro
 | F-05 | Audit match set was defined by the reviewer (`component`) | Medium | FIXED | Procedure specifies scope, classification and required output |
 | F-06 | Read-back verified the artifact against the writer's memory | **Critical** | FIXED | Field contract plus a mechanical validator; probe re-run passes |
 | F-07 | Process 06 had never been executed | Coverage | PROBED — `COMPLIANT` | Probe 7; component admission rule held |
-| F-08 | Register event hash did not verify; agent reported success | **Critical** | FIXED BY SPEC, NOT RE-PROBED | `validate-register.py`; P04 Skill now requires recomputation |
+| F-08 | Register event hash did not verify; agent reported success | **Critical** | FIXED — RE-PROBED, `PASS` | Probe 9: same model, validator in the loop, digest reproduces |
 | F-09 | Register validator matched `### CRE-` inside prose | Tool | FIXED | Whole-line regex with a real ID |
 
 ## F-06 — the one that mattered
@@ -62,4 +62,8 @@ Same model, same runner, different rule. The behaviour followed the writing.
 
 ## Rule for future findings
 
-A finding is closed when the same probe, re-run against the changed contract, produces the behaviour the contract now specifies. A finding closed by editing a document alone is a claim, not a fix. F-06 is the only one closed to that standard; the others are closed by specification and have not been re-probed.
+A finding is closed when the same probe, re-run against the changed contract, produces the behaviour the contract now specifies. A finding closed by editing a document alone is a claim, not a fix.
+
+Two findings meet that standard: **F-06** and **F-08**. Both were closed by putting a mechanical check between the write and the claim, and both were verified by re-running the identical probe with the same model.
+
+The other seven are closed by specification and have not been re-probed. They are listed as fixed because the contract now says something it did not say before, not because the behaviour was observed to change.
