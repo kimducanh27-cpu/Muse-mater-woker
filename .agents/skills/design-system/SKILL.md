@@ -138,6 +138,22 @@ Before appending round N: verify the current review hash equals `review.latest_r
 
 If the append succeeds but the Control update fails, do not append again. Recovery requires `RECOVER REVIEW ROUND [N]` and every precondition in the template.
 
+## Method references
+
+Design method lives in `upstream/anthropics/knowledge-work-plugins/design/skills/`, copied verbatim from an Apache-2.0 source:
+
+| File | Read it for |
+|---|---|
+| `design-system/SKILL.md` | Foundations and token method |
+| `accessibility-review/SKILL.md` | Contrast and focus measurement |
+| `design-critique/SKILL.md` | Review structure for Tab 03 |
+
+These are **method, not authority**, and they sit outside `.agents/skills/` so they cannot be loaded in place of this contract.
+
+Deviations recorded in `upstream/anthropics/knowledge-work-plugins/SOURCE.md` bind here: upstream audits **WCAG 2.1** while this process records **2.2**, so contrast and criterion coverage are audited against 2.2; and upstream assumes connected tools, so a connector-dependent step is `NOT APPLICABLE` and the skip is recorded.
+
+When method and contract disagree, the contract wins.
+
 ## Three-tab workflow
 
 ### Tab 01 — Foundations and tokens

@@ -23,24 +23,25 @@ Checked: **2026-11-10**. Re-checked: **2026-11-12** for Processes 05–08 (secti
 - License status: the upstream repository README declares MIT. A root `LICENSE` file was not present in the repository root listing checked on 2026-11-10. This is recorded rather than fabricating a copyright notice or license file. Verify the upstream repository's current license before further redistribution.
 - Handling: source and references are retained verbatim for inspection, but are **not** placed in `.agents/skills/` and are not part of the three-tab active workflow.
 
-## 3. anthropics/knowledge-work-plugins — evaluated, not yet copied
+## 3. anthropics/knowledge-work-plugins — copied verbatim 2026-11-12
 
 - Repository: https://github.com/anthropics/knowledge-work-plugins
-- Licence: Apache-2.0 (repository root `LICENSE`).
-- Status: **evaluated 2026-11-12 for Processes 05–08; nothing copied into this repository yet.** No blob SHA can be recorded until a file is actually copied, and none is claimed here.
+- Licence: Apache-2.0 (repository root `LICENSE`; package licence at `LICENSES/ANTHROPIC-PRODUCT-MANAGEMENT-LICENSE.txt`).
+- Status: **four files copied byte-for-byte** into `upstream/anthropics/knowledge-work-plugins/design/`, plus `CONNECTORS.md` so their relative links resolve.
+- Provenance, blob SHAs, sizes, SHA-256 values and recorded deviations: `upstream/anthropics/knowledge-work-plugins/SOURCE.md`.
 
-Candidate skills, by target process:
-
-| Target | Upstream path |
+| Copied file | Used by |
 |---|---|
-| 05 UX Design | `design/skills/user-research`, `design/skills/ux-copy`, `design/skills/accessibility-review`, `design/skills/design-critique` |
-| 06 Design Systems | `design/skills/design-system`, `design/skills/accessibility-review`, `design/skills/design-critique` |
-| 07 UI Design | `design/skills/design-handoff`, `design/skills/design-critique`, `design/skills/accessibility-review` |
-| 08 Validation | `engineering/skills/testing-strategy`, `design/skills/accessibility-review`, `design/skills/design-critique` |
+| `design/skills/accessibility-review/SKILL.md` | 05 Tab 02, 06 Tab 02, 08 audit |
+| `design/skills/ux-copy/SKILL.md` | 05 Tab 02 copy intent |
+| `design/skills/design-system/SKILL.md` | 06 Tab 01–02 |
+| `design/skills/design-critique/SKILL.md` | 05 and 06 Tab 03 review method |
 
-These are domain skills, not process contracts. They supply method for a tab; they do not supply gates, Control Files, hashes or handoff rules. Copying one of them does not create a process, and a process that uses one is still a custom adapter.
+These live outside `.agents/skills/` on purpose. Installed as active skills they would compete with the process contracts, and a tab could load `design-system` instead of the Process 06 Skill — losing its write permissions, hash binding and gates without any error being raised.
 
-At copy time, record for each file: source URL, retrieval date, upstream blob SHA, licence, and the local path. Until then this section is a candidate list only.
+Two deviations are recorded rather than patched, because patching would make the copies non-verbatim: upstream audits against WCAG 2.1 while the contracts require 2.2, and upstream assumes connectors that do not exist here. See `SOURCE.md` sections D-1 and D-2.
+
+At copy time, record for each file: source URL, retrieval date, upstream blob SHA, licence, and the local path. Done — see `SOURCE.md`.
 
 ## 4. pbakaus/impeccable — verified 2026-11-12, reference-only
 

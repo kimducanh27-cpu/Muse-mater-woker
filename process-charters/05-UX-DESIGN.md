@@ -91,6 +91,8 @@ Gate 2 binds the exact hashes of artifacts 01–05 and the whole Decision Log. A
 
 `impeccable` is Apache-2.0 and is reference-only — it is a design agent that writes code and carries a runtime, so it cannot be an active Skill inside a three-tab gate model. See `UPSTREAMS.md` section 4. The Anthropic design skills are Apache-2.0 and may be copied verbatim into `.agents/skills/` or `upstream/`. Custom gate behaviour goes in a `ux-design` adapter and is never described as upstream.
 
+**What the contract actually did (2026-11-12).** `accessibility-review`, `ux-copy` and `design-critique` were copied byte-for-byte into `upstream/anthropics/knowledge-work-plugins/design/skills/` with blob SHAs recorded in `SOURCE.md`. `user-research` was **not** copied: its method overlaps Process 02 Discovery, and duplicating it here would give two processes a competing claim on evidence discipline. The `impeccable` rows remain citations only.
+
 ## 8. Open questions — must be resolved before the contract is written
 
 1. **Text-only UX artefact.** Every other process produces prose and tables. A UX contract without any spatial artefact may be too weak to constrain Process 06 and 07. Options: (a) accept text-only, hierarchy expressed as ordered lists; (b) allow a constrained ASCII/grid layout block inside artifact 01; (c) allow an external image referenced by hash. Current recommendation: (b), because it is diffable and hashable.

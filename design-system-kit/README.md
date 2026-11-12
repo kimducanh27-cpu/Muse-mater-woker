@@ -99,16 +99,17 @@ Do not create screen layout, placement, regions, composition, wireframes, final 
 
 ## Upstream method sources
 
-| Source | Used for |
-|---|---|
-| `pbakaus/impeccable` → `skill/reference/extract.md` | Token and component extraction method |
-| `pbakaus/impeccable` → `skill/reference/document.md` | `DESIGN.md` structure and completeness |
-| `pbakaus/impeccable` → `skill/reference/craft-floor.md` | Quality floor and absolute bans |
-| `pbakaus/impeccable` → `skill/reference/android.md` | Android platform rules |
-| `anthropics/knowledge-work-plugins` → `design/skills/design-system` | Foundations and token method |
-| `anthropics/knowledge-work-plugins` → `design/skills/accessibility-review` | Contrast and focus measurement |
+**Copied verbatim** into `upstream/anthropics/knowledge-work-plugins/design/skills/` (Apache-2.0, blob SHAs in `SOURCE.md`):
 
-`impeccable` is Apache-2.0 and reference-only; see `UPSTREAMS.md` section 4.
+| Local file | Used for |
+|---|---|
+| `design-system/SKILL.md` | Foundations and token method |
+| `accessibility-review/SKILL.md` | Contrast and focus measurement |
+| `design-critique/SKILL.md` | Review structure for Tab 03 |
+
+**Cited, not copied:** `pbakaus/impeccable` `extract.md`, `document.md`, `craft-floor.md`, `android.md`. Its playbooks call a runtime binary, so vendoring them would bake a broken dependency into the repository.
+
+Two deviations bind: upstream audits WCAG 2.1 while this process records 2.2, and upstream assumes connectors that do not exist here. Recorded in `SOURCE.md`, not patched in the copied bytes.
 
 ## Verification status
 

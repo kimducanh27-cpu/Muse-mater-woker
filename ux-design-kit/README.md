@@ -106,15 +106,19 @@ The product is Android native (recorded in `process-charters/06-DESIGN-SYSTEMS.m
 
 ## Upstream method sources
 
-This kit supplies gates, hashes and handoff rules. It does not supply design method, and it does not pretend to. Method comes from two Apache-2.0 sources recorded in `UPSTREAMS.md`:
+This kit supplies gates, hashes and handoff rules. It does not supply design method, and it does not pretend to.
 
-| Source | Used for |
+**Copied verbatim** into `upstream/anthropics/knowledge-work-plugins/design/skills/` (Apache-2.0, blob SHAs in `SOURCE.md`):
+
+| Local file | Used for |
 |---|---|
-| `pbakaus/impeccable` → `skill/reference/shape.md` | Task discovery before any UI decision |
-| `pbakaus/impeccable` → `skill/reference/critique.md` | Heuristic scoring rubric for the Tab 03 review |
-| `anthropics/knowledge-work-plugins` → `design/skills/user-research`, `ux-copy`, `accessibility-review`, `design-critique` | Evidence discipline, copy intent, accessibility taxonomy, critique method |
+| `accessibility-review/SKILL.md` | Accessibility criterion coverage for artifact 05 |
+| `ux-copy/SKILL.md` | Copy-intent method for artifact 04 |
+| `design-critique/SKILL.md` | Review structure for Tab 03 |
 
-`impeccable` is **reference-only**. It is a design agent that writes production code and ships a runtime binary; adopting it as the active Skill would collapse Processes 05–07 into one command and make Gates 1 and 2 decorative. Read its playbooks, cite the playbook and the upstream commit in the artifact that uses it, and do not vendor it.
+**Cited, not copied:** `pbakaus/impeccable` `skill/reference/shape.md` (task discovery) and `critique.md` (heuristic scoring). It is a design agent that writes production code and ships a runtime binary, so vendoring its playbooks would bake a broken dependency into the repository. See `UPSTREAMS.md` section 4.
+
+Two deviations bind when using the copied files: upstream audits WCAG 2.1 while this process records 2.2, and upstream assumes connectors that do not exist here. Both are recorded in `SOURCE.md` and neither is patched in the copied bytes.
 
 ## Verification status
 

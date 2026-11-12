@@ -76,6 +76,8 @@ Gate 2 binds foundations **and** the component library together. A component tha
 
 `impeccable` is Apache-2.0 and reference-only; see `UPSTREAMS.md` section 4. Gate behaviour lives in a `design-system` adapter.
 
+**What the contract actually did (2026-11-12).** `design-system`, `accessibility-review` and `design-critique` were copied byte-for-byte into `upstream/anthropics/knowledge-work-plugins/design/skills/` with blob SHAs in `SOURCE.md`. The `impeccable` rows remain citations only, because its playbooks invoke a runtime binary and copying the markdown alone would bake a broken dependency into the repository.
+
 ## 8. Open questions — must be resolved before the contract is written
 
 1. **Theme support in v1.** A single theme is cheaper; retrofitting a second theme after 40 components exist is expensive. Recommendation: build the semantic token layer so a second theme is *possible*, but ship exactly one theme in v1 and say so explicitly in the Control File. With Android chosen, the second theme is almost certainly dark mode, and Material 3 makes the semantic layer mandatory rather than optional.

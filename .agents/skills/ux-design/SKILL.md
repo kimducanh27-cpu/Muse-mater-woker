@@ -134,6 +134,25 @@ Before appending round N, verify the current review hash equals `review.latest_r
 
 If the append succeeds but the Control update fails, do not append the round again. Recovery requires the exact command `RECOVER REVIEW ROUND [N]` and every precondition in the review template: Control hash and sequence still equal the recorded pre-append values, exactly one new round exists after an unchanged prefix, no registration event exists, and all referenced hashes still match. Otherwise remain `NOT_VERIFIED`.
 
+## Method references
+
+Design method lives in `upstream/anthropics/knowledge-work-plugins/design/skills/`, copied verbatim from an Apache-2.0 source:
+
+| File | Read it for |
+|---|---|
+| `accessibility-review/SKILL.md` | Accessibility criterion coverage for artifact 05 |
+| `ux-copy/SKILL.md` | Copy-intent method for artifact 04 |
+| `design-critique/SKILL.md` | Review structure for Tab 03 |
+
+These are **method, not authority**. They are deliberately outside `.agents/skills/`: installed as active skills they would compete with this contract and a tab could load `accessibility-review` instead, losing the gate rules without any error.
+
+Two deviations are recorded in `upstream/anthropics/knowledge-work-plugins/SOURCE.md` and both bind here:
+
+- Upstream audits **WCAG 2.1**; this process records **2.2**. Audit against 2.2 and say so. Do not downgrade to match the copied text.
+- Upstream assumes connected tools. A connector-dependent step is `NOT APPLICABLE` here, and skipping it is recorded. Inventing a connector result is fabrication.
+
+When method and contract disagree, the contract wins. Cite the upstream path in the artifact that used it.
+
 ## Three-tab workflow
 
 No automatic handoff. Each tab runs in a fresh conversation and reconstructs state from files.
