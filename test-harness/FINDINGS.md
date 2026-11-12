@@ -9,12 +9,14 @@ Every finding below came from running the contract, not from reading it. Each ro
 | F-01 | "Verify the Control File" had no defined checks | High | FIXED | Six enumerated checks added to P05 Tab 01 entry |
 | F-02 | Probe fixtures needed a Process 04 workspace | Harness | FIXED | `test-harness/make-fixture.py` |
 | F-03 | Frozen App Flow drops the `NODE`/`TRANSITION` IDs P05 was required to cite | High | FIXED | Template 01 no longer requires them |
-| F-04 | Component audit matched substrings (`discards` → `card`) | Medium | FIXED | Procedure specifies word boundaries |
-| F-05 | Audit match set was defined by the reviewer (`component`) | Medium | FIXED | Procedure specifies scope, classification and required output |
+| F-04 | Component audit matched substrings (`discards` → `card`) | Medium | FIXED — RE-PROBED | `validate-ux-model.py`: passes correct prose, fails planted violations |
+| F-05 | Audit match set was defined by the reviewer (`component`) | Medium | FIXED — RE-PROBED | Same; two-sided evidence |
 | F-06 | Read-back verified the artifact against the writer's memory | **Critical** | FIXED | Field contract plus a mechanical validator; probe re-run passes |
 | F-07 | Process 06 had never been executed | Coverage | PROBED — `COMPLIANT` | Probe 7; component admission rule held |
 | F-08 | Register event hash did not verify; agent reported success | **Critical** | FIXED — RE-PROBED, `PASS` | Probe 9: same model, validator in the loop, digest reproduces |
 | F-09 | Register validator matched `### CRE-` inside prose | Tool | FIXED | Whole-line regex with a real ID |
+| F-10 | Banned term `tab` matched `Tab 01` — failed every correct artifact | **High** | FIXED — RE-PROBED | Mask `Tab <n>` before matching; probe 10 passes |
+| F-11 | Six enumerated Control checks were never executed | **High** | OPEN | Writing a checklist does not make it run |
 
 ## F-06 — the one that mattered
 
@@ -64,6 +66,8 @@ Same model, same runner, different rule. The behaviour followed the writing.
 
 A finding is closed when the same probe, re-run against the changed contract, produces the behaviour the contract now specifies. A finding closed by editing a document alone is a claim, not a fix.
 
-Two findings meet that standard: **F-06** and **F-08**. Both were closed by putting a mechanical check between the write and the claim, and both were verified by re-running the identical probe with the same model.
+Four findings meet that standard: **F-04**, **F-05**, **F-06** and **F-08**. All four were closed by putting a mechanical check between the write and the claim, and all four were verified by re-running the identical probe with the same model.
+
+**F-11** is the counter-example. Six checks were written into the Skill, firmly worded and enumerated, and the agent skipped all six because nothing in its acceptance condition required them. Writing a check down is not the same as running it.
 
 The other seven are closed by specification and have not been re-probed. They are listed as fixed because the contract now says something it did not say before, not because the behaviour was observed to change.

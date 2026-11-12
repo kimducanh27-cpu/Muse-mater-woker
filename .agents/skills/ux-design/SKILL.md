@@ -208,11 +208,12 @@ Before Gate 2, run explicit set comparisons and show the compared IDs:
 
   **Procedure.**
 
-  1. Scope: the artifact body only. Exclude any section headed `Rules for this artifact`, any fenced block that states the rule, and any text inside a quoted source excerpt marked as quoted.
-  2. Matching: case-insensitive, whole word, on word boundaries. `card` matches `card` and `Card`; it does not match `discards` or `cardboard`. `tab` does not match `table`.
-  3. For every match, emit one row: the line number, the exact matched term, and the **full sentence** containing it.
-  4. Classify each row: `VIOLATION` if the term names an affordance the user interacts with, `FALSE POSITIVE` if it appears in prose that describes a need rather than an affordance. State the reason in one clause.
-  5. Report the count of `VIOLATION` rows. Gate 2 fails on any count above zero.
+  1. Scope: the artifact body only. Exclude any section headed `Rules for this artifact`, any fenced block that states the rule or draws a structural block, and any text inside a quoted source excerpt marked as quoted.
+  2. **Exclude this workflow's own vocabulary before matching.** `Tab 01`, `Tab 02`, `Tab 03` and `TAB_01` are process roles, not UI affordances. So are `screen`, `state`, `pattern` and `component` when they appear as process nouns rather than as the name of something a user taps. Without this exception every artifact fails on its own header line — observed, and it is how an audit loses credibility on first contact.
+  3. Matching: case-insensitive, whole word, on word boundaries. `card` matches `card` and `Card`; it does not match `discards` or `cardboard`. `tab` does not match `table`, and it does not match `Tab 01`.
+  4. For every match, emit one row: the line number, the exact matched term, and the **full sentence** containing it.
+  5. Classify each row: `VIOLATION` if the term names an affordance the user interacts with, `FALSE POSITIVE` if it appears in prose that describes a need rather than an affordance. State the reason in one clause.
+  6. Report the count of `VIOLATION` rows. Gate 2 fails on any count above zero.
 
   **Why the procedure exists.** Two failure modes were observed when the audit was a bare word list. A literal grep matched `card` inside `discards` and failed a correct artifact. A model matched `component`, which is not on the list, and passed the artifact for the wrong reason. Neither implemented the rule. The sentence requirement in step 3 is what makes a wrong match visible in the record instead of buried in a judgement.
 
