@@ -93,4 +93,5 @@ The Owner approved model 1 on 2026-11-12 and the Skill and template are aligned 
 - Draft Pull Request: [#1 — P04 v0.3.1 implementation](https://github.com/kimducanh27-cpu/app-adr-ui/pull/1)
 - PR status: OPEN / DRAFT / DO NOT MERGE. The P0 specification blocker is resolved; merge is still not authorized by the Owner, and runtime verification has not run.
 - Static diff review record: `app-flow-kit/reviews/P04-STATIC-DIFF-REVIEW-2026-11-12.md`.
+- Status reconciliation: `app-flow-kit/specs/P04-STATUS-RECONCILIATION-2026-11-12.md`. The approved plan still reads `HOLD` and "Owner decisions remain PENDING" because it is a hashed artifact that must not be rewritten. The reconciliation names every stale statement and the authority that supersedes it, so the workspace is not left in the contradictory state its own Section 0.2 forbids.
 - Required next decision: none at specification level. The remaining gate is Owner merge authorization plus live Windows runtime evidence.
