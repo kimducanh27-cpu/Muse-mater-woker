@@ -68,13 +68,13 @@ Use each named template and preserve its headings, tables and columns. Where a s
 
 ## The token layering rule
 
-Three layers, and each layer may only reference the one above it:
+Three layers, and each layer may only reference the one above it. **The three-tier model is Material 3's, not a local invention**: Material names the tiers reference (`ref`), system (`sys`) and component (`comp`). Adopt those tier labels so this contract maps cleanly onto the platform. The token *names* inside each tier are product decisions — a product system token sits at Material's `sys` tier and may either extend `md.sys.*` or replace it.
 
-1. **Primitive** — a raw value with no meaning: `palette.blue.600`, `size.4`. Never referenced by a component.
-2. **Semantic** — a role: `color.action.primary`, `space.inline.md`, `elevation.raised`. This is the layer that makes a second theme possible and that accessibility is measured against.
-3. **Component** — a component-scoped alias: `button.primary.container`. May reference semantic tokens only.
+1. **Reference (`ref`)** — a raw value with no meaning: `ref.palette.blue.600`, `ref.size.4`. Never referenced by a component.
+2. **System (`sys`)** — a role: `sys.color.action.primary`, `sys.space.inline.md`, `sys.elevation.raised`. This is the tier that makes a second theme possible and that accessibility is measured against.
+3. **Component (`comp`)** — a component-scoped alias: `comp.button.primary.container`. May reference system tokens only.
 
-A component that references a primitive token directly is a Gate 2 defect, because it silently opts out of theming and of the contrast measurement that semantic tokens carry. A semantic token with no role statement is a naming defect: "blue" is not a role, "action.primary" is.
+A component that references a reference token directly is a Gate 2 defect, because it silently opts out of theming and of the contrast measurement that system tokens carry. A system token with no role statement is a naming defect: "blue" is not a role, "action.primary" is.
 
 ## Component admission rule
 
@@ -178,7 +178,7 @@ Stop after Gate 1.
 Entry: re-verify both sources, Gate 1 with a matching event and sequence anchor, every Gate 1 hash, and the Decision Log identity and hash.
 
 Work:
-- Build the three-layer token contract. Every semantic token names a role and every component token references a semantic token only.
+- Build the three-layer token contract. Every system token names a role and every component token references a system token only.
 - Build the component inventory. For each component: purpose, anatomy, variants, sizes, interaction states, slots, content limits, and the **citing SCREEN IDs**.
 - A component with no citing screen is not admitted. A screen with no citing component means either a missing component or an inexpressible requirement — decide which, and record it.
 - Measure contrast from actual token values for every text/background and icon/background pair the inventory can produce. Declared contrast is not evidence.
@@ -187,7 +187,7 @@ Work:
 Before Gate 2, run and show these set comparisons:
 - Every component's citing SCREEN IDs exist in the frozen Process 05 inventory.
 - Every SCREEN ID in the frozen inventory cites at least one component.
-- Every component token references a semantic token; every semantic token has a role statement.
+- Every component token references a system token; every system token has a role statement.
 - Every contrast pair has a computed ratio and a pass/fail against the recorded conformance level.
 - No screen layout, placement or composition appears anywhere in 02–04.
 - No final copy, no code, no image.
@@ -246,7 +246,7 @@ Every invalidation appends timestamp, `state_seq`, changed paths, previous and n
 ## Required quality checks
 
 - Every foundation value has a role statement and a stated use.
-- Every token is layered correctly; no component references a primitive.
+- Every token is layered correctly; no component reaches past the system layer.
 - Every component cites at least one frozen SCREEN ID.
 - Every frozen screen cites at least one component, or has a recorded decision explaining why not.
 - Every contrast pair has a computed ratio, not an assertion.

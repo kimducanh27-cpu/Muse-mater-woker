@@ -9,6 +9,7 @@ Principles: **upstream-first, orchestration-second**.
 - Preserve suitable upstream Skills verbatim where license allows; record source, SHA and license.
 - Put workspace-specific behavior in custom adapters, prompts and templates.
 - Never relabel a rewrite as an upstream Skill.
+- Label every rule VERBATIM, ADAPTED or LOCAL. Prefer an upstream over a local invention; when none exists, say so instead of letting a local choice read like a standard. See `PROVENANCE.md`.
 - No automatic process handoff. Each stage has human gates and file-persisted state.
 
 ## Process sequence

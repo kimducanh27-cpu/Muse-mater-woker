@@ -49,8 +49,8 @@ A file adopted as a baseline must be byte-identical to the template and contain 
 | Components with zero citing screens | `0` | | PASS / FAIL |
 | Citing SCREEN IDs absent from the frozen inventory | `0` | | PASS / FAIL |
 | Screens citing at least one component | = screens in source | | PASS / FAIL |
-| Component tokens referencing a primitive | `0` | | PASS / FAIL |
-| Semantic tokens without a role statement | `0` | | PASS / FAIL |
+| Component tokens referencing a reference token | `0` | | PASS / FAIL |
+| System tokens without a role statement | `0` | | PASS / FAIL |
 | Contrast pairs measured | = pairs required | | PASS / FAIL |
 | Contrast pairs failing | `0` | | PASS / FAIL |
 | Colour-only state signals | `0` | | PASS / FAIL |

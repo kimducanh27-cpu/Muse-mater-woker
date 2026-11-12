@@ -76,7 +76,7 @@ Material 3 is a vocabulary, not a decision. Every component still needs a citing
 ## The three boundaries this process is judged on
 
 1. **Component admission.** A component exists only if a frozen Process 05 screen requires it, and it must cite the SCREEN IDs. `components_defined` must equal `components_cited` at Gate 2. Without this rule, every design system becomes a library of everything the author could imagine, and Process 07 composes from what is available rather than from what is needed.
-2. **Token layering.** Primitive → semantic → component, each referencing only the layer above. A component token pointing at a primitive opts out of theming and out of the contrast guarantee. A semantic token with no role statement is a naming defect.
+2. **Token layering.** Reference → system → component (`ref` / `sys` / `comp`), each referencing only the tier above. The three-tier model is Material 3's, adopted rather than invented. A component token pointing at a reference token opts out of theming and out of the contrast guarantee. A system token with no role statement is a naming defect.
 3. **Measured contrast.** Every text/background and icon/background pair the inventory can produce, computed from resolved values, with the method stated. A declared ratio is not evidence. `contrast_pairs_measured` must equal `contrast_pairs_total` at Gate 2.
 
 ## Decision Log integrity

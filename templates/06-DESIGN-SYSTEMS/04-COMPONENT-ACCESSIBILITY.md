@@ -15,7 +15,7 @@
 
 ## Contrast pairs — measured
 
-Every text/background and icon/background combination the inventory can produce. Compute the ratio from the resolved primitive values behind the semantic tokens.
+Every text/background and icon/background combination the inventory can produce. Compute the ratio from the resolved reference values behind the system tokens.
 
 | Pair ID | Foreground token | Background token | Resolved hex | Ratio | Required | Result |
 |---|---|---|---|---|---|---|

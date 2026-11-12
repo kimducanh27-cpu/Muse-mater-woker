@@ -23,7 +23,7 @@
 
 ## Colour roles
 
-| Role ID | Role | Primitive reference | Use | Must not be used for |
+| Role ID | Role | Reference token | Use | Must not be used for |
 |---|---|---|---|---|
 | `color.action.primary` | The one affirmative action on a screen | | | Secondary actions, destructive actions |
 | `color.action.destructive` | An action that removes or destroys | | | Anything reversible |

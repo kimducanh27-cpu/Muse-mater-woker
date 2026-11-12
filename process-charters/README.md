@@ -34,7 +34,7 @@ A new process may be created only when all six hold. Any failure means the work 
 3. **Clean boundary.** It can state, in one paragraph, what it must never produce. If that paragraph is vague, the boundary is not real.
 4. **Blocking gate.** A downstream process can be blocked by its absence. A process nothing depends on is documentation, not a process.
 5. **Verifiable evidence.** Its claims can be checked by set comparison, hash comparison or executed test — not by re-reading prose and agreeing with it.
-6. **Upstream or adapter.** It either preserves a licensed upstream Skill verbatim, or its custom behaviour is isolated in an adapter that is never described as upstream.
+6. **Upstream or adapter.** It either preserves a licensed upstream Skill verbatim, or its custom behaviour is isolated in an adapter that is never described as upstream. Every normative rule must carry a provenance label — VERBATIM, ADAPTED or LOCAL — under `PROVENANCE.md`. A rule with no label is an unlabelled invention and blocks the contract.
 
 ## Cross-cutting rules for every new process
 
@@ -47,6 +47,7 @@ These are inherited from Processes 01–04 and are not re-negotiable per process
 - **Hash-anchored handoff.** The downstream process verifies the upstream Control File and recomputes the frozen artifact hash. A status line is not proof of freeze.
 - **Independent review tab.** Review is executed by a reviewer with a clean context and read-only rights on upstream artifacts. The reviewer may append findings and its own review history; it may not repair the artifacts it judges. Remediation returns to the owning tab.
 - **Fail closed.** Missing, unreadable, mismatched or unorderable evidence yields `NOT_VERIFIED`, never a best guess.
+- **Labelled provenance.** Every rule is VERBATIM (blob SHA), ADAPTED (source plus the change) or LOCAL (rationale, risk, retirement condition). See `PROVENANCE.md`. Prefer an upstream over a local invention; when no upstream exists, say so rather than letting a local choice read like a standard.
 - **Schema per process.** Each new process starts at Control schema `v1`. There is no inherited migration path from another process's schema.
 
 ## Amendment

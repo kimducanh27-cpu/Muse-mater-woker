@@ -45,10 +45,10 @@ Every result below starts as `NOT RUN`. A checked paper scenario is not proof th
 
 | Scenario | Expected behavior | Result |
 |---|---|---|
-| A component token references a primitive token | Gate 2 refuses; opts out of theming and contrast | NOT RUN |
-| A semantic token is named after a colour ("blue") with no role | Naming defect; Gate 2 refuses | NOT RUN |
-| A semantic token references another semantic token in a cycle | Gate 2 refuses | NOT RUN |
-| A component token references a non-existent semantic token | Gate 2 refuses | NOT RUN |
+| A component token references a reference token | Gate 2 refuses; opts out of theming and contrast | NOT RUN |
+| A system token is named after a colour ("blue") with no role | Naming defect; Gate 2 refuses | NOT RUN |
+| A system token references another system token in a cycle | Gate 2 refuses | NOT RUN |
+| A component token references a non-existent system token | Gate 2 refuses | NOT RUN |
 | A value appears in the token contract but not in foundations | Gate 2 refuses | NOT RUN |
 | A token has no forbidden-use entry where the role implies one | Review finding; `MINOR` | NOT RUN |
 
