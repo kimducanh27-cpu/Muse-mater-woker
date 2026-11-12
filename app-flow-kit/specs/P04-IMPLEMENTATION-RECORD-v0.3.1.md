@@ -58,7 +58,7 @@
 
 ## Static verification result — 2026-11-12
 
-- Compare `main` → `p04/implementation-v0.3.1`: 5 commits ahead, 0 behind, 15 changed files.
+- Compare `main` → `p04/sentinel-fix`: 8 commits ahead, 0 behind, 16 changed files.
 - No changed file is in P03 or another excluded process.
 - Phase 1 exact-token check: one legacy `decision_event_kind: STATUS_CHANGED` corrected; zero remaining exact occurrences in affected canonical Skill/Decision Log; no `DECISION_DECISION_STATUS_CHANGED`.
 - Control template: schema v4; no `change_requests: []` duplicate CR state.
