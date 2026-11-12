@@ -51,6 +51,7 @@ Working artifacts:
 - `07_FLOW_REVIEW.md` — append-only review history
 - `08_APP_FLOW_DRAFT.md` — complete reviewed freeze candidate, not a summary
 - `09_DECISION_LOG.md` — append-only user-approved flow decisions
+- `10_CHANGE_REQUEST_REGISTER.md` — append-only sole source of truth for Change Request business state (Register schema v1)
 
 Canonical frozen output: `product/app-flow/APP_FLOW.md`  
 Frozen-output schema: `templates/04-APP-FLOW/09-APP-FLOW.md`  
@@ -387,3 +388,139 @@ Reopening Gate 1 also reopens Gates 2 and 3. Reopening Gate 2 also reopens Gate 
 - No new capability, unsupported policy or scope expansion is introduced.
 
 If any check cannot be verified, report NOT_VERIFIED rather than PASS.
+
+
+---
+
+# Owner-approved Schema v4 — Change Request Management Contract
+
+> **Normative precedence:** This section implements P04 Remediation Plan v0.3.1 and the Repository Owner's approvals of ADR-P04-01…ADR-P04-10 and CL-01…CL-05 on 2026-11-12. For CR ownership, Register/Control data, migration, Gate/downstream eligibility, Freeze closure, and event protocols, this section supersedes earlier v2/v3-era wording in this Skill. It does not alter P03 or P04 functional task/flow scope.
+
+## 1. Canonical ownership and data source
+
+- `product/app-flow/10_CHANGE_REQUEST_REGISTER.md` is the **sole source of truth for CR business state**.
+- `product/app-flow/00_APP_FLOW_CONTROL.md` schema v4 stores Control event sequence, receipts, integrity checkpoints, Gate state, and frozen-output binding only. It MUST NOT store per-CR status rows or an authoritative blocker count/list.
+- Register template: `templates/04-APP-FLOW/11-CHANGE-REQUEST-REGISTER.md`; active artifact: `product/app-flow/10_CHANGE_REQUEST_REGISTER.md`. Template numbering is intentionally one greater than active artifact numbering.
+- `state_seq` is a monotonic stale-read detector and committed event sequence, not an atomic lock, compare-and-swap, filesystem mutex, or distributed lock.
+- Tab 01 is the CR Coordinator and sole Register writer. Tab 02 and Tab 03 are Register read-only. One logical Control File writer at a time is mandatory.
+- P03 remains schema v2, read-only to P04. Never invent a P03 field such as `gate_3.approved_state_seq`.
+
+## 2. Register v1 identity and canonical bytes
+
+Register identity is immutable and binds Process 04 and the verified Initiative ID. Encoding is UTF-8 without BOM; line endings are LF only; CR bytes and trailing spaces/tabs are forbidden; field names/order are canonical; events are separated by exactly one blank line and terminate with `event_end_marker: END_CRE` plus LF. Readers reject noncanonical bytes and MUST NOT normalize before hashing.
+
+Hashes use lowercase SHA-256 over exact on-disk bytes:
+- `previous_register_sha256`: whole Register bytes immediately before event append.
+- `event_block_sha256`: bytes from first byte of `### CRE-<NNNN>` through LF after `END_CRE`, excluding the following blank line.
+- `resulting_register_sha256`: whole Register after append, including canonical separator.
+- Verify the complete chain from the initialization anchor through the latest committed sequence; a matching final hash alone is insufficient.
+
+Each event contains as applicable: unique CRE-ID and CR-ID; contiguous register_seq; event_type; from/to status; exact user command; TAB_01; real local timestamp; submission ID/payload hash; source process/initiative/path/hash; affected Gate and paths; pre-append Control state_seq/hash; previous Register hash; transition evidence; event-block hash; end marker. Register events MUST NOT contain a predicted Control sequence or resulting whole-file hash.
+
+## 3. Initialization, including zero-CR workspaces
+
+At new workspace initialization, verify P03 identity and frozen source using actual P03 v2 fields; ensure there is no conflicting Register; create header-only Register from template 11; compute `H_init`; append Control `CHANGE_REQUEST_REGISTER_INITIALIZED` with register_seq 0, last_event_id `INITIALIZATION`, path/schema/initiative and non-null H_init; read both files back. A v4 workspace with zero CRs still has register_seq 0 and a non-null verified hash. Empty 0-byte file, identity mismatch, unexpected CR event with null checkpoint, missing Register with existing pointer, or schema mismatch is NOT_VERIFIED; never overwrite/rebind.
+
+## 4. Paired append-and-receipt transaction
+
+### Normal commit unit
+
+1. Read Control, Register and relevant artifacts from disk; verify every receipt and the full prefix hash-chain.
+2. Verify one-writer condition, current CR state, exact legal transition, all current preconditions, source/artifact hashes and graph constraints.
+3. Capture actual pre-append Control state_seq and whole-file hash.
+4. Append exactly one canonical Register event at next register_seq; never include a planned Control sequence.
+5. Read Register back and verify exact bytes, previous hash, event-block hash, resulting full-file hash and sequence continuity.
+6. Append exactly one Control `CHANGE_REQUEST_REGISTER_UPDATED` receipt at the next **currently available** Control state_seq. It binds initiative, CR-ID, CRE-ID, register_seq, prior Register hash, event-block hash and resulting Register hash.
+7. Read both files back; report success only after exact one-to-one match and full-chain verification.
+
+A CR state transition is effective only after its Register event and exactly one matching Control receipt have both been committed and read back.
+
+### Recovery of a staged normal event
+
+If exactly one complete staged event has no receipt, stop other writes; verify its prefix equals the trusted checkpoint and sequence is next; re-read Control and verify pointer; re-evaluate current business preconditions against disk. If still valid, `RECOVER CHANGE REQUEST EVENT [CRE-ID]` writes only the missing receipt at the next available Control sequence. If now invalid, use bounded abort. Partial/malformed event, extra tail, duplicate/orphan receipt, changed prefix or hash mismatch is NOT_VERIFIED; preserve evidence and restore/reconcile from trusted backup. Never truncate append-only history.
+
+### Abort pair — CL-01
+
+The abort unit is exactly two consecutive Register events at k and k+1 plus one Control receipt:
+- staged event k links to trusted checkpoint H(k-1);
+- compute intermediate H(k) after staged event and separator; H(k) is an internal hash-chain link only and MUST NOT be published as a committed checkpoint;
+- abort marker k+1 links to H(k);
+- compute final H(k+1) after marker and separator;
+- one `CHANGE_REQUEST_EVENT_ABORTED` receipt binds both IDs/sequences/event-block hashes and H(k-1), H(k), H(k+1), `status_effect: NONE`, and its Control state_seq;
+- Control checkpoint advances directly from k-1/H(k-1) to k+1/H(k+1); `last_event_id` is abort-marker CRE-ID; no independently committed checkpoint exists at k;
+- next normal event, if any, is k+2 and links from H(k+1).
+
+The staged business event is retained and classified `ABORTED_NOT_EFFECTIVE`; marker is audit-only; neither changes CR business state. Neither event gets a normal Register-updated receipt.
+
+`RECOVER CHANGE REQUEST ABORT [STAGED-CRE-ID]` is allowed only if exactly two complete consecutive unreceipted events exist, the second is the exact marker for the first, both event-block hashes and all three hash edges verify, no later event/receipt exists, and Control still points to trusted prefix. It writes only the missing abort receipt; never appends a second marker. A partial/malformed abort marker means NOT_VERIFIED and trusted-backup restore; never append another marker. An exact two-event pair with missing receipt is `NOT_VERIFIED / ABORT_RECEIPT_PENDING`; only bounded recovery is allowed.
+
+## 5. CR business states and legal transitions
+
+The 13 business states are `RECORDED`, `TRIAGE`, `NEEDS_CLARIFICATION`, `ACCEPTED_FOR_IMPLEMENTATION`, `IMPLEMENTED_PENDING_REAPPROVAL`, `RETURN_TO_P03`, `REVERSION_PENDING`, `REJECTED_WITH_NO_CHANGE`, `CANCELLED_NO_CHANGE`, `CANCELLED_AFTER_REVERSION`, `CLOSED_IMPLEMENTED`, `DUPLICATE`, and `SUPERSEDED`. `NOT_VERIFIED` is an integrity condition and always blocks; it is not a business state. `REFROZEN` is prohibited.
+
+Only T01–T18 are legal:
+
+| ID | Transition | Exact command | Key precondition |
+|---|---|---|---|
+| T01 | Submission → RECORDED | `RECORD APP FLOW CHANGE SUBMISSION [SUBMISSION-ID]` | New immutable payload/hash; source, initiative and duplicate checks pass. |
+| T02 | RECORDED → TRIAGE | `START APP FLOW CHANGE TRIAGE [CR-ID]` | Current state RECORDED; integrity VERIFIED. |
+| T03 | TRIAGE → NEEDS_CLARIFICATION | `REQUEST CLARIFICATION FOR APP FLOW CHANGE [CR-ID]` | Concrete questions and artifact hashes recorded. |
+| T04 | NEEDS_CLARIFICATION → TRIAGE | `RESUME APP FLOW CHANGE TRIAGE [CR-ID]` | User response recorded. |
+| T05 | TRIAGE → ACCEPTED_FOR_IMPLEMENTATION | `ACCEPT APP FLOW CHANGE [CR-ID]` | P04 ownership; no unresolved conflict/cycle; scope/Gates/paths/pre-edit hashes captured. |
+| T06 | TRIAGE → REJECTED_WITH_NO_CHANGE | `REJECT APP FLOW CHANGE NO CHANGE [CR-ID]` | User rationale and relevant bytes unchanged. |
+| T07 | TRIAGE → RETURN_TO_P03 | `RETURN APP FLOW CHANGE TO P03 [CR-ID]` | P03-owned scope; per-CR P03 Control/frozen hash snapshot. |
+| T08 | RETURN_TO_P03 → TRIAGE | `RESUME APP FLOW CHANGE AFTER P03 FREEZE [CR-ID]` | P03 v2 approved/frozen; new hash matches P03 Control and differs from this CR's return snapshot. |
+| T09 | RETURN_TO_P03 → TRIAGE | `RESOLVE P03 RETURN WITHOUT UPSTREAM CHANGE [CR-ID]` | User rationale; P03 remains frozen at this CR's return snapshot. |
+| T10 | ACCEPTED_FOR_IMPLEMENTATION → IMPLEMENTED_PENDING_REAPPROVAL | `RECORD APP FLOW CHANGE IMPLEMENTATION [CR-ID]` | Only accepted paths changed; required Gate 1/2 approvals are new and later than acceptance. |
+| T11 | IMPLEMENTED_PENDING_REAPPROVAL → ACCEPTED_FOR_IMPLEMENTATION | `REOPEN APP FLOW CHANGE IMPLEMENTATION [CR-ID]` | Tab 03 blocker or Owner correction; evidence/Finding IDs. |
+| T12 | IMPLEMENTED_PENDING_REAPPROVAL → CLOSED_IMPLEMENTED | `CLOSE IMPLEMENTED APP FLOW CHANGE [CR-ID]` | Valid Freeze event; CR belongs to batch; exact frozen tuple verified. |
+| T13 | RECORDED/TRIAGE/NEEDS_CLARIFICATION → CANCELLED_NO_CHANGE | `CANCEL APP FLOW CHANGE [CR-ID]` | Pre-implementation; relevant bytes unchanged. |
+| T14 | ACCEPTED_FOR_IMPLEMENTATION → CANCELLED_NO_CHANGE | `CANCEL APP FLOW CHANGE [CR-ID]` | Every relevant byte equals T05 snapshot; otherwise forbidden. |
+| T15 | ACCEPTED_FOR_IMPLEMENTATION or IMPLEMENTED_PENDING_REAPPROVAL → REVERSION_PENDING | `START APP FLOW CHANGE REVERSION [CR-ID]` | User cancellation after byte change; baseline hashes recorded. |
+| T16 | REVERSION_PENDING → CANCELLED_AFTER_REVERSION | `COMPLETE APP FLOW CHANGE REVERSION [CR-ID]` | Bytes restored and affected Gates reapproved; Gate 3 review/freeze rerun if touched. |
+| T17 | RECORDED/TRIAGE/NEEDS_CLARIFICATION → DUPLICATE | `MARK APP FLOW CHANGE DUPLICATE [CR-ID] OF [CANONICAL-ID]` | Valid same-initiative target; no self/cycle; open blocker or exact closed-scope coverage. |
+| T18 | Eligible pre-implementation CR → SUPERSEDED | `SUPERSEDE APP FLOW CHANGE [OLD-ID] WITH [NEW-ID]` | Valid open successor; no cycle; approved scope inheritance if bytes changed. |
+
+**CL-04:** No `ACCEPTED_FOR_IMPLEMENTATION → TRIAGE` or `→ NEEDS_CLARIFICATION` edge exists. Do not add T19. If no bytes changed and accepted CR is cancelled, use T14 and submit a new linked CR. If bytes changed, use T15/T16. Never route around the closed transition table.
+
+Every transition records actor TAB_01, exact user command, from/to, local timestamp, evidence, affected Gate/paths, pre-append Control seq/hash and Register prefix hash. Duplicate/supersession/dependency targets must exist, share initiative, be in an eligible state, prove coverage/scope inheritance and create no cycle. Missing target/cycle fails before append.
+
+## 6. Blocking and Gate rules
+
+Every reader reconstructs CR state from complete Register plus Control receipts; never trust cached counts/lists:
+- NOT_VERIFIED or invalid/unreceipted chain: blocking TRUE.
+- RECORDED, TRIAGE, NEEDS_CLARIFICATION, ACCEPTED_FOR_IMPLEMENTATION, IMPLEMENTED_PENDING_REAPPROVAL, RETURN_TO_P03, REVERSION_PENDING: TRUE.
+- REJECTED_WITH_NO_CHANGE, CANCELLED_NO_CHANGE, CANCELLED_AFTER_REVERSION: FALSE.
+- CLOSED_IMPLEMENTED: FALSE only if resolved frozen_version, Gate 3 freeze state_seq and APP_FLOW hash equal valid current GATE_3_FROZEN evidence; else TRUE.
+- DUPLICATE/SUPERSEDED: recursively inherit target blocker; missing/invalid/cyclic/terminal target without valid transfer proof remains TRUE.
+
+A new CR blocks downstream immediately at RECORDED but does not invalidate an approved Gate until relevant bound source/artifact bytes change. P03 source → Gates 1–3; artifacts 01/02 → Gates 1–3; 03–06 → Gates 2–3; 07/08 → Gate 3. Any Decision Log byte change after Gate 2 approval reopens Gates 2–3; also Gate 1 if scope is actually GATE_1. Register NOT_VERIFIED blocks every ordinary write, Gate approval, Freeze and downstream.
+
+## 7. Freeze-to-closure and downstream eligibility
+
+Tab 03 performs mechanical Freeze only after exact user command and review checks. At review, record P03 source; Control seq/hash; Register path/schema/full hash/last seq/last event; open/blocking CR IDs; implementation CR batch IDs; Decision Log hash; artifacts 01–06 and draft 08 hashes. Recheck the Register snapshot immediately before Freeze; any difference requires a new Review round.
+
+Freeze Stage A — Tab 03 records GATE_3_FROZEN and freezes the exact reviewed draft by replacing only its status line. This does not close implementation CRs. Downstream remains blocked while any freeze-batch CR is IMPLEMENTED_PENDING_REAPPROVAL.
+
+Freeze Stage B — Tab 01 verifies exact Freeze event/version/sequence/hash/Review snapshot, then writes an individual CR_CLOSED_IMPLEMENTED Register event and individual Control receipt for each batch CR. `CLOSE IMPLEMENTED APP FLOW CHANGES FOR FREEZE [FROZEN-VERSION]` expands to idempotent per-CR closures. Partial batch remains downstream-blocking; resume only uncommitted closures. Downstream is eligible only when all expected CRs are closed against the same frozen version, Gate 3 state_seq and APP_FLOW SHA-256 and reconstructed blocker set is empty.
+
+First valid Freeze is version 1; each subsequent valid Freeze increments by exactly one. Archive the prior output as APP_FLOW.v<N>.md. Refuse no-op re-freeze when all source/artifact/Decision Log/Review hashes and CR state are unchanged and no accepted implementation awaits publication.
+
+## 8. P03 boundary and v3→v4 migration
+
+P03 remains schema v2 and read-only to P04. Each CR returned to P03 stores its own returned Control and frozen hashes. T08 compares the new actual P03 v2 frozen hash with that CR's own return snapshot and actual P03 Control. T09 resolves no-upstream-change only with user rationale and exact equality to that CR's return snapshot. Multiple CRs may resume against one new P03 freeze.
+
+v3→v4 migration requires an exact user command: `MIGRATE APP FLOW CONTROL V3 TO V4 WITH ZERO EXTERNAL CRS` or `MIGRATE APP FLOW CONTROL V3 TO V4 WITH PENDING SUBMISSIONS`. Never infer that no unrecorded external CRs exist from old `change_requests: []`. Before modification create a byte-preserving full P04 workspace backup and `ARCHIVE_MANIFEST.md` with path, size, SHA-256, schema, initiative, source HEAD, timestamp and destination; verify every hash. Preserve v3 Gate approval only when its sequence and all bound artifact/Decision Log/Review/draft/frozen/P03 hashes verify; otherwise reopen conservatively.
+
+Create Register header/H_init; construct a complete temporary v4 Control File containing sequential distinct `SCHEMA_MIGRATED` (3→4) and `CHANGE_REQUEST_REGISTER_INITIALIZED` (seq 0) events. Validate before one complete same-filesystem Control File replacement. Read both files back. If interrupted before replacement, keep v3 canonical; if ambiguous, verify both; if corrupt, restore full verified v3 archive and restart. Legacy v3 readers fail closed on v4. A historical v3 Freeze does not retroactively close a CR.
+
+## 9. Three-tab permissions
+
+- Tab 01: CR Coordinator, sole Register writer; validates source/hash/idempotency, assigns CR-ID, manages intake/triage/lifecycle and post-Freeze closure.
+- Tab 02: performs assigned Gate 2 work; Register read-only; cannot independently change CR business state.
+- Tab 03: independent review and mechanical Freeze; Register read-only; cannot write CR business status or close batch CRs.
+- Handoff is persisted to disk; each tab is a fresh conversation and re-reads files. Chat memory is not evidence. One logical writer at a time.
+
+## 10. Verification and fail-closed rules
+
+All ST-01…ST-20 scenarios and targeted cases in `app-flow-kit/VERIFICATION-CHECKLIST.md` are mandatory static acceptance fixtures, not runtime passes. Live Windows Antigravity tests remain NOT RUN until actual evidence is recorded. Any untrusted bytes, incomplete pair, unexpected tail, broken chain, stale snapshot, graph cycle, mismatched ID, duplicate receipt or partial write is NOT_VERIFIED; preserve evidence and stop. Do not infer, auto-normalize, truncate or invent hashes/timestamps.
