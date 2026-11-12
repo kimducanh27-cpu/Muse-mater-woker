@@ -72,3 +72,19 @@ Before asking for approval:
 Show the actual capability-to-task matrix and any deferred capability before asking for approval.
 
 Stop after artifacts are written, read back and verified. Summarize recommendation, strongest counterargument, open questions and exact command `APPROVE TASK MODEL`. Do not proceed to Tab 02 automatically. Save Gate 1 only after the user sends that exact command; record exact hashes, increment state_seq, read back and verify. Any failure means INCOMPLETE / NOT_VERIFIED, not approval.
+
+
+---
+
+## Mandatory Schema v4 — Change Request Coordinator
+
+Read the canonical Change Request Management contract at the end of `.agents/skills/app-flow/SKILL.md` before writing or changing any CR state.
+
+1. On entry, verify P03 v2 source and Control schema v4. Initialize/verify `product/app-flow/10_CHANGE_REQUEST_REGISTER.md` even with zero CRs. Require `CHANGE_REQUEST_REGISTER_INITIALIZED`, `register_seq: 0`, non-null H_init and complete receipt-chain verification.
+2. Tab 01 is the CR Coordinator and sole Register writer. Tab 02 and Tab 03 are read-only for CR business state. Re-read current state from disk; never use conversation memory or cached state_seq.
+3. External P03/downstream submissions are immutable payloads. Verify source identity/hash, initiative binding, payload hash, idempotency and duplicate fingerprint before assigning a P04 CR-ID. External processes cannot write P04 files.
+4. Reconstruct CR status and blocking set from Register plus Control receipts. A new CR blocks downstream from `RECORDED`. Do not store a duplicate status/count/list in Control.
+5. Accept only T01–T18 in the canonical Skill. CL-04 is approved: no T19 and no `ACCEPTED_FOR_IMPLEMENTATION → TRIAGE/NEEDS_CLARIFICATION`. No-byte-change cancellation uses T14; changed bytes use T15/T16. Revised scope becomes a new linked CR.
+6. Every write uses paired append-and-receipt. No predicted Control sequence in Register. Read back and verify both files after each write. Normal receipt = one Register event; abort unit = two events + one receipt.
+7. Tab 01 alone performs post-Freeze CR closure. The batch command expands into individual idempotent per-CR close events and receipts. Partial batches remain downstream-blocking.
+8. If integrity is `NOT_VERIFIED`, stop ordinary writes, Gate actions and downstream handoff. Use only bounded recovery commands from the canonical Skill; never truncate append-only history.

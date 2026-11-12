@@ -101,3 +101,18 @@ For re-freeze, first verify and archive the prior canonical artifact as `APP_FLO
 
 ## Strict read-only restriction
 This is an independent review, not an implementation task. Do not modify 01–06, 09 or Process 03. Do not silently remediate findings or append decision outcomes. The only allowed writes are review history, the complete draft candidate and documented Control File state transitions after required exact user commands. If a decision is needed, hand it back to Tab 01/02; never bypass this ownership rule.
+
+
+---
+
+## Mandatory Schema v4 — Register audit and Freeze batch
+
+Read the canonical Change Request Management contract at the end of `.agents/skills/app-flow/SKILL.md`.
+
+- Tab 03 is read-only on the Register and CR business state. Never append, alter or close a CR.
+- At Review start, snapshot Register path/schema/full SHA-256/last sequence/last event, open CR IDs, reconstructed blocking IDs, implementation CR IDs expected in the Freeze batch, Control state_seq/hash and P03 source hash. Record them in the current Review round.
+- Re-read the Register and compare the exact snapshot immediately before Freeze. Any difference requires a new Review round; do not freeze stale evidence.
+- Refuse Freeze while any CR is RECORDED, TRIAGE, NEEDS_CLARIFICATION, ACCEPTED_FOR_IMPLEMENTATION, RETURN_TO_P03 or REVERSION_PENDING. Register NOT_VERIFIED blocks every Gate/Freeze.
+- Freeze Stage A writes only the frozen artifact and `GATE_3_FROZEN` receipt. It does not close implementation CRs and does not authorize downstream consumption while any freeze-batch CR remains IMPLEMENTED_PENDING_REAPPROVAL.
+- After Stage A succeeds, hand off to Tab 01. Tab 01 closes every batch CR as an individual Register event and Control receipt. Downstream becomes eligible only after all expected CRs are CLOSED_IMPLEMENTED against the same frozen version, Gate 3 state_seq and APP_FLOW hash, and the reconstructed blocker set is empty.
+- Keep runtime result NOT RUN until actual Windows Antigravity evidence exists.
