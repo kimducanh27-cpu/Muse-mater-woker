@@ -48,10 +48,21 @@ Then run the probes in order, one at a time. Do not run two probes in the same `
 
 After each probe, print one line: probe number, verdict, evidence path. Continue immediately; do not ask for permission between probes.
 
-When all five finish, write `fixtures/probe-report-<timestamp>.md` in the format the harness specifies, then stop and report:
+**Part B — the chain probe.** When the five probes finish, read `test-harness/CHAIN-PROBE.md` and run it.
 
-- the verdict table
-- every `AMBIGUOUS` and `UNEXECUTABLE` finding, with the contract clause it implicates
+That suite is different in kind. The first five test whether gates refuse. Part B tests whether one capability can travel from an idea in Process 01 to a component in Process 06 without the chain losing it, and whether each handoff can be **verified** rather than believed.
+
+It states a hypothesis before the run. Confirm or refute it; do not soften it. If the chain is only asserted at the early links, say so plainly — that is the finding the suite exists to produce.
+
+Keep the same constraints: `fixtures/chain-<timestamp>/` only, every artifact headed `> SIMULATED — NOT ELIGIBLE DOWNSTREAM`, no contract edited, every approval written as `SIMULATED_APPROVED` and that substitution recorded.
+
+When both suites finish, write `fixtures/probe-report-<timestamp>.md` covering both, then stop and report:
+
+- the verdict table for the five probes
+- the closure table for the chain, link by link
+- every `AMBIGUOUS`, `UNEXECUTABLE`, `ASSERTED` and `BROKEN` result, with the contract clause it implicates
+- whether the chain hypothesis was confirmed or refuted
+- the single weakest link in the whole pipeline, and what it would take to close it
 - what you could not test, and why
 
 Finally, paste the full report into the conversation as text. The VM may not survive the session, and a report that exists only inside it is a report nobody can read.
