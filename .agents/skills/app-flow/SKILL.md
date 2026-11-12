@@ -407,11 +407,11 @@ If any check cannot be verified, report NOT_VERIFIED rather than PASS.
 
 ## 2. Register v1 identity and canonical bytes
 
-Register identity is immutable and binds Process 04 and the verified Initiative ID. Encoding is UTF-8 without BOM; line endings are LF only; CR bytes and trailing spaces/tabs are forbidden; field names/order are canonical; events are separated by exactly one blank line and terminate with `event_end_marker: END_CRE` plus LF. Readers reject noncanonical bytes and MUST NOT normalize before hashing.
+Register identity is immutable and binds Process 04 and the verified Initiative ID. Encoding is UTF-8 without BOM; line endings are LF only; CR bytes and trailing spaces/tabs are forbidden; field names/order are canonical; events are separated by exactly one blank line and terminate with `event_end_marker: END_CRE` plus LF. Readers reject noncanonical bytes and MUST NOT repair, re-indent, reorder or convert line endings before hashing. The **only** permitted normalization is the single `event_block_sha256` sentinel substitution defined below; it is part of the canonical form, not a repair, and applying it to any other field or to any other hash is a protocol violation.
 
 Hashes use lowercase SHA-256 over exact on-disk bytes:
 - `previous_register_sha256`: whole Register bytes immediately before event append.
-- `event_block_sha256`: bytes from first byte of `### CRE-<NNNN>` through LF after `END_CRE`, excluding the following blank line.
+- `event_block_sha256`: SHA-256 over the **normalized** event block. The preimage is the bytes from the first byte of `### CRE-<NNNN>` through the LF after `END_CRE`, excluding the following blank line, with the value of the `event_block_sha256` field replaced by the exact sentinel `<HASH_OMITTED>` before hashing. Writers hash the normalized block, then write the resulting lowercase digest into the field. Readers replace the stored value with the same sentinel before recomputing. The field never participates in its own preimage; a block hashed with the stored digest left in place is NOT_VERIFIED.
 - `resulting_register_sha256`: whole Register after append, including canonical separator.
 - Verify the complete chain from the initialization anchor through the latest committed sequence; a matching final hash alone is insufficient.
 

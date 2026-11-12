@@ -156,9 +156,9 @@ Run in the actual Windows workspace. Do not mark these passed based only on repo
 ## Release decision
 Do not label Process 04 production-ready until all mandatory live tests have evidence. Record limitations and unresolved defects in independent review. Repository inspection is not live Antigravity verification.
 
-## Schema v4 static stress tests — ST-01 to ST-20
+## Schema v4 static stress tests — ST-01 to ST-22
 
-These 20 scenarios are mandatory static/simulation fixtures. Marking a row reviewed on paper does not prove runtime behavior; every result remains NOT RUN until evidence is captured.
+These 22 scenarios are mandatory static/simulation fixtures. Marking a row reviewed on paper does not prove runtime behavior; every result remains NOT RUN until evidence is captured.
 
 | Test | Scenario | Required expected result | Result |
 |---|---|---|---|
@@ -182,6 +182,8 @@ These 20 scenarios are mandatory static/simulation fixtures. Marking a row revie
 | ST-18 | v3→v4 migration interrupted | Restore/verify full v3 archive or verify completed v4 pair; never claim partial success. | NOT RUN |
 | ST-19 | Legacy v3 reader reads v4 Control File | Fail closed with unsupported schema; no writes. | NOT RUN |
 | ST-20 | New CR appears after prior CR closed in v1 | Old CR remains bound to v1; new CR blocks downstream until resolved for a later version. | NOT RUN |
+| ST-21 | Stored `event_block_sha256` is the literal sentinel `<HASH_OMITTED>` | `NOT_VERIFIED`. The sentinel is a hashing placeholder only; it must never be persisted as a digest. | NOT RUN |
+| ST-22 | Reader recomputes the event-block hash with the stored digest left in place | Hash mismatch. The reader must substitute `<HASH_OMITTED>` before recomputing; a digest computed over its own value is a protocol violation, not a tolerable variant. | NOT RUN |
 
 ## Additional targeted tests
 

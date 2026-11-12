@@ -21,6 +21,7 @@
 | ADR-P04-08 | P03 return and re-entry | Preserve CR-ID; verify each CR against its own P03 return snapshot; P03 schema v2 remains unchanged. | APPROVED |
 | ADR-P04-09 | Control Schema v4 and migration | Adopt v4; preserve v3 approvals only when sequence and every bound hash/evidence verify; migration is one logical transaction/one complete Control replacement. | APPROVED |
 | ADR-P04-10 | Downstream frozen binding | Bind initiative/schema/frozen version/hash/P03 source/Gate sequences/Register hash+sequence/empty blockers; no circular Control sequence in APP_FLOW. | APPROVED |
+| ADR-P04-11 | Non-self-referential event-block hash (P04-IMP-01) | Resolve the P0 blocker by sentinel normalization: `event_block_sha256` is computed over the event block with that field's value replaced by the literal `<HASH_OMITTED>`; writers hash then write the digest, readers substitute then recompute. This is the only permitted normalization in Register v1. It supersedes the "exact bytes including the hash field" preimage rule of P04 Remediation Plan v0.3.1 Section 4.4 for this field only; the plan file is not rewritten and its recorded SHA-256 remains valid. | APPROVED |
 
 ## 2. Approved clarifications
 
@@ -34,12 +35,20 @@
 
 ## 3. Approval summary
 
-- ADRs approved: **10/10**.
+- ADRs approved: **11/11** (10 at intake, ADR-P04-11 added on 2026-11-12 to resolve P04-IMP-01).
 - Clarifications approved: **5/5**.
-- Total Owner decisions approved: **15/15**.
+- Total Owner decisions approved: **16/16**.
 - Implementation authorization: **GRANTED for a dedicated branch** by explicit Owner instruction on 2026-11-12.
 - Merge authorization: **NOT GRANTED**.
 - Runtime verification: **NOT RUN**.
+
+## 3a. P04-IMP-01 resolution record
+
+- **Blocker:** the approved specification required `event_block_sha256` to be a SHA-256 of an event block that contains the field itself, making the preimage self-referential and the value underivable.
+- **Decision:** ADR-P04-11, sentinel normalization (option 1 of the two models presented in `P04-IMPLEMENTATION-RECORD-v0.3.1.md`).
+- **Normative artifacts amended:** `.agents/skills/app-flow/SKILL.md` (Register v1 canonical bytes and hash definitions) and `templates/04-APP-FLOW/11-CHANGE-REQUEST-REGISTER.md` (event block field and hash rule).
+- **Deliberately not amended:** `app-flow-kit/specs/P04-REMEDIATION-PLAN-v0.3.1.md`. It is an approved artifact with a recorded SHA-256; rewriting it would invalidate that provenance. Its Section 4.4 preimage rule is superseded for this field by reference, not by edit.
+- **Verification status:** static only. No Register writer exists yet, so the sentinel rule has not been executed against a real workspace. Runtime remains NOT RUN.
 
 ## 4. Provenance
 

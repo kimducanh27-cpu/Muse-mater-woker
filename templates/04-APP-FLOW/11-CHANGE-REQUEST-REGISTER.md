@@ -58,11 +58,11 @@ control_state_seq_before_append: <actual_current_control_state_seq>
 control_file_sha256_before_append: <actual_sha256>
 previous_register_sha256: <prior_exact_full_file_sha256>
 transition_evidence: {}
-event_block_sha256: <exact_event_block_sha256>
+event_block_sha256: <lowercase_sha256_of_normalized_block>
 event_end_marker: END_CRE
 ```
 
-The stored `event_block_sha256` is calculated from exact event-block bytes from `### CRE-<NNNN>` through the LF after `event_end_marker: END_CRE`, excluding the following blank separator. `previous_register_sha256` is SHA-256 of the exact entire Register bytes immediately before the event append.
+The stored `event_block_sha256` is calculated over the **normalized** event block: the exact bytes from `### CRE-<NNNN>` through the LF after `event_end_marker: END_CRE`, excluding the following blank separator, with the value of this field replaced by the exact sentinel `<HASH_OMITTED>` before hashing. The writer hashes the normalized block and then writes the resulting lowercase digest into the field; the reader replaces the stored digest with the same sentinel before recomputing. A block verified with the stored digest left in place is `NOT_VERIFIED`. This is the only permitted normalization in Register v1 — no other field, byte, whitespace or line ending may be adjusted before hashing. `previous_register_sha256` is SHA-256 of the exact entire Register bytes immediately before the event append.
 
 A Register event MUST NOT contain `planned_control_state_seq`, a predicted committed Control `state_seq`, or `resulting_register_sha256`. The Control receipt owns those committed values.
 

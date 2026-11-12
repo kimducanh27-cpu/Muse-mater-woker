@@ -36,7 +36,7 @@
 | 3 | Canonical Skill + Review snapshot | COMPLETE — static content updated |
 | 4 | Three P04 prompts | COMPLETE — permission overlays added |
 | 5 | README/checklist/spec/decision record | COMPLETE — source plan and 15/15 Owner approvals archived |
-| 6 | Static verification + independent diff review | BLOCKED — P0 self-referential event hash definition (P04-IMP-01) |
+| 6 | Static verification + independent diff review | COMPLETE — P04-IMP-01 resolved by ADR-P04-11 (sentinel normalization) |
 | 7 | Windows Antigravity runtime and Owner merge approval | NOT RUN / NOT AUTHORIZED |
 
 ## Commits
@@ -63,11 +63,19 @@
 - Phase 1 exact-token check: one legacy `decision_event_kind: STATUS_CHANGED` corrected; zero remaining exact occurrences in affected canonical Skill/Decision Log; no `DECISION_DECISION_STATUS_CHANGED`.
 - Control template: schema v4; no `change_requests: []` duplicate CR state.
 - Register template: schema v1; 13 business states; T01–T18 present.
-- Verification checklist: 20 ST scenarios + 10 targeted AT scenarios, all NOT RUN.
-- Owner decisions: 10/10 ADR + 5/5 CL recorded APPROVED.
+- Verification checklist: 22 ST scenarios + 10 targeted AT scenarios, all NOT RUN.
+- Owner decisions: 11/11 ADR + 5/5 CL recorded APPROVED.
 - Live Antigravity runtime: NOT RUN.
 
-## P0 blocker — P04-IMP-01: Self-referential event block hash
+## P0 blocker P04-IMP-01 — RESOLVED by ADR-P04-11
+
+**Resolution (2026-11-12):** the Owner approved model 1, sentinel normalization. `event_block_sha256` is now defined over the event block with that field's value replaced by the literal `<HASH_OMITTED>`; writers hash the normalized block and then write the digest, readers substitute the same sentinel before recomputing. The rule is stated normatively in `.agents/skills/app-flow/SKILL.md` and `templates/04-APP-FLOW/11-CHANGE-REQUEST-REGISTER.md`, and recorded as ADR-P04-11 in `app-flow-kit/decisions/P04-OWNER-DECISION-REGISTER-v0.3.1.md`.
+
+The remediation plan file is deliberately not rewritten, because it is an approved artifact with a recorded SHA-256. Its Section 4.4 preimage rule is superseded for this field by reference only.
+
+This closes the specification defect. It does not close the implementation gap: no Register writer exists, so the sentinel rule has never been executed against a real workspace. Runtime verification remains NOT RUN, and the gate for Phase 7 is unchanged.
+
+The original finding is preserved below unaltered.
 
 **Evidence:** The approved specification requires each Register event body to contain `event_block_sha256` (Section 4.3) and defines that hash as SHA-256 of the exact bytes from `### CRE-<NNNN>` through the LF after `event_end_marker: END_CRE` (Section 4.4). The hash field itself lies inside that byte range. The Register v1 template reproduces both requirements.
 
@@ -78,10 +86,11 @@
 1. **Preferred minimal correction:** Define the hash preimage as the canonical event block with the `event_block_sha256` value replaced by a fixed sentinel (for example `event_block_sha256: <HASH_OMITTED>`). Writers hash that normalized preimage, then write the digest into the field. Readers apply the same normalization before recomputing. This preserves the field and receipt structure but changes the 'exact bytes' rule.
 2. **Alternative:** Remove `event_block_sha256` from Register event bodies and store it only in the Control receipt, calculated over the exact Register event bytes excluding any self-hash field. This changes the event schema and receipt contract more substantially.
 
-Until the Owner approves one model and the spec/template/Skill are aligned, do not implement a Register writer, migration routine, or runtime hash tests, and do not mark Phase 6 PASS. Existing contract/template edits remain on the dedicated branch for review; `main` is unchanged.
+The Owner approved model 1 on 2026-11-12 and the Skill and template are aligned to it, so the specification precondition above is satisfied. What remains is unchanged: no Register writer, migration routine or runtime hash test is implemented, and Phase 7 stays NOT RUN until live Windows evidence exists. Existing contract/template edits remain on the dedicated branch for review; `main` is unchanged.
+
 ## Review handoff
 
 - Draft Pull Request: [#1 — P04 v0.3.1 implementation](https://github.com/kimducanh27-cpu/app-adr-ui/pull/1)
-- PR status: OPEN / DRAFT / DO NOT MERGE (P0 blocker P04-IMP-01).
+- PR status: OPEN / DRAFT / DO NOT MERGE. The P0 specification blocker is resolved; merge is still not authorized by the Owner, and runtime verification has not run.
 - Static diff review record: `app-flow-kit/reviews/P04-STATIC-DIFF-REVIEW-2026-11-12.md`.
-- Required next decision: Owner must approve a deterministic non-self-referential `event_block_sha256` preimage rule before the Register hash protocol can be implemented or runtime-tested.
+- Required next decision: none at specification level. The remaining gate is Owner merge authorization plus live Windows runtime evidence.
