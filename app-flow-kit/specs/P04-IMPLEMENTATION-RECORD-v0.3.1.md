@@ -46,6 +46,7 @@
 - Phase 3: `d32c819e469bd483e2c32d47b53c2c720b3d98c4`
 - Phase 4: `086885fa11625768559c63a43d23c73994c089ea`
 - Phase 5: `0ba46747a36addff2d64a6003cd005f8c6c46fec`
+- Phase 6 static finding report: `dd153e5198d98a4d3e5062879ab779c19de68cf9`
 
 ## Open verification
 
@@ -78,3 +79,9 @@
 2. **Alternative:** Remove `event_block_sha256` from Register event bodies and store it only in the Control receipt, calculated over the exact Register event bytes excluding any self-hash field. This changes the event schema and receipt contract more substantially.
 
 Until the Owner approves one model and the spec/template/Skill are aligned, do not implement a Register writer, migration routine, or runtime hash tests, and do not mark Phase 6 PASS. Existing contract/template edits remain on the dedicated branch for review; `main` is unchanged.
+## Review handoff
+
+- Draft Pull Request: [#1 — P04 v0.3.1 implementation](https://github.com/kimducanh27-cpu/app-adr-ui/pull/1)
+- PR status: OPEN / DRAFT / DO NOT MERGE (P0 blocker P04-IMP-01).
+- Static diff review record: `app-flow-kit/reviews/P04-STATIC-DIFF-REVIEW-2026-11-12.md`.
+- Required next decision: Owner must approve a deterministic non-self-referential `event_block_sha256` preimage rule before the Register hash protocol can be implemented or runtime-tested.
