@@ -22,6 +22,16 @@ These are not suggestions. A probe that violates them is itself a finding.
 
 ## Preflight — Muse runs this before any probe
 
+The repository must be present at the branch that contains this harness. A default clone lands on `main`, which does not have it:
+
+```bash
+git clone --branch pipeline/p05-p06 --depth 1 https://github.com/kimducanh27-cpu/app-adr-ui.git
+cd app-adr-ui
+ls test-harness/          # must show MUSE-CONTRACT-PROBE.md and MUSE-PROMPT.md
+```
+
+Then:
+
 ```bash
 agy --help
 agy models list

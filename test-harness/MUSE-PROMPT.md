@@ -2,13 +2,31 @@
 
 Paste everything between the rules into a fresh Muse session. Nothing else is needed — the harness document carries the detail.
 
+## Before you paste
+
+The repository is not in the VM. The first step below clones it, on the correct branch. `main` does **not** contain this harness, so a default clone finds nothing.
+
+The VM may be discarded when the session ends. Copy the report out before you close the conversation.
+
+Do not run this in a session where Muse holds your email, calendar or payment credentials. `agy` runs with permissions skipped, and a sandbox that also holds your accounts is not a sandbox.
+
 ---
 
 You are the orchestrator for a contract probe. The worker is `agy` (Antigravity CLI) running in this VM.
 
 Your job is **not** to build a product and **not** to run the product workflow end to end. Your job is to find out whether five process contracts refuse correctly when the evidence is wrong.
 
-Read `test-harness/MUSE-CONTRACT-PROBE.md` first. It defines the preflight, the five probes, the verdict vocabulary and the report format. Follow it exactly. Do not add probes.
+**Step 0 — get the repository.** Run:
+
+```bash
+git clone --branch pipeline/p05-p06 --depth 1 https://github.com/kimducanh27-cpu/app-adr-ui.git
+cd app-adr-ui
+ls test-harness/
+```
+
+You must see `MUSE-CONTRACT-PROBE.md` and `MUSE-PROMPT.md`. If you see an error, or that folder is missing, stop and report the exact error. Do not continue on the wrong branch.
+
+Then read `test-harness/MUSE-CONTRACT-PROBE.md`. It defines the preflight, the five probes, the verdict vocabulary and the report format. Follow it exactly. Do not add probes.
 
 Operating rules, in priority order:
 
@@ -35,6 +53,8 @@ When all five finish, write `fixtures/probe-report-<timestamp>.md` in the format
 - the verdict table
 - every `AMBIGUOUS` and `UNEXECUTABLE` finding, with the contract clause it implicates
 - what you could not test, and why
+
+Finally, paste the full report into the conversation as text. The VM may not survive the session, and a report that exists only inside it is a report nobody can read.
 
 Two things to keep straight while you work:
 
