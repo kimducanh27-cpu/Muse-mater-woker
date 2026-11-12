@@ -103,6 +103,10 @@ Each entry states what it is, why it exists, what could go wrong, and what would
 
 **Risk.** It can produce an under-built system: a component genuinely needed by two screens may be awkward to express, and the rule gives no guidance on when to split or merge. It optimises for provable demand, not for a good library.
 
+**First evidence, 2026-11-12.** Probe 7 ran Process 06 Tab 02 against a frozen two-screen spec. The agent admitted six components, each citing a real screen, and rejected four Material 3 defaults **by name** — `NavigationDrawer`, `FloatingActionButton`, `Tabs`, `Slider` — for lack of a citing screen. It was not told which to reject.
+
+That is the rule constraining behaviour rather than describing an intention. One data point is not proof, and the under-built risk above remains untested. But this is the first LOCAL rule in this repository to survive contact with an agent, and it is recorded as exactly that and no more.
+
 **Retired when.** A live run shows Process 07 blocked by a missing component the rule prevented.
 
 ### L-6 — Platform as an immutable Control field

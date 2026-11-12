@@ -12,6 +12,7 @@ Every finding below came from running the contract, not from reading it. Each ro
 | F-04 | Component audit matched substrings (`discards` → `card`) | Medium | FIXED | Procedure specifies word boundaries |
 | F-05 | Audit match set was defined by the reviewer (`component`) | Medium | FIXED | Procedure specifies scope, classification and required output |
 | F-06 | Read-back verified the artifact against the writer's memory | **Critical** | FIXED | Field contract plus a mechanical validator; probe re-run passes |
+| F-07 | Process 06 had never been executed | Coverage | PROBED — `COMPLIANT` | Probe 7; component admission rule held |
 
 ## F-06 — the one that mattered
 
