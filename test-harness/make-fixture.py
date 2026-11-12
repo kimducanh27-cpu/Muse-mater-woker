@@ -143,6 +143,15 @@ control04 = patch(
 
 # --- Process 05 workspace, sources verified -------------------------------
 
+# The Decision Log must exist before the Control File can bind its hash. A
+# fixture without it fails check 5 of the six Control File checks, and every
+# probe run against such a fixture is testing a workspace the contract would
+# already have rejected.
+decision_log = write(
+    "product/ux-design/08_DECISION_LOG.md",
+    (REPO / "templates/05-UX-DESIGN/08-DECISION-LOG.md").read_text(encoding="utf-8"),
+)
+
 patch(
     "templates/05-UX-DESIGN/00-UX-CONTROL.md",
     "product/ux-design/00_UX_CONTROL.md",
@@ -163,6 +172,10 @@ patch(
         (
             '  frozen_artifact_sha256: null\n  verified_file_sha256: null\n  status: "NOT_VERIFIED"\ngate_1:',
             f'  frozen_artifact_sha256: "{sha(definition)}"\n  verified_file_sha256: "{sha(definition)}"\n  status: "VERIFIED"\ngate_1:',
+        ),
+        (
+            'decision_log:\n  path: "product/ux-design/08_DECISION_LOG.md"\n  latest_sha256: null',
+            f'decision_log:\n  path: "product/ux-design/08_DECISION_LOG.md"\n  latest_sha256: "{sha(decision_log)}"',
         ),
     ],
 )

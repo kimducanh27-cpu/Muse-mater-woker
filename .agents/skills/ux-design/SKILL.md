@@ -170,7 +170,16 @@ Entry: read this Skill, verify both sources, initialize or verify the Control Fi
 5. `decision_log.latest_sha256` is non-null and equals the actual SHA-256 of the file at `decision_log.path`.
 6. `lifecycle_status` is consistent with the gate states: `FROZEN` requires `gate_3.status = APPROVED`; `DRAFT` requires `gate_3.status` not `APPROVED`.
 
-Report the six results with observed values before writing anything.
+The six checks above describe what verification means. The requirement is not to narrate them — it is to run them.
+
+**Run the checker.** `test-harness/validate-control.py <control-file>` performs all six and prints `PASS` or the specific failures. Run it before writing any artifact and paste its output into the record. **The validator output is the record.** Do not proceed on `FAIL`.
+
+Observed, twice, in both directions:
+
+- An agent read the six checks, produced a correct artifact, ran the artifact validator, and executed none of the six. Its transcript contains no occurrence of `state_seq`, `schema_version`, `decision_log` or `lifecycle`. A checklist written but not run is decoration.
+- Once the validator was mandatory, the same agent ran it and passed — but still never read the Control File. It treated the checker as a black box.
+
+Both are acceptable, and the second is better. A requirement to narrate the six values *and* run a checker that already computes them gives two ways to comply, and an agent will pick the cheaper one. **When a mechanical check replaces a prose checklist, delete the prose requirement.** Keeping both does not double the rigour; it halves it.
 
 Work:
 - Enumerate **every** SCREEN ID from the frozen Process 04 inventory. A missing screen is a defect; an invented screen is a scope violation.
@@ -182,7 +191,9 @@ Work:
 
 Artifact: `01_SCREEN_UX_MODEL.md` from template `01`.
 
-Gate 1 requires: every SCREEN ID present exactly once; no unknown screen; every entry citing at least one approved capability ID; exactly one primary action per screen; the structural block rule satisfied where a block is used; Decision Log hash matching `decision_log.latest_sha256`; the user sending exactly `APPROVE SCREEN UX MODEL`; and one Control update that sets `gate_1.approved_state_seq`, `gate_1.decision_log_sha256`, the coverage snapshot and appends `GATE_1_APPROVED`.
+Gate 1 requires: every SCREEN ID present exactly once; no unknown screen; every entry citing at least one approved capability ID; exactly one primary action per screen; the structural block rule satisfied where a block is used; Decision Log hash matching `decision_log.latest_sha256`; **a `PASS` from `test-harness/validate-control.py` and from `test-harness/validate-ux-model.py`, both quoted in the record**; the user sending exactly `APPROVE SCREEN UX MODEL`; and one Control update that sets `gate_1.approved_state_seq`, `gate_1.decision_log_sha256`, the coverage snapshot and appends `GATE_1_APPROVED`.
+
+Two validators, not one, because they fail independently: the control checker catches an inconsistent workspace, the artifact checker catches an artifact that does not match the frozen flow. An agent that runs only the artifact checker can pass a gate on a workspace the contract would reject.
 
 Stop after Gate 1.
 
