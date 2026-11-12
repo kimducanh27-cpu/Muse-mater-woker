@@ -70,7 +70,7 @@ Gate 2 binds foundations **and** the component library together. A component tha
 | `pbakaus/impeccable` | `skill/reference/document.md` | `DESIGN.md` structure and completeness |
 | `pbakaus/impeccable` | `skill/reference/craft-floor.md` | Quality floor and absolute bans |
 | `pbakaus/impeccable` | `skill/reference/android.md` | Android platform rules for foundations |
-| `anthropics/knowledge-work-plugins` | `design/skills/design-system` | Foundations and token method |
+| `anthropics/knowledge-work-plugins` | `design/skills/design-system` | Component inventory completeness, documentation, consistency audit — a maintenance method, not a foundations method |
 | `anthropics/knowledge-work-plugins` | `design/skills/accessibility-review` | Contrast and focus measurement discipline |
 | `anthropics/knowledge-work-plugins` | `design/skills/design-critique` | Review method for Tab 03 |
 

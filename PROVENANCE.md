@@ -44,7 +44,8 @@ What is forbidden is letting a LOCAL rule look like a standard.
 | Gate, Control, Decision Log, review machinery | LOCAL | Repo precedent, Process 05 |
 | Three-tier token model (`ref` / `sys` / `comp`) | ADAPTED | Material Design 3, "Design tokens" — [m3.material.io](https://m3.material.io/foundations/design-tokens/overview). Tier labels adopted; token names are product decisions |
 | Tonal elevation, state layers, dynamic colour | ADAPTED | Material 3 |
-| Foundations and token method | VERBATIM | `upstream/.../design-system/SKILL.md` |
+| Component inventory completeness, documentation and consistency audit | VERBATIM | `upstream/.../design-system/SKILL.md` — a maintenance method (audit / document / extend) |
+| How to choose colour roles, scale ratios and elevation levels | LOCAL | No upstream defines the choice. The copied skill lists token *categories*; it does not say how to pick values. See L-7 |
 | Contrast measured, not asserted | ADAPTED | WCAG 2.2; `accessibility-review` (verbatim file, 2.1) |
 | Component admission rule (must cite SCREEN IDs) | LOCAL | See L-5 |
 | Platform recorded as an immutable Control field | LOCAL | See L-6 |
@@ -113,6 +114,16 @@ Each entry states what it is, why it exists, what could go wrong, and what would
 **Risk.** Immutability is heavy. A product that later adds a tablet or web target must start a new initiative, which may be disproportionate.
 
 **Retired when.** A second platform is actually attempted.
+
+### L-7 — Foundations are chosen, not derived
+
+**What.** Colour roles, type-scale ratio, spacing base and elevation levels are chosen by the author and justified by use. No formula or upstream method produces them.
+
+**Why.** The copied `design-system` skill lists token *categories* — colours, typography, spacing, borders, shadows, motion — but never says how to pick a value within a category. Material 3 supplies defaults, and this process explicitly forbids adopting one merely because it exists.
+
+**Risk.** This is the most subjective step in the whole sequence, and it sits behind the same gate machinery as the most mechanical ones, so it inherits the same appearance of rigour. A reviewer can verify that every value has a role and a use. Nobody can verify that the ratio is right, or that `sys.color.action.primary` is the correct green. The gate proves the foundation is *documented*, not that it is *good*.
+
+**Retired when.** A live run produces a screen the foundation cannot express, or a reviewer cannot tell a justified value from an arbitrary one.
 
 ## What this audit does not claim
 

@@ -144,7 +144,7 @@ Design method lives in `upstream/anthropics/knowledge-work-plugins/design/skills
 
 | File | Read it for |
 |---|---|
-| `design-system/SKILL.md` | Foundations and token method |
+| `design-system/SKILL.md` | Component inventory completeness, component documentation and consistency audit (Tab 02, Tab 03). It is a **maintenance** method — audit, document, extend an existing system. It does not say how to choose a colour role or a scale ratio; that remains local work. |
 | `accessibility-review/SKILL.md` | Contrast and focus measurement |
 | `design-critique/SKILL.md` | Review structure for Tab 03 |
 

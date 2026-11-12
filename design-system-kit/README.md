@@ -103,7 +103,7 @@ Do not create screen layout, placement, regions, composition, wireframes, final 
 
 | Local file | Used for |
 |---|---|
-| `design-system/SKILL.md` | Foundations and token method |
+| `design-system/SKILL.md` | Component inventory completeness, component documentation, consistency audit. A maintenance method, not a foundations method. |
 | `accessibility-review/SKILL.md` | Contrast and focus measurement |
 | `design-critique/SKILL.md` | Review structure for Tab 03 |
 
