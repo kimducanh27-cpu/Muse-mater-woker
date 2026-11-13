@@ -52,7 +52,7 @@ These are the only strings that open a gate. An agent must not type them, sugges
 | Gate | Command |
 |---|---|
 | P05 Gate 1 | `APPROVE SCREEN UX MODEL` |
-| P05 Gate 2 | `APPROVE INTERACTION AND STATE DESIGN` |
+| P05 Gate 2 | `APPROVE UX SPEC` |
 | P05 Gate 3 | `FREEZE UX SPEC` |
 | P06 Gate 1 | `APPROVE DESIGN FOUNDATIONS` |
 | P06 Gate 2 | `APPROVE COMPONENT LIBRARY` |
