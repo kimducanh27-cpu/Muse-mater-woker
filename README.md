@@ -2,7 +2,7 @@
 
 **Cấu hình The Seed:** AI = **Sparring** · Research = **Deep** · Antigravity = **3 tabs**.
 
-**New session? Read `docs/PRD.md`, then `docs/PROGRESS.md`, then `docs/RULES.md` before writing anything.**
+**New session? Read `docs/PRD.md`, then `docs/HANDOFF.md`, then `docs/PROGRESS.md`, then `docs/RULES.md` before writing anything.** `docs/TASKS.md` says what to do next; `docs/ARCHITECTURE.md` and `docs/DESIGN.md` explain why the kit is shaped this way. To refresh the pack later, use `docs/UPDATE-PROMPT.md`.
 
 This repository defines six processes (01–06) of a numbered product-building sequence. Processes 07–08 are chartered in `process-charters/` and have no contract yet. The sequence is open-ended and no total count is asserted: a process is added only when it passes the admission test in `process-charters/README.md`. A number is a slot, not a promise.
 

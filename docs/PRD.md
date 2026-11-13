@@ -1,5 +1,5 @@
 > Derived. Not authoritative. On disagreement the Control File wins.
-> Generated from this repository at commit `5d5d47b`, 2026-11-13.
+> Generated from this repository at commit `42f615a`, 2026-11-13.
 
 # What this repository is
 
@@ -39,6 +39,14 @@ Nine Skills, 56 templates, three validators, thirteen recorded findings.
 - **No product.** No initiative has run end to end. There is no `PRODUCT_DEFINITION.md` for any real idea, no frozen App Flow, no frozen UX Spec, no design system.
 - **No live gate.** No approval command has ever been issued. No Control File event has ever been written by a real tab.
 - **No runtime evidence.** 130 checklist scenarios across Processes 04–06 are `NOT RUN`. Eleven probes have executed pieces of the machinery; none converted a scenario into a `PASS`.
+
+## What this is not for
+
+- **Not a code generator.** It stops at a frozen interface specification. No component code, no theme file, no screen implementation.
+- **Not a substitute for a designer.** It orders and records decisions. It does not make them, and a gate that nobody with taste opens produces a well-documented bad decision.
+- **Not for a team.** One approver, exact commands typed by that person. Two people reviewing still works; a committee does not, because the protocol assumes one voice per gate.
+- **Not a compliance framework.** A hash proves byte identity. It does not prove the artifact is correct, complete, or usable.
+- **Not proven.** Nothing has run end to end. Treat every claim in this pack as a design intention until a live gate produces evidence.
 
 ## The honest one-liner
 

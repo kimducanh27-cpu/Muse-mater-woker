@@ -1,5 +1,5 @@
 > Derived. Not authoritative. On disagreement the Control File wins.
-> Generated from this repository at commit `5d5d47b`, 2026-11-13.
+> Generated from this repository at commit `42f615a`, 2026-11-13.
 
 # Rules
 

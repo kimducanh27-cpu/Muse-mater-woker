@@ -1,5 +1,5 @@
 > Derived. Not authoritative. On disagreement the Control File wins.
-> Generated from this repository at commit `5d5d47b`, 2026-11-13.
+> Generated from this repository at commit `42f615a`, 2026-11-13.
 
 # How to update the docs pack
 
@@ -59,7 +59,7 @@ Do not touch the line above it. `Derived. Not authoritative.` is not decoration;
 
 - Do not claim a `NOT RUN` scenario is a `PASS`.
 - Do not describe a product. No product exists. If one now does, say so with the artifact path that proves it, and stop — that is a structural change.
-- Do not add a file to the pack. **Six content files is the number.** This procedure is not content — it is the only file in `docs/` that may be added, and it already exists.
+- Do not add a file to the pack. **Six content files is the number.** `UPDATE-PROMPT.md` and `HANDOFF.md` are operational, not content: one maintains the pack, the other carries session state. Neither is read first, and neither may grow into a seventh topic file.
 - Do not soften a finding. If something is fixed by specification only, say that; it is different from fixed by re-running the probe.
 - Do not edit a Control File, a Skill, a template, or anything under `test-harness/`. You are updating a description of them, not them.
 

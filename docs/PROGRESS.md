@@ -1,5 +1,5 @@
 > Derived. Not authoritative. On disagreement the Control File wins.
-> Generated from this repository at commit `5d5d47b`, 2026-11-13.
+> Generated from this repository at commit `42f615a`, 2026-11-13.
 
 # Progress
 
@@ -32,7 +32,7 @@ Thirteen findings. Seven were closed the only way that counts: the same probe, r
 | F-11 | Six enumerated checks never executed | Validator made a required step; probe re-run passes |
 | F-13 | Narrating checks and running a checker gave two ways to comply | Prose requirement deleted; the validator output is the record |
 
-Six more were closed by specification only and say so in `test-harness/FINDINGS.md`: F-01, F-02, F-03, F-09, F-12, and the tooling defect behind F-09.
+Five more were closed by specification only and say so in `test-harness/FINDINGS.md`: F-01, F-02, F-03, F-09, F-12. The thirteenth, F-07, is not a fix at all — it records that Process 06 had never been executed, and that it now has been once.
 
 ## Open
 
