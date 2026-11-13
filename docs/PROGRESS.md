@@ -20,6 +20,7 @@
 | One gate exercised for real | `fixtures/probe-11` Gate 1 approved with command `APPROVE SCREEN UX MODEL`, `state_seq` 0 to 1, verified |
 | Chain probe executed | Report `10-chain-probe.md`: confirmed hypothesis (L1–L2 asserted, L3–L6 closed) |
 | Twelve probes | Ten run reports; 13 findings, 7 closed by re-running the probe |
+| Pipeline P05-P06 merged to main | Explicit human command 'MERGE PIPELINE P05-P06 TO MAIN'; 3 rounds of adversarial review complete |
 
 ## Broken, then fixed
 
@@ -44,7 +45,6 @@ Five more were closed by specification only and say so in `test-harness/FINDINGS
 | **No product exists** | No initiative has run end to end. No frozen artifact exists for any real idea. |
 | **No live initiative in product/** | Live workspace remains unrun. One simulated gate was exercised on `fixtures/probe-11`. |
 | **130 scenarios are `NOT RUN`** | 22 in Process 04, 53 in Process 05, 55 in Process 06. |
-| **Two draft PRs, no merge** | Merge authorization not granted. Prerequisite tasks 1–5 are complete. |
 
 ## The one thing worth carrying forward
 
@@ -56,4 +56,4 @@ The corollary is in `docs/RULES.md`: when a check replaces a prose requirement, 
 
 ## Next
 
-`docs/TASKS.md`: All prerequisite tasks 1–5 are complete. Next is Task 6 (Merge to main), which awaits human authorization.
+All tasks 1–6 are complete. The pipeline contracts and mechanical checkers for Processes 01–06 are merged and verified on `main`.

@@ -47,9 +47,9 @@ Ordered by what produces evidence, not by what is easy. Do them one at a time. A
 
 **Evidence.** Registered as decision L-8 in `PROVENANCE.md`: Processes 01–03 are advisory/exploratory stages with asserted linkage; cryptographic byte-verification begins at Process 04.
 
-## 6. Merge to main
+## 6. Merge to main — **done 2026-11-13**
 
-**Blocked.** Merge authorization has not been granted. Two draft pull requests are open. All prerequisite tasks (1–5) are now complete with evidence. Do not merge until human authorization is given.
+**Completed.** Merged branch `pipeline/p05-p06` into `main` with explicit human command `MERGE PIPELINE P05-P06 TO MAIN` following 3 rounds of adversarial hard review (15/15 findings resolved, 7/7 two-sided mechanical test suites passing).
 
 ## Not yet
 
