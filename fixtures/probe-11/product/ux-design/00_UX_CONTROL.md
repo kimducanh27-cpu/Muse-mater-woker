@@ -1,40 +1,42 @@
 ---
 schema_version: 1
-process: "05-ux-design"
-initiative_id: "probe-2"
-state_seq: 0
+process: 05-ux-design
+initiative_id: probe-2
+state_seq: 1
 created_at_local: null
-last_updated_local: "NOT_VERIFIED"
+last_updated_local: NOT_VERIFIED
 source_process_04:
-  control_path: "product/app-flow/00_APP_FLOW_CONTROL.md"
-  initiative_id: "probe-2"
+  control_path: product/app-flow/00_APP_FLOW_CONTROL.md
+  initiative_id: probe-2
   control_schema_version: 4
-  gate_3_status: "APPROVED"
-  lifecycle_status: "FROZEN"
-  frozen_artifact_path: "product/app-flow/APP_FLOW.md"
-  frozen_artifact_sha256: "1a35de5f36d12dc533d9d63ecc5f8555a375175333509a78f784005f941311c9"
-  verified_file_sha256: "1a35de5f36d12dc533d9d63ecc5f8555a375175333509a78f784005f941311c9"
+  gate_3_status: APPROVED
+  lifecycle_status: FROZEN
+  frozen_artifact_path: product/app-flow/APP_FLOW.md
+  frozen_artifact_sha256: 1a35de5f36d12dc533d9d63ecc5f8555a375175333509a78f784005f941311c9
+  verified_file_sha256: 1a35de5f36d12dc533d9d63ecc5f8555a375175333509a78f784005f941311c9
   blocking_change_requests: 0
-  status: "VERIFIED"
+  status: VERIFIED
   verified_at_local: null
 source_process_03:
-  control_path: "product/definition/00_PRODUCT_DEFINITION_CONTROL.md"
-  frozen_artifact_path: "product/definition/PRODUCT_DEFINITION.md"
-  frozen_artifact_sha256: "697c6f7b05b11a4efbaea954945fee7a1d5479d1fa4abb91fb192e6cfea0e684"
-  verified_file_sha256: "697c6f7b05b11a4efbaea954945fee7a1d5479d1fa4abb91fb192e6cfea0e684"
-  status: "VERIFIED"
+  control_path: product/definition/00_PRODUCT_DEFINITION_CONTROL.md
+  frozen_artifact_path: product/definition/PRODUCT_DEFINITION.md
+  frozen_artifact_sha256: 697c6f7b05b11a4efbaea954945fee7a1d5479d1fa4abb91fb192e6cfea0e684
+  verified_file_sha256: 697c6f7b05b11a4efbaea954945fee7a1d5479d1fa4abb91fb192e6cfea0e684
+  status: VERIFIED
 gate_1:
-  status: "PENDING"
-  required_command: "APPROVE SCREEN UX MODEL"
-  approved_command: null
-  approved_at_local: null
-  approved_state_seq: null
-  decision_log_sha256: null
-  approved_artifacts: []
+  status: APPROVED
+  required_command: APPROVE SCREEN UX MODEL
+  approved_command: APPROVE SCREEN UX MODEL
+  approved_at_local: 2026-11-13 14:38:55 +0700
+  approved_state_seq: 1
+  decision_log_sha256: ecbe8fc2f292f9852cf20ad9655f9b78145853671ed2a45740dfa4bf8121459e
+  approved_artifacts: &id001
+  - path: product\ux-design\01_SCREEN_UX_MODEL.md
+    sha256: 4a3955e9d8034de278eacf7b5ea1bf02555830200e6f823494ae9a89a2e15948
   decision_note: null
 gate_2:
-  status: "PENDING"
-  required_command: "APPROVE UX SPEC"
+  status: PENDING
+  required_command: APPROVE UX SPEC
   approved_command: null
   approved_at_local: null
   approved_state_seq: null
@@ -42,21 +44,21 @@ gate_2:
   approved_artifacts: []
   decision_note: null
 gate_3:
-  status: "PENDING"
-  required_command: "FREEZE UX SPEC"
+  status: PENDING
+  required_command: FREEZE UX SPEC
   approved_command: null
   approved_at_local: null
   approved_state_seq: null
   frozen_at_local: null
   reviewed_draft:
-    path: "product/ux-design/07_UX_SPEC_DRAFT.md"
+    path: product/ux-design/07_UX_SPEC_DRAFT.md
     sha256: null
   frozen_artifact:
-    path: "product/ux-design/UX_SPEC.md"
+    path: product/ux-design/UX_SPEC.md
     sha256: null
   frozen_version: 0
   archived_versions: []
-coverage:
+coverage: &id002
   screens_in_source: null
   screens_covered: null
   states_in_source: null
@@ -66,23 +68,37 @@ coverage:
   last_computed_at_local: null
 review:
   round: 0
-  status: "NOT_STARTED"
+  status: NOT_STARTED
   open_blockers: 0
   open_critical: 0
   open_major: 0
   open_minor: 0
-  latest_review_path: "product/ux-design/06_UX_REVIEW.md"
+  latest_review_path: product/ux-design/06_UX_REVIEW.md
   latest_review_sha256: null
-  reviewed_draft_path: "product/ux-design/07_UX_SPEC_DRAFT.md"
+  reviewed_draft_path: product/ux-design/07_UX_SPEC_DRAFT.md
   reviewed_draft_sha256: null
   reviewed_artifacts: []
 decision_log:
-  path: "product/ux-design/08_DECISION_LOG.md"
-  latest_sha256: "ecbe8fc2f292f9852cf20ad9655f9b78145853671ed2a45740dfa4bf8121459e"
+  path: product/ux-design/08_DECISION_LOG.md
+  latest_sha256: ecbe8fc2f292f9852cf20ad9655f9b78145853671ed2a45740dfa4bf8121459e
 accepted_residual_risks: []
-event_log: []
-lifecycle_status: "DRAFT"
-timezone: "Asia/Ho_Chi_Minh"
+event_log:
+- event_type: GATE_1_APPROVED
+  state_seq: 1
+  timestamp_local: 2026-11-13 14:38:55 +0700
+  exact_user_command: APPROVE SCREEN UX MODEL
+  reason: Gate approved by the repository owner.
+  changed_paths:
+  - product\ux-design\00_UX_CONTROL.md
+  relevant_hashes:
+    artifact: 4a3955e9d8034de278eacf7b5ea1bf02555830200e6f823494ae9a89a2e15948
+    decision_log: ecbe8fc2f292f9852cf20ad9655f9b78145853671ed2a45740dfa4bf8121459e
+  gate: GATE_1
+  approved_artifacts: *id001
+  decision_log_sha256: ecbe8fc2f292f9852cf20ad9655f9b78145853671ed2a45740dfa4bf8121459e
+  coverage_snapshot: *id002
+lifecycle_status: DRAFT
+timezone: Asia/Ho_Chi_Minh
 ---
 
 # Process 05 — Canonical UX Control (Schema v1)
