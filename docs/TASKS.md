@@ -35,7 +35,7 @@ Ordered by what produces evidence, not by what is easy. Do them one at a time. A
 
 **Evidence.** A fixture with one of each event type passes a v4 validator.
 
-## 4. Add validators for P05 artifacts 02–05
+## 4. Add validators for P05 artifacts 02–05 — **02 done 2026-11-13, 03–05 open**
 
 **Why.** Only artifact 01 is mechanically checked. Interaction patterns, state design, copy intent and accessibility requirements are prose-only, which is the condition that produced findings F-04, F-05 and F-11.
 

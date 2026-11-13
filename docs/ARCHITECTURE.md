@@ -60,7 +60,7 @@ docs/                   this orientation pack
 
 ## Why validators exist
 
-Four scripts, each born from a demonstrated failure:
+Five scripts, each born from a demonstrated failure:
 
 | Script | Checks | Born from |
 |---|---|---|
@@ -68,6 +68,7 @@ Four scripts, each born from a demonstrated failure:
 | `validate-register.py` | Register event block hashes under the sentinel rule, chain contiguity | An agent wrote a digest that verified under nothing |
 | `validate-ux-model.py` | Screen set equality, one primary action each, component audit | A word-list audit that failed correct prose |
 | `apply-gate.py` | Applies one gate approval: exact-command check, artifact validation, event append, re-verify | Hand-written gate events produced F-06 and F-08 |
+| `validate-patterns.py` | Pattern register, mandatory subsections, citation-or-reserve, boundary | A pattern library where a pattern nobody cites still counts as a decision |
 
 The pattern is consistent: prose was not enforced, a mechanical check was, and behaviour followed the check.
 

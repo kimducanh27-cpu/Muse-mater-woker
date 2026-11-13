@@ -15,6 +15,7 @@ Read this before writing anything. These are the rules that, when broken, produc
 6. **Never edit a frozen artifact.** Freeze copies the reviewed draft byte-for-byte and changes one status line. Anything else is a new version through a Change Request.
 7. **Never let a rewrite pass as upstream.** If you adapt an external skill, label it. See `PROVENANCE.md`: VERBATIM, ADAPTED or LOCAL.
 8. **Never claim a `NOT RUN` scenario is a `PASS`.** Eleven probes have executed pieces of the machinery. None has converted a checklist scenario into evidence.
+9. **Never scan a whole document when you mean one section.** This defect appeared four times in one session: `card` inside `discards`, `### CRE-` inside prose, `component` outside the list, and a validator that read the citation table as a second pattern register. A checker that reads past the end of its section measures the wrong thing, and it fails correct input.
 
 ## Always
 
