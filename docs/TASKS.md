@@ -9,7 +9,9 @@ Ordered by what produces evidence, not by what is easy. Do them one at a time. A
 
 **Why first.** No gate has ever been opened. Every Control File in this repository has `gate_1.status: PENDING` and an empty `event_log`. The validators check a workspace that is already consistent; none has ever checked a *transition*.
 
-**Do.** Take `fixtures/probe-11`, produce artifact 01 with both validators passing, then have the human type `APPROVE SCREEN UX MODEL`. The agent performs one Control update: `state_seq` 0 → 1, one `GATE_1_APPROVED` event, `gate_1.approved_state_seq: 1`, `gate_1.decision_log_sha256` set.
+**Do.** Take `fixtures/probe-11`, produce artifact 01 with both validators passing, then have the human type `APPROVE SCREEN UX MODEL`.
+
+`test-harness/apply-gate.py` performs the Control update mechanically: it refuses a command that does not match `required_command`, refuses a gate that is not `PENDING` or `REOPENED`, runs the artifact validator first, and re-validates after writing. Tested on a throwaway copy — refusal path and success path both behave. The live fixture is still `PENDING`.
 
 **Evidence.** The Control File parses, `validate-control.py` passes with one event, and the event's key set matches `CONTROL-FIELDS-v1.yaml`. Then re-run `validate-control.py` — it must still pass.
 
@@ -25,7 +27,7 @@ Ordered by what produces evidence, not by what is easy. Do them one at a time. A
 
 **Fails if.** Any link is marked `CLOSED` that only compares strings.
 
-## 3. Write the Process 04 field contract
+## 3. Write the Process 04 field contract — **done 2026-11-13**
 
 **Why.** `templates/CONTROL-FIELDS-v1.yaml` covers Processes 05 and 06. Process 04 schema v4 has a larger event set — register initialization, receipts, aborts — and no field contract. Do this before anyone builds a Register writer, not after.
 
