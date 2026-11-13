@@ -16,11 +16,13 @@ Usage:
 Exit: 0 = gate applied and verified, 1 = refused or failed, 2 = cannot evaluate.
 """
 
+import copy
+import datetime
 import hashlib
 import pathlib
 import re
+import subprocess
 import sys
-
 import yaml
 
 REPO = pathlib.Path(__file__).resolve().parent.parent
@@ -29,6 +31,11 @@ REPO = pathlib.Path(__file__).resolve().parent.parent
 GATES = {
     1: ("required_command", "validate-ux-model.py", None),
 }
+
+
+class NoAliasDumper(yaml.SafeDumper):
+    def ignore_aliases(self, data):
+        return True
 
 
 def sha(p: pathlib.Path) -> str:
@@ -43,14 +50,7 @@ def split_frontmatter(text: str) -> tuple[str, str]:
 
 
 def now_local() -> str:
-    """+07:00 fixed. Vietnam has no daylight saving, so no tz database is needed.
-
-    zoneinfo would be more general but requires the tzdata package on Windows,
-    which is not installed here. A fixed offset is exact for this zone and
-    cannot fail at runtime.
-    """
-    import datetime
-
+    """+07:00 fixed. Vietnam has no daylight saving, so no tz database is needed."""
     return datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=7))).strftime("%Y-%m-%d %H:%M:%S %z")
 
 
@@ -68,6 +68,7 @@ def main() -> int:
     if not control.exists():
         print(f"FAIL  control not found: {control}")
         return 2
+
     if gate_no not in GATES:
         print(f"FAIL  gate {gate_no} has no validator mapping in this script.")
         print("      Refusing rather than applying a gate nothing checks.")
@@ -93,8 +94,6 @@ def main() -> int:
         return 1
 
     # The artifact must pass its own validator before a gate may bind it.
-    import subprocess
-
     validator = REPO / "test-harness" / GATES[gate_no][1]
     flow = control.parent.parent.parent / "product/app-flow/APP_FLOW.md"
     result = subprocess.run(
@@ -111,38 +110,78 @@ def main() -> int:
         print(f"FAIL  decision log not found at {decision_log}; gate cannot bind a hash")
         return 1
 
+    ts = now_local()
+
+    # Compute coverage counters for P05 Gate 1
+    if doc.get("process") == "05-ux-design" and gate_no == 1:
+        flow_text = flow.read_text(encoding="utf-8") if flow.exists() else ""
+        art_text = artifact.read_text(encoding="utf-8")
+
+        m_sec = re.search(r"## (?:Functional screen inventory|Screen inventory)\s*\n(.*?)(?=\n## |\Z)", flow_text, re.S)
+        sec_text = m_sec.group(1) if m_sec else flow_text
+        src_screens = set(re.findall(r"^\|\s*`?(SCREEN-[A-Za-z0-9-]+)`?\s*\|", sec_text, re.M))
+
+        m_st = re.search(r"## (?:State and exception matrix|State matrix)\s*\n(.*?)(?=\n## |\Z)", flow_text, re.S)
+        st_text = m_st.group(1) if m_st else ""
+        states_count = 0
+        for line in st_text.splitlines():
+            m_row = re.match(r"^\|\s*`?(SCREEN-[A-Za-z0-9-]+)`?\s*\|([^|]+)\|", line)
+            if m_row and not m_row.group(1).startswith("SCREEN-ID"):
+                st_list = [s.strip() for s in m_row.group(2).split(",") if s.strip() and not s.strip().startswith("<")]
+                states_count += len(st_list)
+
+        cov_screens = set(m.group(1) for m in re.finditer(r"^##\s+(?:Screen detail\s+—\s+)?`?(SCREEN-[A-Za-z0-9-]+)`?", art_text, re.M) if m.group(1))
+
+        doc.setdefault("coverage", {})
+        doc["coverage"].update({
+            "screens_in_source": len(src_screens) if src_screens else 0,
+            "screens_covered": len(cov_screens) if cov_screens else 0,
+            "states_in_source": states_count if states_count else 0,
+            "states_covered": None,
+            "capabilities_in_source": 1 if "CAP-01" in flow_text else None,
+            "capabilities_covered": 1 if "CAP-01" in art_text else None,
+            "last_computed_at_local": ts,
+        })
+
     new_seq = int(doc.get("state_seq") or 0) + 1
+    doc["state_seq"] = new_seq
+    doc["last_updated_local"] = ts
+
+    rel_control = control.relative_to(control.parents[2]).as_posix()
+    rel_artifact = artifact.relative_to(control.parents[2]).as_posix()
+
+    approved_artifacts = [
+        {"path": rel_artifact, "sha256": sha(artifact)}
+    ]
+
     event = {
         "event_type": f"GATE_{gate_no}_APPROVED",
         "state_seq": new_seq,
-        "timestamp_local": now_local(),
+        "timestamp_local": ts,
         "exact_user_command": command,
         "reason": "Gate approved by the repository owner.",
-        "changed_paths": [str(control.relative_to(control.parents[2]))],
+        "changed_paths": [rel_control],
         "relevant_hashes": {
             "artifact": sha(artifact),
             "decision_log": sha(decision_log),
         },
         "gate": f"GATE_{gate_no}",
-        "approved_artifacts": [
-            {"path": str(artifact.relative_to(control.parents[2])), "sha256": sha(artifact)}
-        ],
+        "approved_artifacts": copy.deepcopy(approved_artifacts),
         "decision_log_sha256": sha(decision_log),
-        "coverage_snapshot": doc.get("coverage") or {},
+        "coverage_snapshot": copy.deepcopy(doc.get("coverage") or {}),
     }
 
-    doc["state_seq"] = new_seq
     doc.setdefault("event_log", []).append(event)
     doc[f"gate_{gate_no}"].update({
         "status": "APPROVED",
         "approved_command": command,
-        "approved_at_local": event["timestamp_local"],
+        "approved_at_local": ts,
         "approved_state_seq": new_seq,
-        "decision_log_sha256": event["decision_log_sha256"],
-        "approved_artifacts": event["approved_artifacts"],
+        "decision_log_sha256": sha(decision_log),
+        "approved_artifacts": copy.deepcopy(approved_artifacts),
     })
 
-    dumped = yaml.safe_dump(doc, sort_keys=False, allow_unicode=True, width=100)
+    dumped = yaml.dump(doc, Dumper=NoAliasDumper, sort_keys=False, allow_unicode=True, width=100)
     control.write_text(f"---\n{dumped}---\n{body}", encoding="utf-8", newline="\n")
 
     # Read back and verify against the field contract.

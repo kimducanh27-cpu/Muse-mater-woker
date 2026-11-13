@@ -67,7 +67,7 @@ decision_log:
 change_request_register:
   path: "product/app-flow/10_CHANGE_REQUEST_REGISTER.md"
   schema_version: 1
-  last_verified_sha256: "96c9bc22637d2ece54134fb64b077801be65c9994b95dcd35f51e8daf5792222"
+  last_verified_sha256: "1317723c5003d26f40ab279aeeb55aa9264505e4c8a1cabbee213f634c21766f"
   last_register_seq: 0
   last_event_id: INITIALIZATION
 accepted_residual_risks: []

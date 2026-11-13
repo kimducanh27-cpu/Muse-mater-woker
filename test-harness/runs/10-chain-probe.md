@@ -18,20 +18,20 @@ Approvals across all control files and candidates were recorded as `SIMULATED_AP
 
 | Step | Process | Artifact Path | SHA-256 Hash | Thread Element |
 |---|---|---|---|---|
-| 1 | 01 Seed | [`01_SEED_CANDIDATE.md`](file:///c:/Users/ducti/WorkBuddy%20AI/2026-11-12-15-51-45/app-adr-ui/fixtures/chain-probe/01_SEED_CANDIDATE.md) | `f326d6b862a9107fb7f0d3a184a79fae626cbaac39bf00eb173d22da68fa5039` | Seed hypothesis: mobile users need explicit draft saving to prevent form abandonment |
-| 2 | 02 Discovery | [`07_DISCOVERY_DECISION.md`](file:///c:/Users/ducti/WorkBuddy%20AI/2026-11-12-15-51-45/app-adr-ui/fixtures/chain-probe/07_DISCOVERY_DECISION.md) | `4e440fcb2e11ea84cf1cd317785778d813cc6b7e760b2eec46a72f43a8a3ed56` | Opportunity decision: `PROCEED` on `CAP-01` supported by primary interview evidence |
-| 3 | 03 Definition | [`PRODUCT_DEFINITION.md`](file:///c:/Users/ducti/WorkBuddy%20AI/2026-11-12-15-51-45/app-adr-ui/fixtures/chain-probe/PRODUCT_DEFINITION.md) | `2e6b6c6d5e398fb3fb630606842f56d06b337e0721535fdb5338ef17b88fc075` | Product Definition: `CAP-01` admitted to frozen capability scope (`IN` table) |
-| 4 | 04 App Flow | [`04_SCREEN_INVENTORY.md`](file:///c:/Users/ducti/WorkBuddy%20AI/2026-11-12-15-51-45/app-adr-ui/fixtures/chain-probe/04_SCREEN_INVENTORY.md) | `5379b4799753ee50f7af4953c6fcfe54493fc8d6e8ee42830c0f7c6d72fe40f6` | Screen inventory: `SCREEN-01` (Draft Editor) serves `CAP-01` with terminal node `NODE-02` |
-| 5 | 05 UX Design | [`01_SCREEN_UX_MODEL.md`](file:///c:/Users/ducti/WorkBuddy%20AI/2026-11-12-15-51-45/app-adr-ui/fixtures/chain-probe/01_SCREEN_UX_MODEL.md) | `286c714d74ab555d295e71765fde3de216a73ced8b764dbba6365d3ba3191b9a` | UX Model: `SCREEN-01` user goal, exactly one primary action (`Save draft`), hierarchy & structure |
-| 6 | 06 Design Systems | [`03_COMPONENT_INVENTORY.md`](file:///c:/Users/ducti/WorkBuddy%20AI/2026-11-12-15-51-45/app-adr-ui/fixtures/chain-probe/03_COMPONENT_INVENTORY.md) | `f35453b8520015593c1bfa3c409a2e4c7bdc9269b1f9cd332b4ec137805dc921` | Component inventory: `CMP-01` (Draft Save Control) citing `SCREEN-01` with token anatomy |
+| 1 | 01 Seed | [`01_SEED_CANDIDATE.md`](fixtures/chain-probe/01_SEED_CANDIDATE.md) | `f326d6b862a9107fb7f0d3a184a79fae626cbaac39bf00eb173d22da68fa5039` | Seed hypothesis: mobile users need explicit draft saving to prevent form abandonment |
+| 2 | 02 Discovery | [`07_DISCOVERY_DECISION.md`](fixtures/chain-probe/07_DISCOVERY_DECISION.md) | `4e440fcb2e11ea84cf1cd317785778d813cc6b7e760b2eec46a72f43a8a3ed56` | Opportunity decision: `PROCEED` on `CAP-01` supported by primary interview evidence |
+| 3 | 03 Definition | [`PRODUCT_DEFINITION.md`](fixtures/chain-probe/PRODUCT_DEFINITION.md) | `2e6b6c6d5e398fb3fb630606842f56d06b337e0721535fdb5338ef17b88fc075` | Product Definition: `CAP-01` admitted to frozen capability scope (`IN` table) |
+| 4 | 04 App Flow | [`04_SCREEN_INVENTORY.md`](fixtures/chain-probe/04_SCREEN_INVENTORY.md) | `5379b4799753ee50f7af4953c6fcfe54493fc8d6e8ee42830c0f7c6d72fe40f6` | Screen inventory: `SCREEN-01` (Draft Editor) serves `CAP-01` with terminal node `NODE-02` |
+| 5 | 05 UX Design | [`01_SCREEN_UX_MODEL.md`](fixtures/chain-probe/01_SCREEN_UX_MODEL.md) | `286c714d74ab555d295e71765fde3de216a73ced8b764dbba6365d3ba3191b9a` | UX Model: `SCREEN-01` user goal, exactly one primary action (`Save draft`), hierarchy & structure |
+| 6 | 06 Design Systems | [`03_COMPONENT_INVENTORY.md`](fixtures/chain-probe/03_COMPONENT_INVENTORY.md) | `f35453b8520015593c1bfa3c409a2e4c7bdc9269b1f9cd332b4ec137805dc921` | Component inventory: `CMP-01` (Draft Save Control) citing `SCREEN-01` with token anatomy |
 
 #### Accompanying Canonical Control Files
 
 | Step | Process | Control File Path | SHA-256 Hash | Recorded Hash Content |
 |---|---|---|---|---|
-| 2 | 02 Discovery | [`00_DISCOVERY_CONTROL.md`](file:///c:/Users/ducti/WorkBuddy%20AI/2026-11-12-15-51-45/app-adr-ui/fixtures/chain-probe/00_DISCOVERY_CONTROL.md) | `d0e2e7a6dcb2983ff0de810ca0f6fb65dea8c75c2cbedd1a228ceeda51550847` | None (Process 02 schema lacks hash fields) |
-| 3 | 03 Definition | [`00_PRODUCT_DEFINITION_CONTROL.md`](file:///c:/Users/ducti/WorkBuddy%20AI/2026-11-12-15-51-45/app-adr-ui/fixtures/chain-probe/00_PRODUCT_DEFINITION_CONTROL.md) | `03996f20c2a05e51525e16feed81533773e519001a037da60e329657f4096a0e` | `gate_3.frozen_artifact.sha256`: `2e6b6c6d5e398fb3fb630606842f56d06b337e0721535fdb5338ef17b88fc075` |
-| 4 | 04 App Flow | [`00_APP_FLOW_CONTROL.md`](file:///c:/Users/ducti/WorkBuddy%20AI/2026-11-12-15-51-45/app-adr-ui/fixtures/chain-probe/00_APP_FLOW_CONTROL.md) | `9c82d638926ae06b3f47a85a856384e41f3faf5a4d85b83d1da938df6e6f9cb3` | `source_process_03.frozen_artifact_sha256`: `2e6b6c6d5e398fb3fb630606842f56d06b337e0721535fdb5338ef17b88fc075`<br>`gate_3.frozen_artifact.sha256`: `5379b4799753ee50f7af4953c6fcfe54493fc8d6e8ee42830c0f7c6d72fe40f6` |
+| 2 | 02 Discovery | [`00_DISCOVERY_CONTROL.md`](fixtures/chain-probe/00_DISCOVERY_CONTROL.md) | `76cbd03c895f96cadfe19017773b1f5d07c99ec18f9b5d2ace7af7d3594e5d53` | None (Process 02 schema lacks hash fields) |
+| 3 | 03 Definition | [`00_PRODUCT_DEFINITION_CONTROL.md`](fixtures/chain-probe/00_PRODUCT_DEFINITION_CONTROL.md) | `340aaacf2de81e2f117bfec553ea47ee8593fb80b7af2de287bcc5624135484d` | `gate_3.frozen_artifact.sha256`: `2e6b6c6d5e398fb3fb630606842f56d06b337e0721535fdb5338ef17b88fc075` |
+| 4 | 04 App Flow | [`00_APP_FLOW_CONTROL.md`](fixtures/chain-probe/00_APP_FLOW_CONTROL.md) | `bede5acf5a602f2657ef1effdff74e9e49b1b094bed6cb828c101826a1f53742` | `source_process_03.frozen_artifact_sha256`: `2e6b6c6d5e398fb3fb630606842f56d06b337e0721535fdb5338ef17b88fc075`<br>`gate_3.frozen_artifact.sha256`: `5379b4799753ee50f7af4953c6fcfe54493fc8d6e8ee42830c0f7c6d72fe40f6` |
 
 ---
 

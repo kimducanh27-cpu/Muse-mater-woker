@@ -243,6 +243,25 @@ On exactly `ABANDON DESIGN SYSTEM`, record command and rationale, set lifecycle 
 
 Every invalidation appends timestamp, `state_seq`, changed paths, previous and new hashes, affected gates and reason.
 
+## Exact user commands
+
+These are the only commands the human operator types. An agent must not type them or infer them:
+
+| Command | Kind | Effect |
+|---|---|---|
+| `APPROVE DESIGN FOUNDATIONS` | Primary Gate 1 | Sets `gate_1.status = APPROVED`, appends `GATE_1_APPROVED` |
+| `REJECT DESIGN FOUNDATIONS` | Secondary Gate 1 | Sets `gate_1.status = REJECTED`, appends `GATE_REJECTED` |
+| `APPROVE COMPONENT LIBRARY` | Primary Gate 2 | Sets `gate_2.status = APPROVED`, appends `GATE_2_APPROVED` |
+| `REJECT COMPONENT LIBRARY` | Secondary Gate 2 | Sets `gate_2.status = REJECTED`, appends `GATE_REJECTED` |
+| `FREEZE DESIGN SYSTEM` | Primary Gate 3 | Sets `gate_3.status = APPROVED`, lifecycle `FROZEN`, appends `GATE_3_FROZEN` |
+| `APPROVE DESIGN DECISION DEC-<NNNN>` | Secondary Decision | Updates decision status to `APPROVED`, pairs with `DECISION_LOG_UPDATED` |
+| `REJECT DESIGN DECISION DEC-<NNNN>` | Secondary Decision | Updates decision status to `REJECTED`, pairs with `DECISION_LOG_UPDATED` |
+| `DEFER DESIGN DECISION DEC-<NNNN>` | Secondary Decision | Updates decision status to `DEFERRED`, pairs with `DECISION_LOG_UPDATED` |
+| `ACCEPT RESIDUAL RISK [FINDING-ID]` | Secondary Risk | Accepts finding in review round, records rationale |
+| `RECOVER REVIEW ROUND [N]` | Secondary Recovery | Re-attaches review round after failed Control update |
+| `RECOVER DECISION STATUS [DEC-ID]` | Secondary Recovery | Re-attaches decision status after failed Control update |
+| `ABANDON DESIGN SYSTEM` | Secondary Lifecycle | Sets lifecycle `ABANDONED`, appends `DESIGN_SYSTEM_ABANDONED` |
+
 ## Required quality checks
 
 - Every foundation value has a role statement and a stated use.

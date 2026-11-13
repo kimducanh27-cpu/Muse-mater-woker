@@ -115,7 +115,7 @@ Frozen output: `product/design-system/DESIGN_SYSTEM.md`.
 
 This is the first process permitted to produce concrete visual values. Platform is recorded in the Control File (`android` / `jetpack-compose` / `material-3`) and is immutable per workspace.
 
-Three rules carry the process: a component exists only if a frozen screen cites it; tokens are layered primitive → semantic → component and a component token may not reach past the semantic layer; contrast is measured from resolved values, never declared.
+Three rules carry the process: a component exists only if a frozen screen cites it; tokens are layered reference → system → component and a component token may not reach past the system layer; contrast is measured from resolved values, never declared.
 
 Process 06 defines a system. It does not place anything on a screen. Composition is Process 07.
 

@@ -4,7 +4,7 @@ process: 05-ux-design
 initiative_id: probe-2
 state_seq: 1
 created_at_local: null
-last_updated_local: NOT_VERIFIED
+last_updated_local: 2026-11-13 15:55:34 +0700
 source_process_04:
   control_path: product/app-flow/00_APP_FLOW_CONTROL.md
   initiative_id: probe-2
@@ -27,11 +27,11 @@ gate_1:
   status: APPROVED
   required_command: APPROVE SCREEN UX MODEL
   approved_command: APPROVE SCREEN UX MODEL
-  approved_at_local: 2026-11-13 14:38:55 +0700
+  approved_at_local: 2026-11-13 15:55:34 +0700
   approved_state_seq: 1
   decision_log_sha256: ecbe8fc2f292f9852cf20ad9655f9b78145853671ed2a45740dfa4bf8121459e
-  approved_artifacts: &id001
-  - path: product\ux-design\01_SCREEN_UX_MODEL.md
+  approved_artifacts:
+  - path: product/ux-design/01_SCREEN_UX_MODEL.md
     sha256: 4a3955e9d8034de278eacf7b5ea1bf02555830200e6f823494ae9a89a2e15948
   decision_note: null
 gate_2:
@@ -58,14 +58,14 @@ gate_3:
     sha256: null
   frozen_version: 0
   archived_versions: []
-coverage: &id002
-  screens_in_source: null
-  screens_covered: null
-  states_in_source: null
+coverage:
+  screens_in_source: 2
+  screens_covered: 2
+  states_in_source: 7
   states_covered: null
-  capabilities_in_source: null
-  capabilities_covered: null
-  last_computed_at_local: null
+  capabilities_in_source: 1
+  capabilities_covered: 1
+  last_computed_at_local: 2026-11-13 15:55:34 +0700
 review:
   round: 0
   status: NOT_STARTED
@@ -85,18 +85,27 @@ accepted_residual_risks: []
 event_log:
 - event_type: GATE_1_APPROVED
   state_seq: 1
-  timestamp_local: 2026-11-13 14:38:55 +0700
+  timestamp_local: 2026-11-13 15:55:34 +0700
   exact_user_command: APPROVE SCREEN UX MODEL
   reason: Gate approved by the repository owner.
   changed_paths:
-  - product\ux-design\00_UX_CONTROL.md
+  - product/ux-design/00_UX_CONTROL.md
   relevant_hashes:
     artifact: 4a3955e9d8034de278eacf7b5ea1bf02555830200e6f823494ae9a89a2e15948
     decision_log: ecbe8fc2f292f9852cf20ad9655f9b78145853671ed2a45740dfa4bf8121459e
   gate: GATE_1
-  approved_artifacts: *id001
+  approved_artifacts:
+  - path: product/ux-design/01_SCREEN_UX_MODEL.md
+    sha256: 4a3955e9d8034de278eacf7b5ea1bf02555830200e6f823494ae9a89a2e15948
   decision_log_sha256: ecbe8fc2f292f9852cf20ad9655f9b78145853671ed2a45740dfa4bf8121459e
-  coverage_snapshot: *id002
+  coverage_snapshot:
+    screens_in_source: 2
+    screens_covered: 2
+    states_in_source: 7
+    states_covered: null
+    capabilities_in_source: 1
+    capabilities_covered: 1
+    last_computed_at_local: 2026-11-13 15:55:34 +0700
 lifecycle_status: DRAFT
 timezone: Asia/Ho_Chi_Minh
 ---

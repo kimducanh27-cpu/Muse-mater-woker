@@ -208,28 +208,22 @@ Work:
 - `04_CONTENT_AND_COPY_INTENT.md` records what content each screen requires and the intent of each message. Intent, not wording. Final strings belong to Process 07.
 - `05_ACCESSIBILITY_REQUIREMENTS.md` records the target conformance level once, then per-screen keyboard reachability, focus order intent, announcement intent and minimum target size. It states requirements; it does not choose tokens.
 
-Before Gate 2, run explicit set comparisons and show the compared IDs:
+Before Gate 2, run explicit set comparisons and verify artifacts mechanically:
 - Set of SCREEN IDs in 01 = set in the frozen Process 04 inventory.
 - Set of (screen, state) rows in 03 = the applicable projection of the Process 04 state matrix.
 - Every pattern ID cited exists in 02; every pattern in 02 is cited at least once, or is marked as reserved with a reason.
 - Every capability ID in the frozen Process 03 scope is served by at least one screen, or has an approved deferral decision.
-- No named UI component appears in 01–05. The audit below is a **procedure**, not a word hunt. Run it exactly as written; a different procedure produces a different result on the same file, which makes the gate meaningless.
+- Zero named UI components, zero colour values, zero raw dimensions appear in 01–05.
 
-  **Banned terms.** button, card, modal, dialog, toast, chip, tab, drawer, tooltip, badge, banner, accordion. The target platform is Android, so the list also covers affordances an agent absorbs without noticing: app bar, top bar, bottom sheet, navigation rail, floating action button, FAB, snackbar, system back, predictive back, window size class, inset.
-
-  **Procedure.**
-
-  1. Scope: the artifact body only. Exclude any section headed `Rules for this artifact`, any fenced block that states the rule or draws a structural block, and any text inside a quoted source excerpt marked as quoted.
-  2. **Exclude this workflow's own vocabulary before matching.** `Tab 01`, `Tab 02`, `Tab 03` and `TAB_01` are process roles, not UI affordances. So are `screen`, `state`, `pattern` and `component` when they appear as process nouns rather than as the name of something a user taps. Without this exception every artifact fails on its own header line — observed, and it is how an audit loses credibility on first contact.
-  3. Matching: case-insensitive, whole word, on word boundaries. `card` matches `card` and `Card`; it does not match `discards` or `cardboard`. `tab` does not match `table`, and it does not match `Tab 01`.
-  4. For every match, emit one row: the line number, the exact matched term, and the **full sentence** containing it.
-  5. Classify each row: `VIOLATION` if the term names an affordance the user interacts with, `FALSE POSITIVE` if it appears in prose that describes a need rather than an affordance. State the reason in one clause.
-  6. Report the count of `VIOLATION` rows. Gate 2 fails on any count above zero.
-
-  **Why the procedure exists.** Two failure modes were observed when the audit was a bare word list. A literal grep matched `card` inside `discards` and failed a correct artifact. A model matched `component`, which is not on the list, and passed the artifact for the wrong reason. Neither implemented the rule. The sentence requirement in step 3 is what makes a wrong match visible in the record instead of buried in a judgement.
-
-  A requirement may describe the need — "the user must be able to abandon this task without losing input" — but the affordance that satisfies it is chosen in Process 06, not named here.
-- No colour value, hex code, font family, font size, spacing value, radius or shadow appears anywhere in 01–05.
+**Mechanical checks are mandatory.** Run all four artifact validators and the Control File checker, and paste their output into the record:
+```bash
+python test-harness/validate-patterns.py product/ux-design/02_INTERACTION_PATTERNS.md product/app-flow/APP_FLOW.md
+python test-harness/validate-state.py product/ux-design/03_STATE_EXPERIENCE.md product/app-flow/APP_FLOW.md
+python test-harness/validate-copy.py product/ux-design/04_CONTENT_AND_COPY_INTENT.md product/app-flow/APP_FLOW.md
+python test-harness/validate-a11y.py product/ux-design/05_ACCESSIBILITY_REQUIREMENTS.md product/app-flow/APP_FLOW.md
+python test-harness/validate-control.py product/ux-design/00_UX_CONTROL.md
+```
+Every checker must return `PASS`. A failure from any validator blocks Gate 2.
 
 Gate 2 binds hashes of 02–05 and the whole Decision Log. The user must send exactly `APPROVE UX SPEC`. One Control update sets `gate_2.approved_state_seq`, `gate_2.decision_log_sha256`, the coverage snapshot and appends `GATE_2_APPROVED`.
 
@@ -280,6 +274,25 @@ On exactly `ABANDON UX SPEC`, record command and rationale, set lifecycle `ABAND
 | `UX_SPEC.md` after freeze | Gate 3 reopened; lifecycle `REVIEW_REQUIRED`; downstream use prohibited |
 
 Every invalidation appends timestamp, `state_seq`, changed paths, previous and new hashes, affected gates and reason. Never silently overwrite an approval.
+
+## Exact user commands
+
+These are the only commands the human operator types. An agent must not type them or infer them:
+
+| Command | Kind | Effect |
+|---|---|---|
+| `APPROVE SCREEN UX MODEL` | Primary Gate 1 | Sets `gate_1.status = APPROVED`, appends `GATE_1_APPROVED` |
+| `REJECT SCREEN UX MODEL` | Secondary Gate 1 | Sets `gate_1.status = REJECTED`, appends `GATE_REJECTED` |
+| `APPROVE UX SPEC` | Primary Gate 2 | Sets `gate_2.status = APPROVED`, appends `GATE_2_APPROVED` |
+| `REJECT UX SPEC` | Secondary Gate 2 | Sets `gate_2.status = REJECTED`, appends `GATE_REJECTED` |
+| `FREEZE UX SPEC` | Primary Gate 3 | Sets `gate_3.status = APPROVED`, lifecycle `FROZEN`, appends `GATE_3_FROZEN` |
+| `APPROVE UX DECISION DEC-<NNNN>` | Secondary Decision | Updates decision status to `APPROVED`, pairs with `DECISION_LOG_UPDATED` |
+| `REJECT UX DECISION DEC-<NNNN>` | Secondary Decision | Updates decision status to `REJECTED`, pairs with `DECISION_LOG_UPDATED` |
+| `DEFER UX DECISION DEC-<NNNN>` | Secondary Decision | Updates decision status to `DEFERRED`, pairs with `DECISION_LOG_UPDATED` |
+| `ACCEPT RESIDUAL RISK [FINDING-ID]` | Secondary Risk | Accepts finding in review round, records rationale |
+| `RECOVER REVIEW ROUND [N]` | Secondary Recovery | Re-attaches review round after failed Control update |
+| `RECOVER DECISION STATUS [DEC-ID]` | Secondary Recovery | Re-attaches decision status after failed Control update |
+| `ABANDON UX SPEC` | Secondary Lifecycle | Sets lifecycle `ABANDONED`, appends `UX_SPEC_ABANDONED` |
 
 ## Required quality checks
 

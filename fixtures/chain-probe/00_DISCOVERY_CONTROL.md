@@ -1,9 +1,5 @@
-> SIMULATED — NOT ELIGIBLE DOWNSTREAM
-# Product Discovery — Canonical Control State
-
-This file is the single source of truth for approvals and lifecycle state for one Process 02 initiative. Copy it to product/discovery/00_DISCOVERY_CONTROL.md when starting that initiative. Do not edit this template as the live state file.
-
 ---
+# SIMULATED — NOT ELIGIBLE DOWNSTREAM
 process: "02-product-discovery"
 initiative_id: "draft-saving-initiative"
 evidence_status: "PRIMARY_EVIDENCE_PRESENT"
@@ -34,6 +30,12 @@ discovery_outcome:
   decision_note: "SIMULATED: Discovery outcome frozen"
 last_updated_local: "2026-11-13 14:45 Asia/Ho_Chi_Minh"
 ---
+
+> SIMULATED — NOT ELIGIBLE DOWNSTREAM
+
+# Product Discovery — Canonical Control State
+
+This file is the single source of truth for approvals and lifecycle state for one Process 02 initiative. Copy it to product/discovery/00_DISCOVERY_CONTROL.md when starting that initiative. Do not edit this template as the live state file.
 
 ## State rules
 

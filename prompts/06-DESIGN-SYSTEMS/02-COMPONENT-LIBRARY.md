@@ -16,11 +16,11 @@ If any check fails, reopen the affected gates, append `INVALIDATED` with expecte
 
 Three artifacts, in this order:
 
-**`02_TOKEN_CONTRACT.md`** from template `02`. Three layers — primitive, semantic, component. A component token may reference only a semantic token. A semantic token must name a role; "blue" is a name, "action.primary" is a role. Record explicit prohibitions, because a token with no forbidden use becomes a suggestion.
+**`02_TOKEN_CONTRACT.md`** from template `02`. Three layers — reference, system, component. A component token may reference only a system token. A system token must name a role; "blue" is a name, "action.primary" is a role. Record explicit prohibitions, because a token with no forbidden use becomes a suggestion.
 
 **`03_COMPONENT_INVENTORY.md`** from template `03`. Every component cites at least one `SCREEN-` ID from the frozen UX spec. For each: purpose, anatomy, variants, sizes, every interaction state styled, slots, content limits, and a mandatory "when not to use this".
 
-**`04_COMPONENT_ACCESSIBILITY.md`** from template `04`. Measure every contrast pair from the resolved primitive values. A ratio without a hex pair and a stated method is not a measurement. Record target size in dp, focus visibility, and announcement intent per component.
+**`04_COMPONENT_ACCESSIBILITY.md`** from template `04`. Measure every contrast pair from the resolved reference values. A ratio without a hex pair and a stated method is not a measurement. Record target size in dp, focus visibility, and announcement intent per component.
 
 ## The admission rule
 
@@ -45,8 +45,8 @@ Run the set comparisons and show the compared IDs, not a claim:
 | Components with zero citing screens | `0` |
 | Citing SCREEN IDs absent from the frozen inventory | `0` |
 | Screens citing at least one component | = screens in source |
-| Component tokens referencing a primitive | `0` |
-| Semantic tokens without a role statement | `0` |
+| Component tokens referencing a reference token | `0` |
+| System tokens without a role statement | `0` |
 | Contrast pairs measured | = pairs required |
 | Contrast pairs failing | `0` |
 | Colour-only state signals | `0` |

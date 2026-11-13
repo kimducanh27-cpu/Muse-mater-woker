@@ -217,6 +217,28 @@ def test_suite() -> bool:
             print(f"OK: Caught: {tm}")
     print()
 
+    # 6. Planted failure 5: Invented/fake states not in Process 04
+    print("--- Test 6: Planted failure 5 (Invented states not in Process 04) ---")
+    bad_fake_states = VALID_SAMPLE.replace(
+        "| `SCREEN-01` | `STATE-EMPTY` | `P04-MATRIX` |",
+        "| `SCREEN-01` | `STATE-FAKE-A` | `P04-MATRIX` |",
+    ).replace(
+        "| `SCREEN-01` | `STATE-LOADING` | `P04-MATRIX` |",
+        "| `SCREEN-01` | `STATE-FAKE-B` | `P04-MATRIX` |",
+    )
+    rc, out = run_validator(bad_fake_states)
+    print(f"Exit code: {rc}")
+    print(f"Output:\n{out.strip()}\n")
+    if rc != 1:
+        print("FAIL: Expected rc=1")
+        all_ok = False
+    if "unauthorized state(s) not in Process 04" not in out:
+        print("FAIL: Missing unauthorized states error")
+        all_ok = False
+    else:
+        print("OK: Caught: unauthorized state(s) not in Process 04")
+    print()
+
     if all_ok:
         print("ALL TESTS PASSED: Two-sided verification complete.")
         return True

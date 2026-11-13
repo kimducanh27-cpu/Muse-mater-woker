@@ -5,9 +5,10 @@ Checks four things the Skill requires and prose cannot enforce:
   1. Screen set: every SCREEN ID in the frozen flow has exactly one entry, and
      no entry names a screen that does not exist.
   2. One primary action per screen, non-empty.
-  3. The component-name audit, run as a procedure: word boundaries, body only,
+  3. The boundary audit: component names, visual values (hex colors, color names,
+     token refs, raw dimensions), run as a procedure: word boundaries, body only,
      excluding the rule block and fenced blocks.
-  4. Required template sections present.
+  4. Required sections per screen, structural block width <= 100, and coverage table.
 
 Usage: python test-harness/validate-ux-model.py <artifact-01> <app-flow>
 Exit:  0 = PASS, 1 = FAIL, 2 = cannot evaluate
@@ -17,16 +18,28 @@ import pathlib
 import re
 import sys
 
-BANNED = [
+BANNED_COMPONENTS = [
     "button", "card", "modal", "dialog", "toast", "chip", "tab", "drawer",
     "tooltip", "badge", "banner", "accordion",
     "app bar", "top bar", "bottom sheet", "navigation rail",
     "floating action button", "fab", "snackbar", "system back",
     "predictive back", "window size class", "inset",
 ]
+BANNED = BANNED_COMPONENTS  # backward compatibility for imports
 
-REQUIRED_SECTIONS = ["Information hierarchy", "Structural block", "Open questions"]
-SCREEN_HEADING = re.compile(r"^## (SCREEN-[A-Za-z0-9-]+) — ", re.M)
+BANNED_COLORS = [
+    "red", "green", "blue", "yellow", "orange", "purple", "pink", "cyan",
+    "magenta", "white", "black", "gray", "grey", "teal", "indigo", "violet",
+    "amber", "emerald", "lime", "rose",
+]
+
+HEX_COLOR_PATTERN = re.compile(r"(?<![#&0-9a-zA-Z])#[0-9a-fA-F]{3,8}(?![0-9a-fA-F_-])")
+COLOR_NAME_PATTERN = re.compile(rf"\b(?:{'|'.join(BANNED_COLORS)})\b", re.IGNORECASE)
+TOKEN_REF_PATTERN = re.compile(r"\b(?:sys|ref|comp|color)\.[a-zA-Z0-9_.-]+", re.IGNORECASE)
+DIMENSION_PATTERN = re.compile(r"\b\d+(?:\.\d+)?\s*(?:px|dp|sp|pt|rem|em)\b", re.IGNORECASE)
+
+REQUIRED_PER_SCREEN = ["Information hierarchy", "Structural block", "Open questions"]
+SCREEN_HEADING = re.compile(r"^##\s+(SCREEN-[A-Za-z0-9-]+)\s*—", re.M)
 INVENTORY_ROW = re.compile(r"^\|\s*`?(SCREEN-[A-Za-z0-9-]+)`?\s*\|", re.M)
 
 
@@ -75,6 +88,62 @@ def sentence_at(text: str, offset: int) -> str:
     return " ".join(text[start:end].split())[:160]
 
 
+def get_flow_screens(flow: str) -> set[str]:
+    m = re.search(r"^##\s+(?:Functional\s+)?screen\s+inventory", flow, re.M | re.I)
+    if not m:
+        return set()
+    start = m.end()
+    m2 = re.search(r"^##\s+", flow[start:], re.M)
+    sec_text = flow[start : start + m2.start()] if m2 else flow[start:]
+    return {match.group(1) for match in INVENTORY_ROW.finditer(sec_text)}
+
+
+def audit_boundary(art: str) -> list[str]:
+    """Audit lexical and visual boundary: component names, hex colors, color names,
+    token refs, raw dimensions."""
+    failures: list[str] = []
+    body = mask_workflow_tabs(strip_fences(strip_rule_block(art)))
+
+    # 1. UI components
+    for term in BANNED_COMPONENTS:
+        pattern = re.compile(rf"\b{re.escape(term)}\b", re.IGNORECASE)
+        for hit in pattern.finditer(body):
+            line_no = body[: hit.start()].count("\n") + 1
+            failures.append(
+                f"boundary: line ~{line_no} matched component {term!r} — \"{sentence_at(body, hit.start())}\""
+            )
+
+    # 2. Hex colors
+    for hit in HEX_COLOR_PATTERN.finditer(body):
+        line_no = body[: hit.start()].count("\n") + 1
+        failures.append(
+            f"boundary: line ~{line_no} matched hex color {hit.group(0)!r} — \"{sentence_at(body, hit.start())}\""
+        )
+
+    # 3. Color names
+    for hit in COLOR_NAME_PATTERN.finditer(body):
+        line_no = body[: hit.start()].count("\n") + 1
+        failures.append(
+            f"boundary: line ~{line_no} matched color {hit.group(0)!r} — \"{sentence_at(body, hit.start())}\""
+        )
+
+    # 4. Token refs
+    for hit in TOKEN_REF_PATTERN.finditer(body):
+        line_no = body[: hit.start()].count("\n") + 1
+        failures.append(
+            f"boundary: line ~{line_no} matched token ref {hit.group(0)!r} — \"{sentence_at(body, hit.start())}\""
+        )
+
+    # 5. Raw dimensions
+    for hit in DIMENSION_PATTERN.finditer(body):
+        line_no = body[: hit.start()].count("\n") + 1
+        failures.append(
+            f"boundary: line ~{line_no} matched dimension {hit.group(0)!r} — \"{sentence_at(body, hit.start())}\""
+        )
+
+    return failures
+
+
 def main() -> int:
     if len(sys.argv) < 3:
         print(__doc__)
@@ -92,7 +161,10 @@ def main() -> int:
     failures: list[str] = []
 
     # 1. screen set
-    in_flow = {m.group(1) for m in INVENTORY_ROW.finditer(flow)}
+    in_flow = get_flow_screens(flow)
+    if not in_flow:
+        failures.append("frozen flow contains no screen inventory section or no screens")
+
     in_art = [m.group(1) for m in SCREEN_HEADING.finditer(art)]
     seen = set(in_art)
 
@@ -103,31 +175,47 @@ def main() -> int:
     for sid in sorted({s for s in in_art if in_art.count(s) > 1}):
         failures.append(f"screen {sid} has {in_art.count(sid)} entries, expected 1")
 
-    # 2. one primary action per entry
+    # 2. per-screen validation
     entries = list(SCREEN_HEADING.finditer(art))
     for i, m in enumerate(entries):
-        end = entries[i + 1].start() if i + 1 < len(entries) else len(art)
+        sid = m.group(1)
+        next_h2 = re.search(r"^##\s+", art[m.end():], re.M)
+        end = m.end() + next_h2.start() if next_h2 else len(art)
         chunk = art[m.start():end]
+
+        # Primary action
         actions = re.findall(r"^\|\s*Primary action\s*\|\s*(.+?)\s*\|", chunk, re.M)
         if len(actions) != 1:
-            failures.append(f"{m.group(1)}: {len(actions)} primary-action rows, expected 1")
+            failures.append(f"{sid}: {len(actions)} primary-action rows, expected 1")
         elif actions[0].strip().lower() in {"", "none", "not applicable", "n/a"}:
-            failures.append(f"{m.group(1)}: primary action is empty")
+            failures.append(f"{sid}: primary action is empty")
 
-    # 3. component audit
-    body = mask_workflow_tabs(strip_fences(strip_rule_block(art)))
-    for term in BANNED:
-        pattern = re.compile(rf"\b{re.escape(term)}\b", re.IGNORECASE)
-        for hit in pattern.finditer(body):
-            line_no = body[: hit.start()].count("\n") + 1
-            failures.append(
-                f"component audit: line ~{line_no} matched {term!r} — \"{sentence_at(body, hit.start())}\""
-            )
+        # Required subsections per screen
+        for sec in REQUIRED_PER_SCREEN:
+            if not re.search(rf"^###\s+{re.escape(sec)}", chunk, re.M | re.I):
+                failures.append(f"{sid}: missing required section '### {sec}'")
 
-    # 4. sections
-    for section in REQUIRED_SECTIONS:
-        if not re.search(rf"^#+\s+{re.escape(section)}", art, re.M | re.IGNORECASE):
-            failures.append(f"missing required section: {section}")
+        # Structural block max line length <= 100
+        struct_match = re.search(r"###\s+Structural block[^\n]*\n+```[a-zA-Z0-9_-]*\n(.*?)\n```", chunk, re.DOTALL | re.I)
+        if struct_match:
+            for l_idx, line in enumerate(struct_match.group(1).splitlines(), start=1):
+                if len(line) > 100:
+                    failures.append(f"{sid}: structural block line {l_idx} length {len(line)} exceeds 100 characters")
+
+    # 3. boundary audit
+    failures.extend(audit_boundary(art))
+
+    # 4. coverage table
+    cov_match = re.search(r"^##\s+Coverage table[^\n]*\n(.*?)(?=\n##|\Z)", art, re.M | re.S)
+    if not cov_match:
+        failures.append("missing required section '## Coverage table'")
+    else:
+        cov_rows = re.findall(r"^\|\s*`?(SCREEN-[A-Za-z0-9-]+)`?\s*\|", cov_match.group(1), re.M)
+        cov_screens = set(cov_rows)
+        for sid in sorted(in_flow - cov_screens):
+            failures.append(f"coverage table: missing screen {sid}")
+        for sid in sorted(cov_screens - in_flow):
+            failures.append(f"coverage table: screen {sid} not in frozen flow")
 
     for f in failures:
         print(f"FAIL  {f}")
@@ -137,7 +225,7 @@ def main() -> int:
 
     print(
         f"PASS  {len(in_art)} entries, screen set matches the frozen flow, "
-        f"one primary action each, component audit clean"
+        f"one primary action each, boundary audit clean"
     )
     return 0
 

@@ -117,8 +117,15 @@ def main() -> int:
         failures.append("decision_log.latest_sha256 is null")
     elif dl_path:
         base = path.parent
-        for candidate in (base.parent.parent / dl_path, base.parent.parent.parent / dl_path):
-            if candidate.exists():
+        candidates = [
+            base / pathlib.Path(dl_path).name,
+            base / dl_path,
+            base.parent.parent / dl_path,
+            base.parent.parent.parent / dl_path,
+            pathlib.Path(dl_path),
+        ]
+        for candidate in candidates:
+            if candidate.exists() and candidate.is_file():
                 import hashlib
 
                 actual = hashlib.sha256(candidate.read_bytes()).hexdigest()
@@ -126,9 +133,29 @@ def main() -> int:
                     failures.append(f"decision_log.latest_sha256 does not match {candidate} (declared {declared[:12]}…, actual {actual[:12]}…)")
                 break
         else:
-            notes.append(f"decision log not found on disk at {dl_path}; hash not verified")
+            failures.append(f"decision log not found on disk at {dl_path}; hash cannot be verified")
 
-    # 6. lifecycle consistency
+    # 6. gate approvals and lifecycle consistency
+    for gnum in (1, 2, 3):
+        gdata = doc.get(f"gate_{gnum}")
+        if not gdata or not isinstance(gdata, dict):
+            continue
+        gstatus = gdata.get("status")
+        if gstatus == "APPROVED":
+            appr_seq = gdata.get("approved_state_seq")
+            if appr_seq is None or not isinstance(appr_seq, int):
+                failures.append(f"gate_{gnum} status is APPROVED but approved_state_seq is {appr_seq!r}")
+            else:
+                valid_types = {f"GATE_{gnum}_APPROVED", f"GATE_{gnum}_FROZEN"}
+                matching = [
+                    ev for ev in log
+                    if isinstance(ev, dict) and ev.get("event_type") in valid_types and ev.get("state_seq") == appr_seq
+                ]
+                if not matching:
+                    failures.append(
+                        f"gate_{gnum} status is APPROVED with approved_state_seq {appr_seq}, but no matching approval event found in event_log"
+                    )
+
     life = doc.get("lifecycle_status")
     g3 = (doc.get("gate_3") or {}).get("status")
     if life == "FROZEN" and g3 != "APPROVED":

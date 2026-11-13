@@ -8,10 +8,10 @@ Checks the rules the template states and prose cannot enforce:
   2. Every row states what the user sees, understands and can do.
   3. Every non-recoverable state in the explicit register has an approved
      Decision ID matching DEC-.
-  4. The lexical boundary holds: no component names (via validate-ux-model
-     audit_components), no visual/color values, no raw dimensions.
+  4. The boundary holds: no component names, no visual/color values, no raw dimensions
+     (via validate-ux-model audit_boundary).
   5. The Coverage check table and totals match actual rows and the Process 04
-     matrix count.
+     matrix count, and state sets match P04 exactly (no unauthorized states).
 
 Usage: python test-harness/validate-state.py <artifact-03> <app-flow>
 Exit:  0 = PASS, 1 = FAIL, 2 = cannot evaluate
@@ -29,16 +29,18 @@ _spec = importlib.util.spec_from_file_location(
 _vum = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(_vum)
 
-INVENTORY_ROW = re.compile(r"^\|\s*`?(SCREEN-[A-Za-z0-9-]+)`?\s*\|", re.M)
 ALLOWED_SOURCES = {"P04-MATRIX", "P04-TRANSITION", "P04-EXPLICIT-EXCLUSION"}
-COLOR_NAMES = [
-    "red", "green", "blue", "yellow", "orange", "purple", "pink",
-    "gray", "grey", "cyan", "magenta", "amber",
-]
 
 
 def cells(line: str) -> list[str]:
     return [c.strip() for c in line.strip().strip("|").split("|")]
+
+
+def normalize_state_name(s: str) -> str:
+    s = s.strip().upper()
+    if s.startswith("STATE-"):
+        s = s[6:]
+    return s
 
 
 def section(art: str, heading: str) -> str:
@@ -63,7 +65,6 @@ def table_rows(sec_text: str) -> list[list[str]]:
             continue
         if c[0].startswith("-"):
             continue
-        # Skip header rows
         first = c[0].lower()
         if first in ("screen id", "screen", "screen_id", "id", "projection source"):
             continue
@@ -101,48 +102,6 @@ def parse_p04_state_matrix(flow: str) -> dict[str, list[str]]:
     return result
 
 
-def audit_components(art: str) -> list[str]:
-    """Audit lexical boundary: component names, visual/color values, dimensions."""
-    failures: list[str] = []
-    body = _vum.mask_workflow_tabs(_vum.strip_fences(_vum.strip_rule_block(art)))
-
-    # 1. UI component names
-    for term in _vum.BANNED:
-        pattern = re.compile(rf"\b{re.escape(term)}\b", re.IGNORECASE)
-        for hit in pattern.finditer(body):
-            line_no = body[: hit.start()].count("\n") + 1
-            failures.append(
-                f"boundary: line ~{line_no} matched component {term!r} — \"{_vum.sentence_at(body, hit.start())}\""
-            )
-
-    # 2. Hex colors (e.g. #fff, #1a2b3c)
-    for hit in re.finditer(r"(?:^|[\s,;:(])(#[0-9a-fA-F]{3,8})\b", body):
-        term = hit.group(1)
-        line_no = body[: hit.start(1)].count("\n") + 1
-        failures.append(
-            f"boundary: line ~{line_no} matched hex color {term!r} — \"{_vum.sentence_at(body, hit.start(1))}\""
-        )
-
-    # 3. Named color values
-    for color in COLOR_NAMES:
-        pattern = re.compile(rf"\b{re.escape(color)}\b", re.IGNORECASE)
-        for hit in pattern.finditer(body):
-            line_no = body[: hit.start()].count("\n") + 1
-            failures.append(
-                f"boundary: line ~{line_no} matched color {color!r} — \"{_vum.sentence_at(body, hit.start())}\""
-            )
-
-    # 4. Raw dimensions (e.g. 16px, 8dp)
-    for hit in re.finditer(r"\b\d+\s*(px|dp|pt|rem|em)\b", body, re.IGNORECASE):
-        term = hit.group(0)
-        line_no = body[: hit.start()].count("\n") + 1
-        failures.append(
-            f"boundary: line ~{line_no} matched dimension {term!r} — \"{_vum.sentence_at(body, hit.start())}\""
-        )
-
-    return failures
-
-
 def main() -> int:
     if len(sys.argv) < 3:
         print(__doc__)
@@ -157,7 +116,7 @@ def main() -> int:
     art = art_path.read_text(encoding="utf-8")
     flow = flow_path.read_text(encoding="utf-8")
 
-    known_screens = {m.group(1) for m in INVENTORY_ROW.finditer(flow)}
+    known_screens = _vum.get_flow_screens(flow)
     p04_states = parse_p04_state_matrix(flow)
     p04_matrix_count = sum(len(v) for v in p04_states.values())
 
@@ -219,6 +178,25 @@ def main() -> int:
 
             matrix_rows.append((sid, state_id))
 
+    # 1b. Check exact state set per screen against Process 04
+    rows_not_in_p04 = 0
+    for sid in sorted(known_screens):
+        p04_set = {normalize_state_name(s) for s in p04_states.get(sid, [])}
+        actual_set = {normalize_state_name(state_id) for (s, state_id) in matrix_rows if s == sid}
+
+        missing = p04_set - actual_set
+        extra = actual_set - p04_set
+
+        for st in sorted(missing):
+            failures.append(f"{sid}: state {st!r} from Process 04 is missing in Matrix")
+        for st in sorted(extra):
+            rows_not_in_p04 += 1
+            failures.append(f"{sid}: state {st!r} in Matrix is not defined in Process 04 (unauthorized state)")
+
+    for (sid, state_id) in matrix_rows:
+        if sid not in known_screens:
+            rows_not_in_p04 += 1
+
     # 2. Parse and validate Non-recoverable states register
     non_rec_sec = section(art, "Non-recoverable states")
     non_rec_dec_count = 0
@@ -243,7 +221,7 @@ def main() -> int:
                 non_rec_dec_count += 1
 
     # 3. Lexical boundary audit
-    failures.extend(audit_components(art))
+    failures.extend(_vum.audit_boundary(art))
 
     # 4. Coverage check
     cov_sec = section(art, "Coverage check")
@@ -319,6 +297,15 @@ def main() -> int:
                 failures.append(
                     f"coverage check totals: 'Rows for states not in Process 04' is {totals_notp04}, "
                     f"expected 0 (blocks Gate 2)"
+                )
+            if totals_notp04 != rows_not_in_p04:
+                failures.append(
+                    f"coverage check totals: 'Rows for states not in Process 04' is {totals_notp04}, "
+                    f"calculated {rows_not_in_p04}"
+                )
+            if rows_not_in_p04 != 0:
+                failures.append(
+                    f"Matrix contains {rows_not_in_p04} unauthorized state(s) not in Process 04 (any non-zero value blocks Gate 2)"
                 )
 
     for f in failures:

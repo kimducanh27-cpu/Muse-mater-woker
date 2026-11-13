@@ -49,7 +49,7 @@ A Control File is YAML frontmatter plus prose. The YAML is state; the prose is e
 
 ```
 .agents/skills/          9 Skills — the normative contracts
-templates/              56 templates, one set per process
+templates/              57 templates, one set per process
 prompts/                tab prompts, one directory per process
 process-charters/       scope arguments for 05–08, and the admission test
 product/<process>/      live workspace per process (empty — nothing has run)

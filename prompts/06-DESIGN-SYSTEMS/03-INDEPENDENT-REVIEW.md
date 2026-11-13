@@ -28,7 +28,7 @@ If your review shows an artifact must change, you do not change it. You record a
 2. **Declared contrast.** A ratio with no resolved hex pair, or marked PASS with no stated method, is unmeasured. Treat every unmeasured pair as failing. A failing pair on a required interaction is `CRITICAL`.
 3. **Leaked composition.** Any statement of where a component goes, how wide it is on a screen, or which region it occupies. This is the most damaging leak because Process 07 will faithfully copy it, and the design system will silently become a set of screen designs. Severity `MAJOR`, `BLOCKER` if the leak covers most of the inventory.
 
-Also check: a screen in the frozen inventory that cites no component and has no decision explaining why; a semantic token with no role statement; a component token pointing at a primitive; an interaction state that exists but is unstyled.
+Also check: a screen in the frozen inventory that cites no component and has no decision explaining why; a system token with no role statement; a component token pointing at a reference token; an interaction state that exists but is unstyled.
 
 **Append** exactly one review round, recording the pre-append Control `state_seq`, pre-append Control hash and previous review hash. Read back, hash, then register with `REVIEW_ROUND_RECORDED` in one Control update.
 

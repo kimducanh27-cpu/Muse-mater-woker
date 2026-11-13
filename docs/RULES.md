@@ -41,7 +41,7 @@ python test-harness/validate-a11y.py <artifact-05> <app-flow>
 python test-harness/apply-gate.py <control> --gate 1 --command "<exact>" --artifact <path>
 ```
 
-The first four check. The fifth applies a gate and then re-checks the result. `make-fixture.py` generates probe workspaces; it is a fixture tool, not a checker.
+The first seven check. The eighth applies a gate and then re-checks the result. `make-fixture.py` generates probe workspaces; it is a fixture tool, not a checker.
 
 A checker that has never failed on a known-bad input is not a checker. Every one of these was tested against a deliberately broken input before it was trusted.
 
@@ -72,7 +72,7 @@ The order is fixed:
 
 Invention is not forbidden. **Unlabelled invention is.** A reader must be able to ask "where does this come from" and get an answer in one hop: a file with a blob SHA, a named standard, or an entry in the register.
 
-Current audit of Processes 05 and 06, 23 rules: **3 verbatim, 4 adapted, 16 local.**
+Current audit of Processes 05 and 06, 24 rules: **3 verbatim, 4 adapted, 17 local.**
 
 That number is the honest measure of this repository. Most of it is original, and the original parts are exactly the parts nobody outside has validated.
 

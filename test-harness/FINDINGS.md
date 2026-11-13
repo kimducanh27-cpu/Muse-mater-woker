@@ -55,14 +55,21 @@ Same model, same runner, different rule. The behaviour followed the writing.
 
 **F-04 and F-05.** The component audit is now a five-step procedure: scope (body only, excluding the rule block and quoted excerpts), matching (case-insensitive, whole word, word boundaries), output (line, term, full sentence), classification (`VIOLATION` / `FALSE POSITIVE` with a reason), and a violation count that Gate 2 checks against zero. The sentence requirement exists so a wrong match appears in the record instead of inside a judgement.
 
+## Closed in Pipeline P05-P06
+
+| Item | Resolution |
+|---|---|
+| Process 04 schema v4 field contract | Closed by `templates/CONTROL-FIELDS-v4.yaml` |
+| The chain probe | Executed under `fixtures/chain-probe/` and recorded in `test-harness/runs/10-chain-probe.md` |
+| Hash binding audit (L1–L7) | Evaluated in chain probe: L1–L2 asserted (P01/P02 lack hash fields), L3–L6 closed (P03–P06 hash-bound) |
+| Mechanical validators for P05 | `validate-ux-model.py`, `validate-patterns.py`, `validate-state.py`, `validate-copy.py`, `validate-a11y.py` |
+
 ## What is still open
 
 | Item | Why it is open |
 |---|---|
-| Process 04 schema v4 has no field contract | Its event set is larger and its writer does not exist yet. Do it before the writer, not after. |
-| Processes 01–03 have no hash binding | Recorded in `CHAIN-PROBE.md` as a hypothesis. Process 01 has no state file at all; Process 02's Control File has zero occurrences of `sha256`. |
-| The chain probe has not run | Part B of the harness. |
-| No `NOT RUN` scenario has become a `PASS` | Six findings are not six passes. Nothing here proves a process works; it proves six things that were broken are now specified. |
+| Upstream Process 01–02 hash binding retrofit | Process 01 has no state file; Process 02 has no hash fields in upstream template. Retrofit requires upstream change or local adapter. |
+| End-to-end multi-agent execution | Probes executed individual steps; multi-agent live collaboration across all 7 processes remains for downstream verification. |
 
 ## Rule for future findings
 

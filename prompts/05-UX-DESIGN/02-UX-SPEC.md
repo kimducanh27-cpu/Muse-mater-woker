@@ -46,6 +46,16 @@ Run the set comparisons and show them explicitly, not as a claim:
 | Named components in 01–05 | zero |
 | Colour, typography, spacing values in 01–05 | zero |
 
+**Mechanical verification is mandatory.** Run the four artifact checkers and the Control File checker, and paste their output into the record:
+```bash
+python test-harness/validate-patterns.py product/ux-design/02_INTERACTION_PATTERNS.md product/app-flow/APP_FLOW.md
+python test-harness/validate-state.py product/ux-design/03_STATE_EXPERIENCE.md product/app-flow/APP_FLOW.md
+python test-harness/validate-copy.py product/ux-design/04_CONTENT_AND_COPY_INTENT.md product/app-flow/APP_FLOW.md
+python test-harness/validate-a11y.py product/ux-design/05_ACCESSIBILITY_REQUIREMENTS.md product/app-flow/APP_FLOW.md
+python test-harness/validate-control.py product/ux-design/00_UX_CONTROL.md
+```
+Every checker must return `PASS`. A failure from any validator blocks Gate 2.
+
 Then wait for exactly:
 
 ```
