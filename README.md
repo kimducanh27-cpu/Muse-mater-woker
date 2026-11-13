@@ -2,7 +2,11 @@
 
 **Cấu hình The Seed:** AI = **Sparring** · Research = **Deep** · Antigravity = **3 tabs**.
 
-This repository defines four processes (01–04) of a numbered product-building sequence. Processes 05–08 are chartered in `process-charters/` and have no contract yet. The sequence is open-ended and no total count is asserted: a process is added only when it passes the admission test in `process-charters/README.md`. A number is a slot, not a promise.
+**New session? Read `docs/PRD.md`, then `docs/PROGRESS.md`, then `docs/RULES.md` before writing anything.**
+
+This repository defines six processes (01–06) of a numbered product-building sequence. Processes 07–08 are chartered in `process-charters/` and have no contract yet. The sequence is open-ended and no total count is asserted: a process is added only when it passes the admission test in `process-charters/README.md`. A number is a slot, not a promise.
+
+The `docs/` pack is **derived and non-authoritative**. It exists so a new session does not have to re-read 2,031 lines of Skill to find out where things stand. On any disagreement, the Control File wins.
 
 ## Architecture
 Principles: **upstream-first, orchestration-second**.
