@@ -104,6 +104,13 @@ register = write(
 """,
 )
 
+# Process 04 also binds a Decision Log hash. Omitting it fails check 5 of the
+# six Control checks, which is how F-12 was found for Process 05.
+decision_log04 = write(
+    "product/app-flow/09_DECISION_LOG.md",
+    (REPO / "templates/04-APP-FLOW/10-DECISION-LOG.md").read_text(encoding="utf-8"),
+)
+
 control04 = patch(
     "templates/04-APP-FLOW/00-APP-FLOW-CONTROL.md",
     "product/app-flow/00_APP_FLOW_CONTROL.md",
@@ -138,6 +145,10 @@ control04 = patch(
             f'  last_verified_sha256: "{sha(register)}"\n  last_register_seq: 0\n  last_event_id: INITIALIZATION',
         ),
         ('lifecycle_status: "DRAFT"\ntimezone:', 'lifecycle_status: "FROZEN"\ntimezone:'),
+        (
+            'decision_log:\n  path: "product/app-flow/09_DECISION_LOG.md"\n  latest_sha256: null',
+            f'decision_log:\n  path: "product/app-flow/09_DECISION_LOG.md"\n  latest_sha256: "{sha(decision_log04)}"',
+        ),
     ],
 )
 

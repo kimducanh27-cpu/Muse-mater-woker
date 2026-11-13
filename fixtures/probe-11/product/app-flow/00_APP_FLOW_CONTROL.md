@@ -63,7 +63,7 @@ review:
   reviewed_artifacts: []
 decision_log:
   path: "product/app-flow/09_DECISION_LOG.md"
-  latest_sha256: null
+  latest_sha256: "6e946ab35a847f6c0a741e14944209e27623384593dbaf4db9230b7569f70918"
 change_request_register:
   path: "product/app-flow/10_CHANGE_REQUEST_REGISTER.md"
   schema_version: 1

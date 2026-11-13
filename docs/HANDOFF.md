@@ -39,6 +39,14 @@ Three threads a fresh session would otherwise re-discover the hard way.
 
 **3. Process 04's Skill does not fit in one agent turn.** Reading the 500-line Skill plus a 15 KB Register and acting on it reached step 46 of 71 with no result, killed at 300 s. Any future P04 probe must be decomposed or run multi-turn.
 
+## Environment gotchas
+
+Two that cost real time and will cost it again.
+
+**Heredoc mangles backslashes.** Running `python - <<'PY' ... PY` through this shell silently rewrites `\n` inside string literals — observed as `/n` and `//n`. It produced two identical `AssertionError: anchor not found` failures on files whose bytes were correct, and the cause was invisible in the output. **Do not put `\n` in a heredoc.** Either use triple-quoted strings with real line breaks, or write the script with a file-writing tool and execute the file.
+
+**`/tmp` does not mean the same thing to bash and to Windows Python.** `cp` into `/tmp` succeeds, then `pathlib.Path("/tmp/...")` resolves to `\tmp\...` and raises `FileNotFoundError`, while a script argument with the same path is converted correctly. Use a workspace-relative scratch directory.
+
 ## First action
 
 `docs/TASKS.md` task 1: open one gate for real. Every Control File still reads `gate_1: PENDING` with an empty `event_log`. The three validators check consistent workspaces; not one has ever checked a transition.

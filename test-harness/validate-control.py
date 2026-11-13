@@ -19,7 +19,22 @@ except ImportError:
     print("PyYAML is required: pip install pyyaml")
     sys.exit(2)
 
-CONTRACT = pathlib.Path(__file__).resolve().parent.parent / "templates" / "CONTROL-FIELDS-v1.yaml"
+CONTRACT_DIR = pathlib.Path(__file__).resolve().parent.parent / "templates"
+
+
+def load_contract(schema_version: object) -> dict:
+    """Pick the field contract that matches the file's own schema version.
+
+    A Control File at an unknown version is NOT_VERIFIED, not checked against
+    the nearest contract. v1 and v4 disagree about which keys GATE_1_APPROVED
+    carries, so guessing would validate the wrong shape.
+    """
+    if not isinstance(schema_version, int):
+        raise SystemExit(f"FAIL  schema_version is {schema_version!r}, expected an integer")
+    path = CONTRACT_DIR / f"CONTROL-FIELDS-v{schema_version}.yaml"
+    if not path.exists():
+        raise SystemExit(f"FAIL  no field contract for schema v{schema_version} at {path.name}")
+    return yaml.safe_load(path.read_text(encoding="utf-8"))
 
 
 def main() -> int:
@@ -44,7 +59,7 @@ def main() -> int:
         print(f"FAIL  frontmatter does not parse: {exc}")
         return 1
 
-    contract = yaml.safe_load(CONTRACT.read_text(encoding="utf-8"))
+    contract = load_contract(doc.get("schema_version"))
     common = set(contract["common"])
     events = contract["events"]
     prose = set(contract.get("prose_events") or [])
@@ -54,8 +69,9 @@ def main() -> int:
     notes: list[str] = []
 
     # 1-3. header state
-    if doc.get("schema_version") != contract["schema_version"]:
-        failures.append(f"schema_version is {doc.get('schema_version')!r}, expected {contract['schema_version']}")
+    process = doc.get("process")
+    if process not in (contract.get("applies_to") or []):
+        failures.append(f"process is {process!r}, but the v{contract['schema_version']} contract covers {contract.get('applies_to')}")
 
     seq = doc.get("state_seq")
     log = doc.get("event_log") or []
