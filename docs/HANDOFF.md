@@ -1,5 +1,5 @@
 > Derived. Not authoritative. On disagreement the Control File wins.
-> Generated from this repository at commit `7432476`, 2026-11-13.
+> Generated from this repository at commit `78667ac`, 2026-11-13.
 
 # Handoff
 
@@ -13,20 +13,22 @@ Two days of work, in one arc:
 
 1. Corrected Process 04's remediation plan — the Register required each event block to carry a hash of that same block. ADR-P04-11 resolved it with a sentinel (`<HASH_OMITTED>`).
 2. Wrote Process 05 (UX Design) and Process 06 (Design Systems) contracts from scratch.
-3. Found that the process charters and the decision register contradicted each other about whether implementation was authorised. Reconciled without rewriting the hashed plan.
-4. Built `PROVENANCE.md` and discovered 16 of 23 rules are local invention.
-5. Built a probe harness and ran **11 probes** against `agy` 1.5.6. Found **13 defects**. Closed 7 by re-running the probe, 5 by specification only.
-
-The full account is in `test-harness/runs/` and `test-harness/FINDINGS.md`. Do not re-derive it.
+3. Reconciled process charters and decision register.
+4. Built `PROVENANCE.md` (24 rules labelled, 8 LOCAL decisions registered).
+5. Built a probe harness and ran **12 probes** (10 run reports, 13 defects tracked).
+6. Built mechanical checkers for all P05 artifacts (`validate-patterns.py`, `validate-state.py`, `validate-copy.py`, `validate-a11y.py`).
+7. Exercised Gate 1 for real on `fixtures/probe-11` with human command `APPROVE SCREEN UX MODEL`.
+8. Ran Chain Probe (Part B) pulling `CAP-01` through P01–P06; confirmed hypothesis (L1–L2 asserted, L3–L6 byte-closed).
+9. Decided P01–P03 hash binding via decision L-8.
 
 ## Where things stand
 
 | | |
 |---|---|
-| Branch | `pipeline/p05-p06`, HEAD `7432476`, 40 commits ahead of `main` |
+| Branch | `pipeline/p05-p06`, HEAD `78667ac`, 44 commits ahead of `main` |
 | Pull requests | #1 (P04, draft, base `main`), #2 (P05/P06, draft, stacked on #1) |
 | Working tree | clean |
-| Gates opened | **zero** |
+| Gates opened | **1** (on `fixtures/probe-11`) |
 | Scenarios passing | **zero** — 130 are `NOT RUN` |
 
 ## In flight
@@ -49,15 +51,24 @@ Two that cost real time and will cost it again.
 
 ## First action
 
-`docs/TASKS.md` task 1: open one gate for real. Every Control File still reads `gate_1: PENDING` with an empty `event_log`. The three validators check consistent workspaces; not one has ever checked a transition.
-
-Nothing else in this repository is worth doing before that.
+`docs/TASKS.md` task 6: Merge to main. All prerequisite tasks (1–5) are fully satisfied with verifiable evidence.
+Merge authorization from the repository owner is required before proceeding.
 
 ## Suggested skills
 
 | Skill | When |
 |---|---|
 | `grilling` | Before any structural decision. It caught the six-file naming problem before it was built. |
+| `verification-before-completion` | Before claiming anything works. Every finding in this session came from claiming success too early. |
+| `systematic-debugging` | If a probe stalls with no result event. Three runs were lost to that before the cause was found. |
+| `handoff` | At the end of the next session, to replace this file. |
+
+## What not to do
+
+- Do not write a product PRD. No product exists.
+- Do not claim a `NOT RUN` scenario passed.
+- Do not add a seventh content file. Six is the number; `UPDATE-PROMPT.md` and this file are operational, not content.
+- Do not trust this file over a Control File.
 | `verification-before-completion` | Before claiming anything works. Every finding in this session came from claiming success too early. |
 | `systematic-debugging` | If a probe stalls with no result event. Three runs were lost to that before the cause was found. |
 | `handoff` | At the end of the next session, to replace this file. |

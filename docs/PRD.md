@@ -1,5 +1,5 @@
 > Derived. Not authoritative. On disagreement the Control File wins.
-> Generated from this repository at commit `7432476`, 2026-11-13.
+> Generated from this repository at commit `78667ac`, 2026-11-13.
 
 # What this repository is
 
@@ -32,13 +32,13 @@ If two people are reviewing, the gate model still works, but the exact-command p
 | 07 | UI Design | charter only |
 | 08 | Validation | charter only |
 
-Nine Skills, 57 templates, five checking scripts, thirteen recorded findings.
+Nine Skills, 57 templates, eight checking scripts, thirteen recorded findings.
 
 ## What does not exist
 
 - **No product.** No initiative has run end to end. There is no `PRODUCT_DEFINITION.md` for any real idea, no frozen App Flow, no frozen UX Spec, no design system.
-- **No live gate.** No approval command has ever been issued. No Control File event has ever been written by a real tab.
-- **No runtime evidence.** 130 checklist scenarios across Processes 04–06 are `NOT RUN`. Eleven probes have executed pieces of the machinery; none converted a scenario into a `PASS`.
+- **No live gate in product/.** Live workspaces remain unrun. One simulated gate was exercised on `fixtures/probe-11`.
+- **No runtime evidence.** 130 checklist scenarios across Processes 04–06 are `NOT RUN`. Twelve probes (including chain probe) have executed pieces of the machinery; none converted a scenario into a `PASS`.
 
 ## What this is not for
 

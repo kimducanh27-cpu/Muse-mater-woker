@@ -1,5 +1,5 @@
 > Derived. Not authoritative. On disagreement the Control File wins.
-> Generated from this repository at commit `7432476`, 2026-11-13.
+> Generated from this repository at commit `78667ac`, 2026-11-13.
 
 # How the kit is built
 
@@ -60,7 +60,7 @@ docs/                   this orientation pack
 
 ## Why validators exist
 
-Five scripts that check or apply, each born from a demonstrated failure. A sixth, `make-fixture.py`, generates probe workspaces and checks nothing:
+Eight scripts that check or apply, each born from a demonstrated failure. A ninth, `make-fixture.py`, generates probe workspaces and checks nothing:
 
 | Script | Checks | Born from |
 |---|---|---|
@@ -69,6 +69,9 @@ Five scripts that check or apply, each born from a demonstrated failure. A sixth
 | `validate-ux-model.py` | Screen set equality, one primary action each, component audit | A word-list audit that failed correct prose |
 | `apply-gate.py` | Applies one gate approval: exact-command check, artifact validation, event append, re-verify | Hand-written gate events produced F-06 and F-08 |
 | `validate-patterns.py` | Pattern register, mandatory subsections, citation-or-reserve, boundary | A pattern library where a pattern nobody cites still counts as a decision |
+| `validate-state.py` | State Matrix coverage against P04, non-recoverable state decisions, boundary | Unchecked state coverage and unrecorded non-recoverable failures |
+| `validate-copy.py` | Content requirements per screen, message intent register, tone/job/implication, boundary | Ambiguous message intent that drifted into unapproved final copy |
+| `validate-a11y.py` | Target WCAG 2.2 AA conformance, per-screen reachable & intent, zero token/color/dimension values | Accessibility rules split across processes with no mechanical boundary check |
 
 The pattern is consistent: prose was not enforced, a mechanical check was, and behaviour followed the check.
 

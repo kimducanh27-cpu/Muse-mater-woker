@@ -1,5 +1,5 @@
 > Derived. Not authoritative. On disagreement the Control File wins.
-> Generated from this repository at commit `7432476`, 2026-11-13.
+> Generated from this repository at commit `78667ac`, 2026-11-13.
 
 # Progress
 
@@ -14,10 +14,12 @@
 | Process 05 UX Design contract | 53 scenarios, three lexical audits, review history, freeze protocol |
 | Process 06 Design Systems contract | 55 scenarios, component admission rule, Material 3 token tiers |
 | Platform decision | Android native, recorded as an immutable Control field |
-| Provenance governance | 24 rules labelled VERBATIM / ADAPTED / LOCAL; 8 LOCAL decisions registered |
+| Provenance governance | 24 rules labelled VERBATIM / ADAPTED / LOCAL; 8 LOCAL decisions registered (L-1–L-8) |
 | Upstream method vendored | Four files copied byte-for-byte from an Apache-2.0 source, blob SHAs recorded |
-| Five checking scripts | Control File, Register chain, UX artifacts 01 and 02, gate applier — each tested against a known-bad input |
-| Eleven probes | Nine run reports; 13 findings, 7 closed by re-running the probe |
+| Eight checking scripts | Control File, Register chain, UX artifacts 01–05, gate applier — each tested against a known-bad input |
+| One gate exercised for real | `fixtures/probe-11` Gate 1 approved with command `APPROVE SCREEN UX MODEL`, `state_seq` 0 to 1, verified |
+| Chain probe executed | Report `10-chain-probe.md`: confirmed hypothesis (L1–L2 asserted, L3–L6 closed) |
+| Twelve probes | Ten run reports; 13 findings, 7 closed by re-running the probe |
 
 ## Broken, then fixed
 
@@ -39,12 +41,10 @@ Five more were closed by specification only and say so in `test-harness/FINDINGS
 
 | Item | Why it matters |
 |---|---|
-| **No gate has ever been exercised** | Every Control File has `gate_1: PENDING` and an empty `event_log`. The validators check consistent workspaces, never transitions. |
 | **No product exists** | No initiative has run end to end. No frozen artifact exists for any real idea. |
-| **Processes 01–03 have no hash binding (resolved)** | Resolved via L-8 in PROVENANCE.md: declared advisory/exploratory with asserted linkage; byte-verified hash chain formally begins at Process 04. |
-| **P05 artifacts 03–05 have no validators** | Artifact 02 done; 03–05 prose-only, which is the condition that produced three findings. |
+| **No live initiative in product/** | Live workspace remains unrun. One simulated gate was exercised on `fixtures/probe-11`. |
 | **130 scenarios are `NOT RUN`** | 22 in Process 04, 53 in Process 05, 55 in Process 06. |
-| **Two draft PRs, no merge** | Merge authorization not granted. |
+| **Two draft PRs, no merge** | Merge authorization not granted. Prerequisite tasks 1–5 are complete. |
 
 ## The one thing worth carrying forward
 
@@ -56,4 +56,4 @@ The corollary is in `docs/RULES.md`: when a check replaces a prose requirement, 
 
 ## Next
 
-`docs/TASKS.md`, in order. The first task is to open one gate for real, because nothing in this repository has ever crossed one.
+`docs/TASKS.md`: All prerequisite tasks 1–5 are complete. Next is Task 6 (Merge to main), which awaits human authorization.

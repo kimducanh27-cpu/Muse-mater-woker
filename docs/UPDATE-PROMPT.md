@@ -1,5 +1,5 @@
 > Derived. Not authoritative. On disagreement the Control File wins.
-> Generated from this repository at commit `7432476`, 2026-11-13.
+> Generated from this repository at commit `78667ac`, 2026-11-13.
 
 # How to update the docs pack
 

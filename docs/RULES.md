@@ -1,5 +1,5 @@
 > Derived. Not authoritative. On disagreement the Control File wins.
-> Generated from this repository at commit `7432476`, 2026-11-13.
+> Generated from this repository at commit `78667ac`, 2026-11-13.
 
 # Rules
 
@@ -35,6 +35,9 @@ python test-harness/validate-control.py <control-file>
 python test-harness/validate-register.py <register-file> --h-init <hex>
 python test-harness/validate-ux-model.py <artifact-01> <app-flow>
 python test-harness/validate-patterns.py <artifact-02> <app-flow>
+python test-harness/validate-state.py <artifact-03> <app-flow>
+python test-harness/validate-copy.py <artifact-04> <app-flow>
+python test-harness/validate-a11y.py <artifact-05> <app-flow>
 python test-harness/apply-gate.py <control> --gate 1 --command "<exact>" --artifact <path>
 ```
 
