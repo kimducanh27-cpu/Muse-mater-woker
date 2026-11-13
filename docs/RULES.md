@@ -52,6 +52,26 @@ These are the only strings that open a gate. An agent must not type them, sugges
 
 Full lists per process are in each kit README.
 
+## How this repo grows
+
+**Reference upstream first. Do not invent what already exists.**
+
+The order is fixed:
+
+1. **VERBATIM** — an upstream file fits as-is. Copy it byte-for-byte, record blob SHA, size, licence and retrieval date.
+2. **ADAPTED** — an upstream file nearly fits. Copy it, then name the source and state exactly what you changed and why.
+3. **LOCAL** — nothing exists upstream. Then say so, give the rationale, the risk, and what evidence would retire the rule.
+
+Invention is not forbidden. **Unlabelled invention is.** A reader must be able to ask "where does this come from" and get an answer in one hop: a file with a blob SHA, a named standard, or an entry in the register.
+
+Current audit of Processes 05 and 06, 23 rules: **3 verbatim, 4 adapted, 16 local.**
+
+That number is the honest measure of this repository. Most of it is original, and the original parts are exactly the parts nobody outside has validated.
+
+**The gap.** `PROVENANCE.md` is the one rule with no mechanical check. Three validators guard artifacts; none guards a claim about where a rule came from. A new rule added without a label is invisible — it looks like every other rule and inherits the same unearned confidence.
+
+Until a checker exists, the discipline is manual and it belongs in the same commit as the rule: add the rule, add its label, in one change. A rule that arrives without one is a finding waiting to be filed.
+
 ## What counts as evidence
 
 | Claim | Evidence |
