@@ -129,6 +129,35 @@ Kit: design-system-kit/README.md.
 - Process 05 → Process 06: frozen UX Spec with Gate 1, Gate 2 and Gate 3 approved, lifecycle FROZEN and matching canonical hash. A downstream process must verify the Process 05 Control File and recompute the UX Spec hash; a status line is not proof of freeze.
 - Process 06 → Process 07 (chartered): frozen Design System with all three gates approved, lifecycle FROZEN, matching canonical hash, and `platform.target` equal to the platform Process 07 composes for.
 
+## Mechanical Verification & Test Harness
+
+Mechanical checkers in `test-harness/` enforce fail-closed gate transitions and artifact contracts without trusting prose claims:
+
+| Checker | Scope & Contract Enforced |
+|---|---|
+| `validate-control.py` | Validates Control File schema (v1, v4), lifecycle consistency, decision log files, and cryptographic approval event sequences. |
+| `validate-register.py` | Verifies append-only cryptographic SHA-256 hash chains (`--h-init`) in Change Request registers. |
+| `validate-ux-model.py` | Enforces Process 05 Screen UX Model (Goal, exactly one Primary Action, Information Hierarchy, Scoped visual boundary). |
+| `validate-patterns.py` | Enforces Interaction Patterns completeness, section-scoping, prohibited visual values, and screen inventory citations. |
+| `validate-state.py` | Enforces exact Screen-State coverage against frozen Process 04 inventory and flags unauthorized states. |
+| `validate-copy.py` | Enforces Content & Copy intent across flow screens, message intents, and lexical boundaries. |
+| `validate-a11y.py` | Enforces Accessibility requirements across flow screens, non-text content, and focus order. |
+| `apply-gate.py` | Applies human gate approvals atomically, enforcing deterministic YAML formatting (`NoAliasDumper`) and audit trails. |
+
+### Running Mechanical Verification Suites
+
+Execute the two-sided test suites (asserting valid execution and planted adversarial failures across all contracts):
+
+```bash
+python test-harness/test-validate-state.py
+python test-harness/test-validate-copy.py
+python test-harness/test-validate-a11y.py
+python test-harness/test-validate-ux-model.py
+python test-harness/test-validate-patterns.py
+python test-harness/test-validate-register.py
+python test-harness/test-validate-control.py
+```
+
 ## Antigravity setup
 1. Place this repository at the project workspace root.
 2. Keep .agents/skills/ at that root.
