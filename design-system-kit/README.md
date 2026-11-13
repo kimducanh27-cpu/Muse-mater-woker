@@ -60,7 +60,7 @@ Additional exact commands:
 - `REJECT DESIGN FOUNDATIONS` / `REJECT COMPONENT LIBRARY`
 - `REQUEST DESIGN SYSTEM CHANGE [description]`
 - `ABANDON DESIGN SYSTEM`
-- `RECOVER DECISION LOG [DECISION-ID]`
+- `RECOVER DECISION STATUS [DEC-ID]`
 - `RECOVER REVIEW ROUND [N]`
 
 Tab 03 never freezes automatically after `GO`. Tab 03 is read-only on the Decision Log. No automatic handoff.

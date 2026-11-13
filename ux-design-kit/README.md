@@ -63,7 +63,7 @@ Additional exact commands:
 - `REJECT SCREEN UX MODEL` / `REJECT UX SPEC`
 - `REQUEST UX CHANGE [description]`
 - `ABANDON UX SPEC`
-- `RECOVER DECISION LOG [DECISION-ID]`
+- `RECOVER DECISION STATUS [DEC-ID]`
 - `RECOVER REVIEW ROUND [N]`
 
 Tab 03 must not freeze automatically after a `GO` verdict. The user must issue the separate exact freeze command. Tab 03 is read-only on the Decision Log; decision outcomes return to their owning tab. No automatic handoff; each tab runs in a fresh conversation and reads persisted workspace artifacts.

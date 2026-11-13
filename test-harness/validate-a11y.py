@@ -73,7 +73,7 @@ def main() -> int:
 
     art = art_path.read_text(encoding="utf-8")
     flow = flow_path.read_text(encoding="utf-8")
-    known_screens = {m.group(1) for m in INVENTORY_ROW.finditer(flow)}
+    known_screens = _vum.get_flow_screens(flow)
 
     if not known_screens:
         print("FAIL  no screens found in frozen app-flow")
