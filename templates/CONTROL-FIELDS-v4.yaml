@@ -1,0 +1,160 @@
+# Control event field contract — schema v4
+#
+# Normative for Process 04 (App Flow). Where this file and the Control
+# template's prose table disagree, this file wins.
+#
+# v4 differs from v1 in three ways that matter to a checker:
+#   - five extra event types, all Register-related
+#   - GATE_1_APPROVED and GATE_2_APPROVED carry no coverage_snapshot
+#   - SCHEMA_MIGRATED exists, which v1 forbids outright
+
+schema_version: 4
+applies_to:
+  - "04-app-flow"
+
+common:
+  - event_type
+  - state_seq
+  - timestamp_local
+  - exact_user_command
+  - reason
+  - changed_paths
+  - relevant_hashes
+
+events:
+  DECISION_LOG_UPDATED:
+    - decision_id
+    - decision_log_event_id
+    - decision_event_kind
+    - decision_status_before_update
+    - decision_status_after_update
+    - affected_gate
+    - path
+    - resulting_sha256
+
+  GATE_1_APPROVED:
+    - gate
+    - approved_artifacts
+    - decision_log_sha256
+
+  GATE_2_APPROVED:
+    - gate
+    - approved_artifacts
+    - decision_log_sha256
+
+  GATE_3_FROZEN:
+    - gate
+    - draft_sha256
+    - frozen_artifact_path
+    - frozen_artifact_sha256
+    - frozen_version
+
+  INVALIDATED:
+    - reopened_gates
+    - affected_gate
+    - expected_hashes
+    - observed_hashes
+
+  DECISION_LOG_RECOVERED:
+    - decision_id
+    - decision_log_event_id
+    - recovered_from_event_seq
+    - resulting_sha256
+    - affected_gate
+    - reopened_gates
+
+  REVIEW_HISTORY_INITIALIZED:
+    - review_path
+    - review_sha256
+
+  REVIEW_ROUND_RECORDED:
+    - review_round
+    - review_path
+    - previous_review_sha256
+    - review_sha256
+    - draft_path
+    - draft_sha256
+    - verdict
+    - review_status
+
+  REVIEW_ROUND_RECOVERED:
+    - review_round
+    - review_path
+    - previous_review_sha256
+    - review_sha256
+    - draft_path
+    - draft_sha256
+    - verdict
+    - review_status
+    - recovered_from_state_seq
+
+  SCHEMA_MIGRATED:
+    - from_schema_version
+    - to_schema_version
+    - attestation
+    - archive_directory
+    - archive_manifest_path
+    - archive_manifest_sha256
+    - gate_summary
+
+  CHANGE_REQUEST_REGISTER_INITIALIZED:
+    - initiative_id
+    - path
+    - register_schema_version
+    - register_seq
+    - last_event_id
+    - last_verified_sha256
+
+  CHANGE_REQUEST_REGISTER_UPDATED:
+    - initiative_id
+    - change_request_id
+    - register_event_id
+    - register_seq
+    - previous_register_sha256
+    - event_block_sha256
+    - resulting_register_sha256
+
+  # The abort receipt accounts for a two-event unit. Both event-block hashes
+  # and all three chain edges are bound, because the intermediate hash is the
+  # only evidence that the staged event was the one aborted.
+  CHANGE_REQUEST_EVENT_ABORTED:
+    - initiative_id
+    - first_register_seq
+    - last_register_seq
+    - staged_change_request_event_id
+    - staged_change_request_id
+    - abort_marker_event_id
+    - prior_register_sha256
+    - staged_event_block_sha256
+    - intermediate_register_sha256
+    - abort_marker_event_block_sha256
+    - final_register_sha256
+    - status_effect
+
+  RESIDUAL_RISK_ACCEPTED:
+    - finding_id
+    - severity
+    - rationale
+    - accepted_at_local
+
+prose_events:
+  - GATE_REJECTED
+  - REVISION_REQUESTED
+  - APP_FLOW_ABANDONED
+
+known_drift:
+  decision_status_before_update:
+    - status_before
+    - decision_status_before
+  decision_status_after_update:
+    - status_after
+    - decision_status_after
+  frozen_artifact_sha256:
+    - artifact_sha256
+    - frozen_sha256
+  staged_event_block_sha256:
+    - event_block_sha256
+    - staged_block_sha256
+  intermediate_register_sha256:
+    - h_k
+    - intermediate_sha256

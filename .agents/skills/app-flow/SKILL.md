@@ -115,7 +115,11 @@ Every `event_log` object MUST include `event_type`, `state_seq`, `timestamp_loca
 
 The Control File's `gate_1.approved_state_seq`, `gate_2.approved_state_seq` and `gate_3.approved_state_seq` must equal the sequence of their latest corresponding approval/freeze event. A gate may not be treated as approved/frozen from its status field alone. Never infer an approval event from `approved_command` or prose.
 
-If a schema-version-2 Control File already exists, do not silently fill missing event fields or sequence anchors. Stop with NOT_VERIFIED. Migration is permitted only after the user sends exactly `MIGRATE APP FLOW CONTROL V2 TO V3`:
+If a schema-version-2 Control File already exists, do not silently fill missing event fields or sequence anchors. Stop with NOT_VERIFIED. Migration is a chain, never a shortcut:
+
+- A **schema-v2** workspace migrates only under the exact command `MIGRATE APP FLOW CONTROL V2 TO V3`, which produces a schema-v3 workspace. The procedure follows.
+- A **schema-v3** workspace then migrates only under `MIGRATE APP FLOW CONTROL V3 TO V4 WITH ZERO EXTERNAL CRS` or `MIGRATE APP FLOW CONTROL V3 TO V4 WITH PENDING SUBMISSIONS`, defined in the Schema v4 section below.
+- No step may be skipped. A v2 workspace may not be migrated directly to v4, and no other migration command is valid. A Control File at schema v3 that receives the v2→v3 command is `NOT_VERIFIED`, not a no-op.
 
 1. Stop all tabs and freeze writes. Move the **entire** existing `product/app-flow/` directory, byte-for-byte, to `product/app-flow-migrations/<initiative-id>/schema-v2/`. This includes the Control File, Decision Log, artifacts 01–08, review history, canonical `APP_FLOW.md`, version archives and any other files. Do not leave the old `APP_FLOW.md` or old review/draft at an active Process 04 path. Never overwrite an existing migration archive. Generate an archive manifest listing every relative path, byte size and actual SHA-256; read the manifest back and verify every archived file against it.
 2. Re-verify the frozen Process 03 source and Process 04 initiative ID. Because the old directory move also archives the tracked `product/app-flow/README.md`, restore the current repository version from the checked-out HEAD using `git restore --source=HEAD -- product/app-flow/README.md`; do not restore the archived README as the active version. Verify the restored README against the checked-out HEAD, then recreate the remaining active `product/app-flow/` workspace from current schema-v3 templates. Create a fresh Control File for the same initiative ID with source status VERIFIED only after a new Process 03 hash check, all three gates PENDING, `lifecycle_status: REVIEW_REQUIRED`, review round 0, no inherited approval sequence anchors, and `state_seq: 1`. Append one `SCHEMA_MIGRATED` event at sequence 1 recording the archive directory, manifest path/hash, old Control File path/hash, old Decision Log path/hash, old/new schema versions and exact user command. No old frozen output is eligible downstream.
@@ -413,6 +417,15 @@ Hashes use lowercase SHA-256 over exact on-disk bytes:
 - `previous_register_sha256`: whole Register bytes immediately before event append.
 - `event_block_sha256`: SHA-256 over the **normalized** event block. The preimage is the bytes from the first byte of `### CRE-<NNNN>` through the LF after `END_CRE`, excluding the following blank line, with the value of the `event_block_sha256` field replaced by the exact sentinel `<HASH_OMITTED>` before hashing. Writers hash the normalized block, then write the resulting lowercase digest into the field. Readers replace the stored value with the same sentinel before recomputing. The field never participates in its own preimage; a block hashed with the stored digest left in place is NOT_VERIFIED.
 - `resulting_register_sha256`: whole Register after append, including canonical separator.
+
+**Verify the digest before reporting a committed event.** Recompute the normalized block hash and compare it to the value you wrote. A digest you did not recompute is a number, not a hash. Observed failure: an agent wrote a well-formed event with correct field order, correct `previous_register_sha256` and a real timestamp, and stored a digest that verifies under neither the sentinel rule nor the naive rule. It reported success. Nothing in the contract would have caught it.
+
+Two mechanical notes that decide whether the check is even correct:
+
+- A block starts at a line that consists only of `### CRE-<digits>`. Do not match the bare string `### CRE-` anywhere in the file: it also appears inside prose and inside this contract's own schema example, and a match there produces a block that begins mid-sentence.
+- The preimage ends at the LF after `event_end_marker: END_CRE`. The blank separator line that follows is outside it.
+
+`test-harness/validate-register.py` performs both checks and reports the stored and computed digest on failure. Use it, or reproduce its logic. Do not trust a read-back that only confirms the file contains the value you wrote.
 - Verify the complete chain from the initialization anchor through the latest committed sequence; a matching final hash alone is insufficient.
 
 Each event contains as applicable: unique CRE-ID and CR-ID; contiguous register_seq; event_type; from/to status; exact user command; TAB_01; real local timestamp; submission ID/payload hash; source process/initiative/path/hash; affected Gate and paths; pre-append Control state_seq/hash; previous Register hash; transition evidence; event-block hash; end marker. Register events MUST NOT contain a predicted Control sequence or resulting whole-file hash.

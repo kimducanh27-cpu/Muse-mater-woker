@@ -169,7 +169,7 @@ These 22 scenarios are mandatory static/simulation fixtures. Marking a row revie
 | ST-05 | Duplicate Control receipts for one Register event | `NOT_VERIFIED`; restore/reconcile from trusted Control state. | NOT RUN |
 | ST-06 | `register_seq` gap | `NOT_VERIFIED`; restore trusted Register/Control pair. | NOT RUN |
 | ST-07 | Control `state_seq` gap | `NOT_VERIFIED`; never invent a missing event. | NOT RUN |
-| ST-08 | More than one unreceipted Register tail event | Reject normal recovery; allow only the exact two-event staged+abort pair through bounded abort recovery; otherwise restore to last trusted hash. | NOT RUN |
+| ST-08 | More than one unreceipted Register tail event | Reject normal recovery; allow only the exact two-event staged+abort pair through `RECOVER CHANGE REQUEST ABORT [STAGED-CRE-ID]`; otherwise restore to last trusted hash. | NOT RUN |
 | ST-09 | Tab 01 uses stale chat state after Tab 02 Gate 2 approval | Tab 01 rereads disk and uses the current Gate receipt/sequence; stale chat memory ignored. | NOT RUN |
 | ST-10 | Tab 02 edits Gate 2 while Gate 1 is reopened | Stop at Tab 02 entry gate; no Gate 2 edits. | NOT RUN |
 | ST-11 | Register changes after Tab 03 Review snapshot | Freeze refused; new Review round required. | NOT RUN |

@@ -1,0 +1,8 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.swp
+*.tmp
+CHAT_HISTORY.md
+*.zip
+diff.patch

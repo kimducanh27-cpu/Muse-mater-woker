@@ -1,0 +1,82 @@
+# Findings register
+
+Every finding below came from running the contract, not from reading it. Each row records what was observed, what changed, and how the change was verified. A finding with no verification is still open.
+
+## Status
+
+| ID | Finding | Severity | Status | Verified by |
+|---|---|---|---|---|
+| F-01 | "Verify the Control File" had no defined checks | High | FIXED | Six enumerated checks added to P05 Tab 01 entry |
+| F-02 | Probe fixtures needed a Process 04 workspace | Harness | FIXED | `test-harness/make-fixture.py` |
+| F-03 | Frozen App Flow drops the `NODE`/`TRANSITION` IDs P05 was required to cite | High | FIXED | Template 01 no longer requires them |
+| F-04 | Component audit matched substrings (`discards` → `card`) | Medium | FIXED — RE-PROBED | `validate-ux-model.py`: passes correct prose, fails planted violations |
+| F-05 | Audit match set was defined by the reviewer (`component`) | Medium | FIXED — RE-PROBED | Same; two-sided evidence |
+| F-06 | Read-back verified the artifact against the writer's memory | **Critical** | FIXED — RE-PROBED | Field contract plus validator; probe 6 re-run passes |
+| F-07 | Process 06 had never been executed | Coverage | PROBED — `COMPLIANT` | Probe 7; component admission rule held |
+| F-08 | Register event hash did not verify; agent reported success | **Critical** | FIXED — RE-PROBED, `PASS` | Probe 9: same model, validator in the loop, digest reproduces |
+| F-09 | Register validator matched `### CRE-` inside prose | Tool | FIXED | Whole-line regex with a real ID |
+| F-10 | Banned term `tab` matched `Tab 01` — failed every correct artifact | **High** | FIXED — RE-PROBED | Mask `Tab <n>` before matching; probe 10 passes |
+| F-11 | Six enumerated Control checks were never executed | **High** | FIXED — RE-PROBED | `validate-control.py` made a required step; probe 11 passes |
+| F-12 | Fixture generator omitted the Decision Log; 7 probes ran on an invalid workspace | **High** | FIXED — NOT RE-PROBED | Found by the control validator on first contact |
+| F-13 | Narrating the checks and running a checker gave two ways to comply | Medium | FIXED — RE-PROBED | Prose requirement deleted; validator output is the record |
+
+## F-06 — the one that mattered
+
+**Observed.** Probe 4 wrote `status_before` and `status_after` where the template requires `decision_status_before_update` and `decision_status_after_update`, then reported that it had verified the exact field names and that read-back passed.
+
+**Why it happened.** The Skill said "read the Control File back and verify it". The required fields lived in a markdown table. The only thing to compare against was the agent's own reading of that table, in the same context. That comparison passes on every input, including wrong ones.
+
+**Fix.** `templates/CONTROL-FIELDS-v1.yaml` states the exact key names per event type, and it is normative — where it disagrees with a template's prose table, the file wins. Both Skills now require comparing the event's key set to the contract mechanically, key by key. `test-harness/validate-control.py` performs the comparison and reports the drifted name.
+
+**Verification.** The validator, run against the original bad artifact:
+
+```
+FAIL  missing key 'decision_status_after_update'  (found 'status_after' instead)
+FAIL  missing key 'decision_status_before_update' (found 'status_before' instead)
+FAIL  extra key 'status_after'
+FAIL  extra key 'status_before'
+```
+
+Then probe 4 was re-run from scratch against the fixed contract. Same model, same prompt. It wrote all fifteen correct field names, reported that it had verified against `CONTROL-FIELDS-v1.yaml` with zero missing and zero extra keys, and the validator returned `PASS`.
+
+Same model, same runner, different rule. The behaviour followed the writing.
+
+## F-03 — the decision worth recording
+
+**Observed.** Artifact 01 required a column citing `NODE-<ID>` and `TRANSITION-<ID>`. Process 04's Skill requires those IDs to exist. The frozen App Flow schema contains neither, and the draft it is copied from contains neither. So the column had no possible source.
+
+**Fix, and the alternative rejected.** Template 01 now requires `SCREEN-<ID>` plus a prose description of how the user arrives. The alternative — adding a node inventory to the frozen schema — was rejected because the node graph is Process 04's internal reasoning, while the screen is the durable unit a downstream process can actually use.
+
+**This is a decision, not a derivation.** If a later process genuinely needs the node graph, the rejected option becomes correct. It is recorded here so that reversal is a choice rather than a discovery.
+
+## F-01, F-04, F-05
+
+**F-01.** "Verify the Control File" now means six enumerated checks with observed values reported: frontmatter parses, `schema_version` is 1, `state_seq` agrees with the event count, every event's key set matches the contract, `decision_log.latest_sha256` matches the file on disk, and lifecycle is consistent with the gate states.
+
+**F-04 and F-05.** The component audit is now a five-step procedure: scope (body only, excluding the rule block and quoted excerpts), matching (case-insensitive, whole word, word boundaries), output (line, term, full sentence), classification (`VIOLATION` / `FALSE POSITIVE` with a reason), and a violation count that Gate 2 checks against zero. The sentence requirement exists so a wrong match appears in the record instead of inside a judgement.
+
+## Closed in Pipeline P05-P06
+
+| Item | Resolution |
+|---|---|
+| Process 04 schema v4 field contract | Closed by `templates/CONTROL-FIELDS-v4.yaml` |
+| The chain probe | Executed under `fixtures/chain-probe/` and recorded in `test-harness/runs/10-chain-probe.md` |
+| Hash binding audit (L1–L7) | Evaluated in chain probe: L1–L2 asserted (P01/P02 lack hash fields), L3–L6 closed (P03–P06 hash-bound) |
+| Mechanical validators for P05 | `validate-ux-model.py`, `validate-patterns.py`, `validate-state.py`, `validate-copy.py`, `validate-a11y.py` |
+
+## What is still open
+
+| Item | Why it is open |
+|---|---|
+| Upstream Process 01–02 hash binding retrofit | Process 01 has no state file; Process 02 has no hash fields in upstream template. Retrofit requires upstream change or local adapter. |
+| End-to-end multi-agent execution | Probes executed individual steps; multi-agent live collaboration across all 7 processes remains for downstream verification. |
+
+## Rule for future findings
+
+A finding is closed when the same probe, re-run against the changed contract, produces the behaviour the contract now specifies. A finding closed by editing a document alone is a claim, not a fix.
+
+Five findings meet that standard: **F-04**, **F-05**, **F-06**, **F-08** and **F-11**. All four were closed by putting a mechanical check between the write and the claim, and all four were verified by re-running the identical probe with the same model.
+
+**F-11** is the counter-example. Six checks were written into the Skill, firmly worded and enumerated, and the agent skipped all six because nothing in its acceptance condition required them. Writing a check down is not the same as running it.
+
+The other seven are closed by specification and have not been re-probed. They are listed as fixed because the contract now says something it did not say before, not because the behaviour was observed to change.
