@@ -43,7 +43,7 @@ Ordered by what produces evidence, not by what is easy. Do them one at a time. A
 
 **Evidence.** Each validator passes a correct artifact and fails a deliberately broken one.
 
-## 5. Decide the P01–P03 hash binding
+## 5. Decide the P01–P03 hash binding — **done 2026-11-13**
 
 **Why.** Three of six processes cannot produce evidence that survives a file edit. Process 01 has no canonical state file at all. This is a decision, not a bug fix: either those stages get Control Files with hash binding, or they are declared advisory and the kit stops claiming a six-stage verified chain.
 

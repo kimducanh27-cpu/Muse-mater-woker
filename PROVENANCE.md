@@ -28,7 +28,8 @@ What is forbidden is letting a LOCAL rule look like a standard.
 | Append-only review history and bounded recovery | LOCAL | Repo precedent, Process 04 |
 | Severity taxonomy BLOCKER/CRITICAL/MAJOR/MINOR | LOCAL | Repo precedent, Process 04 |
 | Fail-closed `NOT_VERIFIED` on unreadable evidence | LOCAL | Repo precedent |
-| Transitive Process 03 verification through Process 04's hash | LOCAL | Repo decision, avoids inventing a P03 field |
+| Transitive Process 03 verification through Process 04's hash | LOCAL | Repo decision, avoids inventing a P03 field. See L-8 |
+| Advisory status and asserted linkage for Processes 01–03 | LOCAL | Exploratory stages; byte-verified chain starts at Process 04. See L-8 |
 | Accessibility criteria | ADAPTED | WCAG 2.2; `upstream/.../accessibility-review/SKILL.md` (verbatim file, 2.1) |
 | Copy-intent method | VERBATIM | `upstream/.../ux-copy/SKILL.md` |
 | Review structure | VERBATIM | `upstream/.../design-critique/SKILL.md` |
@@ -51,9 +52,9 @@ What is forbidden is letting a LOCAL rule look like a standard.
 | Platform recorded as an immutable Control field | LOCAL | See L-6 |
 | Contrast failure fixed in foundations, never per component | LOCAL | Repo decision |
 
-## LOCAL decisions register
+## LOCAL decisions register (8 registered)
 
-Each entry states what it is, why it exists, what could go wrong, and what would retire it. A LOCAL rule that never gets retired after real use is a rule nobody examined.
+Eight LOCAL decisions are registered (L-1 through L-8). Each entry states what it is, why it exists, what could go wrong, and what would retire it. A LOCAL rule that never gets retired after real use is a rule nobody examined.
 
 ### L-1 — Structural block rule
 
@@ -128,6 +129,16 @@ That is the rule constraining behaviour rather than describing an intention. One
 **Risk.** This is the most subjective step in the whole sequence, and it sits behind the same gate machinery as the most mechanical ones, so it inherits the same appearance of rigour. A reviewer can verify that every value has a role and a use. Nobody can verify that the ratio is right, or that `sys.color.action.primary` is the correct green. The gate proves the foundation is *documented*, not that it is *good*.
 
 **Retired when.** A live run produces a screen the foundation cannot express, or a reviewer cannot tell a justified value from an arbitrary one.
+
+### L-8 — Advisory status and asserted linkage for Processes 01–03
+
+**What.** P01–P03 are advisory exploration stages. Inter-process handoffs are string-asserted; the byte-verified hash chain starts at Process 04.
+
+**Why.** Reconciles the realities of upstream P01–P03 design without introducing unvetted control mechanisms retroactively.
+
+**Risk.** P01–P03 artifacts could be silently modified without detection by downstream until Process 04 freeze.
+
+**Retired when.** P01–P03 receive schema v4 Control Files with SHA-256 bindings if cryptographic verification of exploration is required.
 
 ## What this audit does not claim
 

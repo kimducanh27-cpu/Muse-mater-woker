@@ -14,7 +14,7 @@
 | Process 05 UX Design contract | 53 scenarios, three lexical audits, review history, freeze protocol |
 | Process 06 Design Systems contract | 55 scenarios, component admission rule, Material 3 token tiers |
 | Platform decision | Android native, recorded as an immutable Control field |
-| Provenance governance | 23 rules labelled VERBATIM / ADAPTED / LOCAL; 7 LOCAL decisions registered |
+| Provenance governance | 24 rules labelled VERBATIM / ADAPTED / LOCAL; 8 LOCAL decisions registered |
 | Upstream method vendored | Four files copied byte-for-byte from an Apache-2.0 source, blob SHAs recorded |
 | Five checking scripts | Control File, Register chain, UX artifacts 01 and 02, gate applier — each tested against a known-bad input |
 | Eleven probes | Nine run reports; 13 findings, 7 closed by re-running the probe |
@@ -41,7 +41,7 @@ Five more were closed by specification only and say so in `test-harness/FINDINGS
 |---|---|
 | **No gate has ever been exercised** | Every Control File has `gate_1: PENDING` and an empty `event_log`. The validators check consistent workspaces, never transitions. |
 | **No product exists** | No initiative has run end to end. No frozen artifact exists for any real idea. |
-| **Processes 01–03 have no hash binding** | Process 01 has no state file; Process 02's Control File contains zero occurrences of `sha256`. A chain built on them is asserted, not verified. |
+| **Processes 01–03 have no hash binding (resolved)** | Resolved via L-8 in PROVENANCE.md: declared advisory/exploratory with asserted linkage; byte-verified hash chain formally begins at Process 04. |
 | **P05 artifacts 03–05 have no validators** | Artifact 02 done; 03–05 prose-only, which is the condition that produced three findings. |
 | **130 scenarios are `NOT RUN`** | 22 in Process 04, 53 in Process 05, 55 in Process 06. |
 | **Two draft PRs, no merge** | Merge authorization not granted. |
