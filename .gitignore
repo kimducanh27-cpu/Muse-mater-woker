@@ -5,3 +5,4 @@ __pycache__/
 *.tmp
 CHAT_HISTORY.md
 *.zip
+diff.patch
