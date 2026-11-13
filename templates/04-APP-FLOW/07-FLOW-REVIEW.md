@@ -102,3 +102,38 @@ Append one addendum for each exact user-authorized risk acceptance. Do not chang
 ---
 
 Append the next review as Round N+1. Never erase prior findings, review results or user decisions.
+
+
+---
+
+## Schema v4 — Change Request snapshot (required)
+
+Add these fields to every Review round and populate them from disk at review start and again immediately before Freeze:
+
+- Register path: `product/app-flow/10_CHANGE_REQUEST_REGISTER.md`
+- Register schema version: `1`
+- Register full-file SHA-256:
+- Register last_register_seq:
+- Register last_event_id:
+- All open CR IDs:
+- Reconstructed blocking CR IDs:
+- CR IDs individually verified in this review:
+- Implementation CR IDs expected in this Freeze batch:
+- Freeze batch ID:
+- Control File state_seq and whole-file SHA-256:
+- P03 initiative ID and frozen source SHA-256:
+
+The snapshot is immutable within a review round. If Register hash, sequence, last event ID, open/blocking set or expected batch changes before Freeze, refuse Freeze and append a new Review round. Tab 03 is read-only on Register and never closes CRs.
+
+### Downstream / Freeze readiness
+
+- Full Register history and every receipt unit verify from initialization anchor:
+- Register checkpoint equals Control File pointer:
+- Reconstructed blocking CR set:
+- Freeze batch CR set:
+- All implementation CRs expected in the batch are eligible for post-Freeze closure:
+- No CR is RECORDED / TRIAGE / NEEDS_CLARIFICATION / ACCEPTED_FOR_IMPLEMENTATION / RETURN_TO_P03 / REVERSION_PENDING:
+- Latest Review snapshot equals current on-disk Register:
+- Result: PASS / FAIL / NOT_VERIFIED
+
+After successful mechanical Freeze, Tab 01 records each batch CR closure as an individual Register event and Control receipt. A partial closure batch remains downstream-blocking until every expected CR is closed and verified.

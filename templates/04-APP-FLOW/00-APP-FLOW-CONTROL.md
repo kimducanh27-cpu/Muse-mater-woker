@@ -1,5 +1,5 @@
 ---
-schema_version: 3
+schema_version: 4
 process: "04-app-flow"
 initiative_id: "REPLACE_WITH_UNIQUE_SLUG"
 state_seq: 0
@@ -64,115 +64,72 @@ review:
 decision_log:
   path: "product/app-flow/09_DECISION_LOG.md"
   latest_sha256: null
+change_request_register:
+  path: "product/app-flow/10_CHANGE_REQUEST_REGISTER.md"
+  schema_version: 1
+  last_verified_sha256: null
+  last_register_seq: 0
+  last_event_id: null
 accepted_residual_risks: []
-change_requests: []
 event_log: []
 lifecycle_status: "DRAFT"
 timezone: "Asia/Ho_Chi_Minh"
 ---
 
-# Process 04 — Canonical App Flow Control
+# Process 04 — Canonical App Flow Control (Schema v4)
 
-Copy this template to `product/app-flow/00_APP_FLOW_CONTROL.md` for one initiative. This template is not the live state. Replace the initiative placeholder only after verifying the Process 03 initiative.
+This is a template, not a live Control File. Copy it to `product/app-flow/00_APP_FLOW_CONTROL.md` only after verifying the Process 03 initiative identity. Replace the initiative placeholder only with the exact verified ID. The Register is not initialized until its dedicated initialization receipt is committed and read back.
 
 ## Allowed values
 
-- Gate states: `PENDING`, `APPROVED`, `REJECTED`, `REOPENED`.
-- Lifecycle states: `DRAFT`, `REVIEW_REQUIRED`, `FROZEN`, `ABANDONED`.
-- Process 03 source status: `VERIFIED`, `NOT_VERIFIED`, `REOPENED`.
-- Review status: `NOT_STARTED`, `BLOCKERS_FOUND`, `READY_FOR_FREEZE`.
+- Gate: `PENDING`, `APPROVED`, `REJECTED`, `REOPENED`.
+- Lifecycle: `DRAFT`, `REVIEW_REQUIRED`, `FROZEN`, `ABANDONED`.
+- P03 source: `VERIFIED`, `NOT_VERIFIED`, `REOPENED`.
+- Review: `NOT_STARTED`, `BLOCKERS_FOUND`, `READY_FOR_FREEZE`.
 - Finding severity: `BLOCKER`, `CRITICAL`, `MAJOR`, `MINOR`.
 - Finding status: `OPEN`, `RESOLVED`, `ACCEPTED_BY_USER`.
+- CR business states are reconstructed only from the Register; never add a second CR status array here.
 
-Gate 3 remains APPROVED after a successful freeze; lifecycle_status becomes FROZEN. Do not set a gate to FROZEN.
+## Source eligibility
 
-## Entry eligibility and source binding
+Before P04 source status becomes `VERIFIED`, verify the actual P03 v2 Control File and frozen Product Definition. Require P03 Gate 3 `APPROVED`, lifecycle `FROZEN`, correct frozen artifact path, actual SHA-256 equal to P03 v2 `gate_3.frozen_artifact.sha256`, and exact initiative identity match. Do not invent `gate_3.approved_state_seq` in P03. P04 MUST NOT modify P03.
 
-Set Process 04 `initiative_id` and `source_process_03.initiative_id` equal to the Process 03 Control File's `initiative_id`.
+## Register checkpoint and initialization
 
-Before setting source status VERIFIED:
-- Process 03 `gate_3.status = APPROVED`.
-- Process 03 `lifecycle_status = FROZEN`.
-- Process 03 `gate_3.frozen_artifact.path = product/definition/PRODUCT_DEFINITION.md`.
-- Actual Product Definition SHA-256 equals Process 03 `gate_3.frozen_artifact.sha256`.
-- Both Control Files are readable and no conflicting initiative is present.
+`change_request_register` is an integrity pointer, not a business-status store. It MUST contain `path`, `schema_version`, `last_verified_sha256`, `last_register_seq` and `last_event_id`.
 
-The authoritative comparison target is Process 03 `gate_3.frozen_artifact.sha256`, not a cached Process 04 hash. Store expected source hash and independently computed current file hash separately; both must match.
+At v4 workspace initialization, create the header-only Register and append one Control `CHANGE_REQUEST_REGISTER_INITIALIZED` event at the next committed Control sequence. Bind initiative ID, path, Register schema v1, `register_seq: 0`, `last_event_id: INITIALIZATION` and the non-null exact-byte `last_verified_sha256`. Read both files back. A v4 workspace with zero CRs still has `last_register_seq: 0` and a non-null hash. Null hash or missing initialization receipt means `NOT_VERIFIED`.
 
-## Gate rules
+## Control event log
 
-- Gate 1 binds exact SHA-256 values for `01_TASK_MODEL.md` and `02_FLOW_ARCHITECTURE.md`. At approval, `gate_1.decision_log_sha256` snapshots the actual Decision Log SHA-256; this is an audit snapshot, not a requirement that the log remain byte-identical after an independently verified GATE_2/GATE_3 update. Gate 1 requires source status VERIFIED, complete template structure, full capability coverage or user-approved deferral, no unresolved GATE_1 policy decision being treated as settled, and a readable Decision Log whose actual SHA-256 matches non-null `decision_log.latest_sha256`.
-- Gate 2 binds exact SHA-256 values for `03_NAVIGATION_MODEL.md`, `04_SCREEN_INVENTORY.md`, `05_FLOW_SPECIFICATION.md`, `06_STATE_AND_EXCEPTION_MATRIX.md`, and current `09_DECISION_LOG.md`. `gate_2.decision_log_sha256` must equal the current log hash at approval. It requires Gate 1 and every Gate 1 artifact hash to remain valid.
-- Gate 3 requires Gate 1 and Gate 2 APPROVED with matching hashes; at least one append-only review round; latest review and draft hashes matching the Control File; zero open BLOCKER, CRITICAL, MAJOR and MINOR findings; user-originated acceptance records for accepted risks; decision log reviewed; and the exact reviewed draft frozen by status-line substitution only.
-- No missing review is equivalent to a clean review. `review.round` must be at least 1 and the latest review artifact must exist and hash-match.
-- A hash proves identity/integrity of bytes, not correctness of content. Completeness, template conformance and graph/traceability checks need explicit evidence.
-
-## Append-only event and review records
-
-Append objects to `event_log`; never delete or rewrite prior events. Record approvals, rejections, revision requests, invalidations, decision-log updates, decision outcomes, risk acceptances, review rounds, freezes, archives and abandonment. Each event MUST include `event_type`, `state_seq`, `timestamp_local`, `exact_user_command` (or `NOT_APPLICABLE`), `reason`, `changed_paths` and `relevant_hashes`. `state_seq` equals the new committed Control File sequence, never the stale pre-update value. Use only these canonical event types and type-specific fields:
+Every `event_log` object MUST contain `event_type`, `state_seq`, `timestamp_local`, `exact_user_command` (or `NOT_APPLICABLE`), `reason`, `changed_paths` and `relevant_hashes`. `state_seq` is strictly increasing and equals the new committed Control File sequence. Use only these event kinds and required fields:
 
 | Event type | Required type-specific fields |
 |---|---|
-| `DECISION_LOG_UPDATED` | `decision_id`, `decision_log_event_id`, `decision_event_kind` (`INITIALIZATION`, `PROPOSAL_CREATED`, `DECISION_STATUS_CHANGED`), `decision_status_before_update`, `decision_status_after_update`, `affected_gate`, `path`, `resulting_sha256` |
-| `GATE_1_APPROVED` | `gate: GATE_1`, exact command `APPROVE TASK MODEL`, `approved_artifacts` (01 and 02 path/hash pairs), `decision_log_sha256` |
-| `GATE_2_APPROVED` | `gate: GATE_2`, exact command `APPROVE APP FLOW`, `approved_artifacts` (03–06 path/hash pairs), `decision_log_sha256` |
-| `GATE_3_FROZEN` | `gate: GATE_3`, exact command `FREEZE APP FLOW`, `draft_sha256`, `frozen_artifact_path`, `frozen_artifact_sha256`, `frozen_version` |
-| `INVALIDATED` | `reopened_gates`, `affected_gate` when known, `expected_hashes`, `observed_hashes` and reason |
-| `DECISION_LOG_RECOVERED` | `decision_id`, `decision_log_event_id`, `recovered_from_event_seq`, `resulting_sha256`, `affected_gate`, `reopened_gates` |
-| `SCHEMA_MIGRATED` | `from_schema_version: 2`, `to_schema_version: 3`, `archive_directory`, `archive_manifest_path`, `archive_manifest_sha256`, `archived_control_file_path`, `archived_control_file_sha256`, `archived_decision_log_path`, `archived_decision_log_sha256`, `exact_user_command` |
-| `REVIEW_HISTORY_INITIALIZED` | `review_path`, `review_sha256` |
-| `REVIEW_ROUND_RECORDED` | `review_round`, `review_path`, `previous_review_sha256`, `review_sha256`, `draft_path`, `draft_sha256`, `verdict`, `review_status` |
-| `REVIEW_ROUND_RECOVERED` | `review_round`, `review_path`, `previous_review_sha256`, `review_sha256`, `draft_path`, `draft_sha256`, `verdict`, `review_status`, `recovered_from_state_seq` |
-| `RESIDUAL_RISK_ACCEPTED` | finding ID, severity, exact user command, rationale and acceptance timestamp |
+| `DECISION_LOG_UPDATED` | decision_id; decision_log_event_id; decision_event_kind (`INITIALIZATION`, `PROPOSAL_CREATED`, `DECISION_STATUS_CHANGED`); status before/after; affected_gate; path; resulting_sha256 |
+| `GATE_1_APPROVED` | gate=GATE_1; exact command; approved_artifacts (01/02 path/hash); decision_log_sha256 |
+| `GATE_2_APPROVED` | gate=GATE_2; exact command; approved_artifacts (03–06 path/hash); decision_log_sha256 |
+| `GATE_3_FROZEN` | gate=GATE_3; exact command; draft_sha256; frozen_artifact_path; frozen_artifact_sha256; frozen_version |
+| `INVALIDATED` | reopened_gates; affected_gate when known; expected_hashes; observed_hashes; reason |
+| `DECISION_LOG_RECOVERED` | decision_id; decision_log_event_id; recovered_from_event_seq; resulting_sha256; affected_gate; reopened_gates |
+| `REVIEW_HISTORY_INITIALIZED` | review_path; review_sha256 |
+| `REVIEW_ROUND_RECORDED` | review_round; review_path; previous_review_sha256; review_sha256; draft_path; draft_sha256; verdict; review_status |
+| `REVIEW_ROUND_RECOVERED` | review_round; review_path; previous_review_sha256; review_sha256; draft_path; draft_sha256; verdict; review_status; recovered_from_state_seq |
+| `SCHEMA_MIGRATED` | from_schema_version=3; to_schema_version=4; exact migration command; attestation; archive_directory; archive_manifest_path/hash; preserved/reopened Gate summary |
+| `CHANGE_REQUEST_REGISTER_INITIALIZED` | initiative_id; path; register_schema_version=1; register_seq=0; last_event_id=INITIALIZATION; last_verified_sha256 |
+| `CHANGE_REQUEST_REGISTER_UPDATED` | initiative_id; change_request_id; register_event_id; register_seq; previous_register_sha256; event_block_sha256; resulting_register_sha256 |
+| `CHANGE_REQUEST_EVENT_ABORTED` | initiative_id; first/last register sequence; staged CRE-ID/CR-ID; abort-marker CRE-ID; H(k-1); staged event-block hash; H(k); abort-marker event-block hash; H(k+1); status_effect=NONE |
+| `RESIDUAL_RISK_ACCEPTED` | finding_id; severity; exact command; rationale; accepted_at_local |
+| `GATE_REJECTED`, `REVISION_REQUESTED`, `APP_FLOW_ABANDONED` | exact targets, reason and hashes needed to reconstruct the event |
 
-For Decision Log initialization, use `decision_log_event_id: INITIALIZATION`, `decision_event_kind: INITIALIZATION`, and NOT_APPLICABLE for decision ID and before/after status. For a proposal append, use its unique proposal DLE ID, `decision_event_kind: PROPOSAL_CREATED`, before status NOT_APPLICABLE and after status PROPOSED. For an outcome append, use the unique status-event DLE ID, `decision_event_kind: DECISION_STATUS_CHANGED`, and exact before/after statuses. Every DLE ID must match exactly one immutable Decision Log event and exactly one `DECISION_LOG_UPDATED` event; each pair must agree on decision ID, kind, status, affected gate, path and resulting whole-file hash. IDs may not be reused. Gate 1, Gate 2 and Gate 3 `approved_state_seq` must equal the sequence of their latest corresponding approval/freeze event. For Gate 1 and Gate 2, the stored `gate_1.decision_log_sha256` / `gate_2.decision_log_sha256` must also equal the `decision_log_sha256` snapshot in that exact corresponding approval event; Gate 2's snapshot must additionally equal the current whole-file Decision Log hash while Gate 2 remains approved. A status field or `approved_command` alone is never proof of approval. Do not use free-form event names for these transitions.
+Each `state_seq` is unique and strictly increasing. A normal Register update receipt pairs exactly one Register business event. An abort receipt pairs exactly two consecutive Register events. No receipt/event may be double-accounted. Control MUST NOT store per-CR business statuses or authoritative blocking counts/lists.
 
-The review history `07_FLOW_REVIEW.md` is append-only. Before Round 1, initialize or verify its exact template bytes and store `review.latest_review_sha256` with a `REVIEW_HISTORY_INITIALIZED` event. Every round records source/artifact/draft hashes, verdict, status, finding counts and set/graph evidence. Each round records the pre-append Control File `state_seq`, pre-append Control File SHA-256 and previous full review-history SHA-256. A `REVIEW_ROUND_RECORDED` or `REVIEW_ROUND_RECOVERED` event binds the appended round to the full resulting history hash and draft hash. Recovery is permitted only through the exact `RECOVER REVIEW ROUND [N]` command and the bounded procedure in the Skill; never duplicate or rewrite a round.
+## Gate validity and downstream eligibility
 
-## Invalidation matrix
+Gate validity, Freeze eligibility and downstream eligibility are separate predicates. A new CR blocks downstream at `RECORDED`; it does not itself invalidate previously approved Gates until relevant bound source/artifact bytes change. Reconstruct blockers from the Register on every read. Register `NOT_VERIFIED` blocks all ordinary writes, Gate approvals, Freeze and downstream use.
 
-| Changed file/source | Reopen |
-|---|---|
-| Process 03 Control File or frozen Product Definition | source REOPENED; Gates 1–3; lifecycle REVIEW_REQUIRED |
-| `01_TASK_MODEL.md` or `02_FLOW_ARCHITECTURE.md` | Gates 1–3 |
-| `03_NAVIGATION_MODEL.md`, `04_SCREEN_INVENTORY.md`, `05_FLOW_SPECIFICATION.md`, `06_STATE_AND_EXCEPTION_MATRIX.md` | Gates 2–3 |
-| `07_FLOW_REVIEW.md` or `08_APP_FLOW_DRAFT.md` | Gate 3; new review round required |
-| `09_DECISION_LOG.md` before Gate 2 approval | Earliest independently verified affected gate and downstream gates: GATE_1 → 1–3; GATE_2 → 2–3; GATE_3 → 3 |
-| Any `09_DECISION_LOG.md` byte change after Gate 2 approval | Gates 2–3 always reopen because Gate 2 binds the whole file; also reopen Gate 1 when independent scope classification is GATE_1 |
-| `APP_FLOW.md` after freeze | Gate 3; lifecycle REVIEW_REQUIRED; downstream use prohibited |
-
-Reopening Gate 1 reopens Gates 2 and 3. Reopening Gate 2 reopens Gate 3. Any material change after freeze sets lifecycle_status to REVIEW_REQUIRED. Record every invalidation as an append-only event; never silently overwrite an approval.
-
-## Re-freeze and archive
-
-Before re-freezing, verify current `APP_FLOW.md` against the Control File's frozen hash. Preserve the previous canonical artifact as `APP_FLOW.v<N>.md`, where N is the previous `frozen_version`. Never overwrite an archive. Record its path/hash and increment the version only after the new canonical artifact and Control File both pass read-back.
-
-## Failure handling
-
-If canonical output writes but Control File write/read-back fails, report `INCOMPLETE — NOT FROZEN`. An orphan `APP_FLOW.md` is not eligible downstream. The only eligible output is one whose bytes hash-match `gate_3.frozen_artifact.sha256` while Gate 3 is APPROVED and lifecycle is FROZEN.
-
-If an artifact or Control File cannot be read, hashed or written, stop with NOT_VERIFIED. Never guess, synthesize a hash or claim a gate/freeze succeeded.
-
-For a Decision Log append followed by a failed or ambiguous Control File baseline/event update, stop all writers and do not repeat the append. Apply only the Skill's bounded recovery procedure. Recovery is permitted only when the actual Decision Log hash exactly matches a valid, already-persisted `DECISION_LOG_UPDATED` event for the same decision and scope; otherwise restore a trusted copy matching the prior `latest_sha256` or remain NOT_VERIFIED. If the Control File event history is partial or unreadable, restore a trusted Control File copy or stop for human-led reconciliation. Never infer a missing event or adopt an unexplained hash.
-
-## Decision log
-
-`09_DECISION_LOG.md` is append-only and one-initiative-only. Its immutable identity header must contain `Process: 04` and an `Initiative ID` exactly matching this Control File and Process 03; missing/mismatched identity is NOT_VERIFIED and must not be adopted by hashing. Each material flow-policy decision has a stable DEC ID, affected artifacts, affected gate, alternatives and rationale. Derive `affected_gate` from scope: 01/02 or capability-to-task mapping → GATE_1; only 03–06 → GATE_2; only review/draft 07/08 → GATE_3; mixed scope takes the earliest gate. Process 03 capability/scope changes return to Process 03. Independently validate the label against decision text and affected artifacts. The user records exactly one outcome using `APPROVE FLOW DECISION [DECISION-ID]`, `REJECT FLOW DECISION [DECISION-ID]`, or `DEFER FLOW DECISION [DECISION-ID]`, with a rationale. Append a status event; never rewrite the proposal. Only APPROVED decisions may define current flow policy. REJECTED and DEFERRED decisions remain visible and must not be treated as approved rules.
-
-### Decision Log hash baseline
-
-`decision_log.latest_sha256` stores the last verified SHA-256 of the current `09_DECISION_LOG.md` bytes. Populate it after initial file creation and refresh it after every append/status event. Each refresh must follow a successful file write and read-back, then update the Control File as a single-writer transaction: calculate the next sequence (`previous state_seq + 1`), set the Control File to that value, and append a `DECISION_LOG_UPDATED` event with `decision_id` (or NOT_APPLICABLE), `decision_status_after_update` (or NOT_APPLICABLE), `affected_gate`, path, `resulting_sha256`, timestamp and that same new committed `state_seq`. Read the Control File back and verify both the event and hash. Tab 01/02 alone may write the log; Tab 03 is read-only. Never store the stale pre-update sequence in the event. Gate 1 and Tab 02 require a non-null baseline and exact match with the actual file hash.
-
-Never overwrite the expected hash merely because a later read detects a mismatch. A missing/unreadable log, wrong initiative identity, null baseline, misclassified decision or unexplained hash mismatch makes the decision state NOT_VERIFIED. Conservatively reopen Gates 1–3, invalidate the review, set lifecycle REVIEW_REQUIRED, append `INVALIDATED` with expected/observed hashes and exact reopened gates, and stop.
-
-Recovery requires explicit user command `RECOVER DECISION LOG [DECISION-ID]`. It is allowed only when the actual bytes hash exactly equals the `resulting_sha256` of one already-persisted, well-formed `DECISION_LOG_UPDATED` event for that DEC ID/status/path/scope and its sequence is valid. Then the owning tab may set the baseline to that already-recorded hash, append `DECISION_LOG_RECOVERED` referencing the original event sequence, reopen affected gates, increment sequence and read back. If no exact event matches, do not adopt observed bytes: restore a trusted copy matching the old expected hash or stop. If the Control File event history is partial/unreadable, restore a trusted Control File copy or stop; never synthesize events.
-
-For Tab 02 entry, require a latest `GATE_1_APPROVED` event with exact command `APPROVE TASK MODEL`; `gate_1.approved_state_seq` must equal that event sequence. No GATE_1-affecting `DECISION_LOG_UPDATED` event may occur after it. Independently classify every decision against its artifacts and semantics; if the label is wrong or ambiguous, fail closed. Once Gate 2 has been approved, any subsequent Decision Log byte change reopens Gates 2–3 because Gate 2 binds the whole file; a GATE_1 change additionally reopens Gate 1. Missing events, identity or unorderable sequences are NOT_VERIFIED.
-
-## Residual-risk acceptance
-
-Only MAJOR/MINOR findings may be accepted. Each requires exact user command `ACCEPT RESIDUAL RISK [FINDING-ID]` plus rationale and a record containing finding_id, severity, accepted_by, exact_command, rationale and accepted_at_local. BLOCKER/CRITICAL findings cannot be accepted. Freeze does not imply acceptance.
+Downstream requires: workspace integrity `VERIFIED`; schema v4 and valid Control event sequence; P03 v2 identity/hash verified; all three Gates approved with current hashes and sequence anchors; lifecycle `FROZEN`; actual APP_FLOW hash matching the Gate 3 Freeze receipt; full Register chain verified; reconstructed blocking set empty; every implementation CR in the Freeze batch `CLOSED_IMPLEMENTED` against the same frozen version, Gate 3 sequence and APP_FLOW hash; latest Review snapshot matching the Register hash/sequence/last event/CR set.
 
 ## Single-writer and timestamps
 
-For every Control File change: read state_seq, verify prerequisites, write one update, increment state_seq, append an event, read back and verify. state_seq is not a lock; only one tab writes at a time. Use real Asia/Ho_Chi_Minh timestamps and lowercase SHA-256. If verification fails, stop.
+Tab 01 is the sole Register writer. Tab 02 and Tab 03 are read-only for Register business state. Only one logical writer may modify the Control File at a time. `state_seq` is a stale-read detector, not an OS lock, CAS, filesystem mutex or distributed lock. Use actual Asia/Ho_Chi_Minh timestamps and lowercase SHA-256. If any read-back, hash or sequence check fails, stop at `NOT_VERIFIED`.

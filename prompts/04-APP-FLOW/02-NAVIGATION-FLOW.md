@@ -58,3 +58,17 @@ Report counts of tasks, capabilities, flows, nodes, screens, transitions, states
 Gate 2 binds exact hashes of artifacts 03–06 and the current entire Decision Log file. It also requires Gate 1 and all its hashes to remain valid. Before approval, show set-comparison outputs, reachability results, template conformance, open decisions and exact paths/hashes. In the same Control File update that sets Gate 2 APPROVED, set `gate_2.approved_state_seq`, set `gate_2.decision_log_sha256`, and append a distinct `GATE_2_APPROVED` event with `exact_user_command: APPROVE APP FLOW`, approved-artifact path/hash pairs for 03–06, and current Decision Log path/hash. Event sequence, gate sequence and committed `state_seq` must match exactly. Read back and verify before reporting success.
 
 Stop at Gate 2. Present trade-offs and strongest counterargument. Ask the user for `APPROVE APP FLOW` or revision. Do not start Tab 03 automatically. Save Gate 2 only after the exact user command; record hashes, command and timestamp, increment state_seq, read back and verify. If any check fails, report INCOMPLETE / NOT_VERIFIED.
+
+
+---
+
+## Mandatory Schema v4 — Read-only Change Request boundary
+
+Read the canonical Change Request Management contract at the end of `.agents/skills/app-flow/SKILL.md`.
+
+- On entry, read the v4 Control File and full Register/receipt chain from disk. Reconstruct CR states and blocking IDs; ignore chat history and cached sequence values.
+- Tab 02 is read-only on `10_CHANGE_REQUEST_REGISTER.md` and MUST NOT create, triage, accept, reject, cancel, duplicate, supersede, return, resume, revert or close a CR.
+- Proceed only with valid Gate 1 approval evidence and accepted Gate 2 scope. Do not edit if Gate 1 is reopened or Register integrity is NOT_VERIFIED.
+- After Gate 2 artifacts are complete, append the canonical `GATE_2_APPROVED` Control event with current artifact and Decision Log hashes. This persisted event is the only Tab 01 handoff evidence.
+- Any CR requiring Gate 2 work must already be accepted by Tab 01. Do not silently expand accepted paths/scope; return scope changes to Tab 01 and the Owner.
+- A new CR blocks downstream immediately at RECORDED, but does not by itself reopen Gate 1/2 if no bound artifact/source bytes changed.

@@ -1,6 +1,6 @@
 # Upstream register
 
-Checked: **2026-11-10**. Source branches were `main` at retrieval time. Blob SHAs below identify the exact upstream file versions copied into this repository.
+Checked: **2026-11-10**. Re-checked: **2026-11-12** for Processes 05–08 (sections 3–6). Source branches were `main` at retrieval time. Blob SHAs below identify the exact upstream file versions copied into this repository.
 
 ## 1. Anthropic — Product Brainstorming
 
@@ -22,6 +22,82 @@ Checked: **2026-11-10**. Source branches were `main` at retrieval time. Blob SHA
   - `references/shaping-doc-template.md` — blob `f4e7b1b57168d496dde09aa80fe4d927463be264`
 - License status: the upstream repository README declares MIT. A root `LICENSE` file was not present in the repository root listing checked on 2026-11-10. This is recorded rather than fabricating a copyright notice or license file. Verify the upstream repository's current license before further redistribution.
 - Handling: source and references are retained verbatim for inspection, but are **not** placed in `.agents/skills/` and are not part of the three-tab active workflow.
+
+## 3. anthropics/knowledge-work-plugins — copied verbatim 2026-11-12
+
+- Repository: https://github.com/anthropics/knowledge-work-plugins
+- Licence: Apache-2.0 (repository root `LICENSE`; package licence at `LICENSES/ANTHROPIC-PRODUCT-MANAGEMENT-LICENSE.txt`).
+- Status: **four files copied byte-for-byte** into `upstream/anthropics/knowledge-work-plugins/design/`, plus `CONNECTORS.md` so their relative links resolve.
+- Provenance, blob SHAs, sizes, SHA-256 values and recorded deviations: `upstream/anthropics/knowledge-work-plugins/SOURCE.md`.
+
+| Copied file | Used by |
+|---|---|
+| `design/skills/accessibility-review/SKILL.md` | 05 Tab 02, 06 Tab 02, 08 audit |
+| `design/skills/ux-copy/SKILL.md` | 05 Tab 02 copy intent |
+| `design/skills/design-system/SKILL.md` | 06 Tab 01–02 |
+| `design/skills/design-critique/SKILL.md` | 05 and 06 Tab 03 review method |
+
+These live outside `.agents/skills/` on purpose. Installed as active skills they would compete with the process contracts, and a tab could load `design-system` instead of the Process 06 Skill — losing its write permissions, hash binding and gates without any error being raised.
+
+Two deviations are recorded rather than patched, because patching would make the copies non-verbatim: upstream audits against WCAG 2.1 while the contracts require 2.2, and upstream assumes connectors that do not exist here. See `SOURCE.md` sections D-1 and D-2.
+
+At copy time, record for each file: source URL, retrieval date, upstream blob SHA, licence, and the local path. Done — see `SOURCE.md`.
+
+## 4. pbakaus/impeccable — verified 2026-11-12, reference-only
+
+- Repository: https://github.com/pbakaus/impeccable
+- Licence: **Apache-2.0** (`LICENSE` at repository root, 10,766 bytes).
+- Signal at check time: 108,590 stars, 6,454 forks, last push `2026-11-12T09:06:48Z`, not archived.
+- Skill entry point: `skill/SKILL.src.md` (name `impeccable`), plus **41** playbooks under `skill/reference/`.
+- Status: **evaluated for Processes 05–08; nothing copied.** No blob SHA is claimed.
+
+This is the strongest upstream found for the design half of the sequence. The playbooks that matter here:
+
+| Playbook | What it is | Target process |
+|---|---|---|
+| `shape.md` | Plan UX/UI before writing code | 05 |
+| `critique.md` | UX design review with heuristic scoring | 05 review, 08 |
+| `extract.md` | Pull reusable tokens and components into a design system | 06 |
+| `document.md` | Generate `DESIGN.md` from existing project code | 06 |
+| `craft-floor.md` | Quality floor, absolute bans, reflexes no detector catches | 06, 07 |
+| `layout.md`, `typeset.md`, `colorize.md`, `animate.md` | Hierarchy, type, colour, motion | 07 |
+| `adapt.md`, `adapt.native.md` | Device and screen-size adaptation | 07 |
+| `polish.md`, `clarify.md`, `harden.md` | Final pass, UX copy, edge cases | 07 |
+| `audit.md`, `audit.native.md`, `component-review.md` | Accessibility, performance, responsive, component review | 08 |
+| `android.md` | Android platform guidance | 06, 07, 08 |
+
+### Why reference-only, not an active Skill
+
+Two independent reasons, either of which is sufficient.
+
+1. **It is a design agent, not a design method.** `new-work` designs and writes production code in one pass. Adopting it as the Process 05 active Skill would collapse P05→P07 in a single command and make Gates 1 and 2 decorative. This is the same failure mode already recorded for Product Shaping below: a skill that runs several phases at once cannot sit inside a three-tab gate model.
+2. **It carries a runtime.** The skill shells out to `impeccable context`, `impeccable pin`, a design-detector hook and a self-contained binary shipped beside the skill. This repository is deliberately markdown-only with no execution dependency; adding a vendored binary would change what "installing the repo" means.
+
+### Intended use
+
+Read the playbooks as method. Lift the heuristic scoring rubric from `critique.md` into Process 08 Tab 03, the ban list from `craft-floor.md` into the Process 07 lexical audit, and the platform rules from `android.md` into the Process 06 Control File as a recorded platform decision. Cite the playbook and the upstream commit in the artifact that uses it.
+
+If a future process genuinely needs the executable, treat it as a separate, explicitly authorised dependency with its own provenance record — not as a silently vendored skill.
+
+## 5. Conradgui/zero-to-one-product-discovery — rejected, no licence
+
+- Repository: https://github.com/Conradgui/zero-to-one-product-discovery
+- Licence: **none declared.** The GitHub API returns `"license": null`.
+- Signal at check time: 6 stars, last push `2026-06-08T14:00:52Z`, Python.
+
+**Status: not usable.** A repository with no licence is all rights reserved by default; copying its content into this repository would be a licence violation regardless of how small the excerpt is. The description is a reasonable statement of intent for Seed and Discovery, but intent is not permission.
+
+If this source is wanted later, the route is to ask the author for an explicit licence, or to read it for ideas and write original text — which is what "never relabel a rewrite as an upstream Skill" already requires. Do not copy it and do not cite it as an upstream.
+
+## 6. elcodabra/validate-idea-skills — usable, marginal
+
+- Repository: https://github.com/elcodabra/validate-idea-skills
+- Licence: **MIT**.
+- Signal at check time: 2 stars, 71 KB, last push `2026-11-03T21:49:04Z`.
+
+A seven-step idea-validation pack: competitor research, value proposition, landing page, smoke test, acquisition, pre-sale, GO/PIVOT/KILL. Legally usable. Practically thin — two stars and a small surface mean it has not been exercised by anyone but its author, and its scope is market validation rather than product shaping.
+
+Status: recorded as available, not selected. Process 02 Product Discovery already owns assumption testing and experiment design; this pack would duplicate it with weaker provenance.
 
 ## Why Product Shaping is reference-only
 

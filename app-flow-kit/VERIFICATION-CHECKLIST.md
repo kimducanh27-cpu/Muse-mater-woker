@@ -6,7 +6,9 @@ This checklist distinguishes repository/paper checks from live runtime verificat
 - [ ] Repository is at workspace root; `.agents/skills/app-flow/SKILL.md` is discoverable.
 - [ ] All three prompts exist at their fully qualified paths under `prompts/04-APP-FLOW/`.
 - [ ] Every prompt names the exact templates it must use.
-- [ ] Control and artifact templates exist under `templates/04-APP-FLOW/`.
+- [ ] Control template exists and declares `schema_version: 4`.
+- [ ] Register template `11-CHANGE-REQUEST-REGISTER.md` exists and maps to active artifact `10_CHANGE_REQUEST_REGISTER.md`.
+- [ ] Control schema v4 has a `change_request_register` checkpoint and no `change_requests` business-status array.
 - [ ] Decision Log template defines immutable proposal entries and canonical append-only status events with unique DLE IDs.
 - [ ] Review template records pre-append Control File sequence/hash and previous review-history hash.
 - [ ] Review-history initialization stores the exact template SHA-256 and a `REVIEW_HISTORY_INITIALIZED` event before Round 1.
@@ -153,3 +155,67 @@ Run in the actual Windows workspace. Do not mark these passed based only on repo
 
 ## Release decision
 Do not label Process 04 production-ready until all mandatory live tests have evidence. Record limitations and unresolved defects in independent review. Repository inspection is not live Antigravity verification.
+
+## Schema v4 static stress tests — ST-01 to ST-22
+
+These 22 scenarios are mandatory static/simulation fixtures. Marking a row reviewed on paper does not prove runtime behavior; every result remains NOT RUN until evidence is captured.
+
+| Test | Scenario | Required expected result | Result |
+|---|---|---|---|
+| ST-01 | Initialize Register with null Control pointer | Create header-only Register; commit `CHANGE_REQUEST_REGISTER_INITIALIZED`; `register_seq: 0`; non-null init hash. | NOT RUN |
+| ST-02 | Register exists with wrong Initiative ID | `NOT_VERIFIED`; do not rewrite identity or accept its hash as baseline. | NOT RUN |
+| ST-03 | One complete staged tail without receipt | Block all writes; recover only after validating trusted prefix and re-evaluating current business preconditions. | NOT RUN |
+| ST-04 | Receipt has wrong `event_block_sha256` | `NOT_VERIFIED`; no automatic receipt correction. | NOT RUN |
+| ST-05 | Duplicate Control receipts for one Register event | `NOT_VERIFIED`; restore/reconcile from trusted Control state. | NOT RUN |
+| ST-06 | `register_seq` gap | `NOT_VERIFIED`; restore trusted Register/Control pair. | NOT RUN |
+| ST-07 | Control `state_seq` gap | `NOT_VERIFIED`; never invent a missing event. | NOT RUN |
+| ST-08 | More than one unreceipted Register tail event | Reject normal recovery; allow only the exact two-event staged+abort pair through `RECOVER CHANGE REQUEST ABORT [STAGED-CRE-ID]`; otherwise restore to last trusted hash. | NOT RUN |
+| ST-09 | Tab 01 uses stale chat state after Tab 02 Gate 2 approval | Tab 01 rereads disk and uses the current Gate receipt/sequence; stale chat memory ignored. | NOT RUN |
+| ST-10 | Tab 02 edits Gate 2 while Gate 1 is reopened | Stop at Tab 02 entry gate; no Gate 2 edits. | NOT RUN |
+| ST-11 | Register changes after Tab 03 Review snapshot | Freeze refused; new Review round required. | NOT RUN |
+| ST-12 | Freeze succeeds but CR closure receipt fails | Downstream stays blocked; recover the single valid staged close or abort path; do not report eligibility. | NOT RUN |
+| ST-13 | Two CRs return to P03 and resume against one new P03 freeze | Each CR compares against its own `returned_p03_frozen_sha256`; both may resume independently. | NOT RUN |
+| ST-14 | Supersede target missing or terminal-invalid | Reject before append; original CR remains blocking. | NOT RUN |
+| ST-15 | User cancels after a partial artifact edit | Reject T14; require T15 reversion and T16 after Gate restoration. | NOT RUN |
+| ST-16 | Reversion bytes restored but required Gate approval missing | Reject T16; remain `REVERSION_PENDING`. | NOT RUN |
+| ST-17 | New evidence arrives after terminal rejection | Preserve old CR; create a new linked submission/CR. | NOT RUN |
+| ST-18 | v3→v4 migration interrupted | Restore/verify full v3 archive or verify completed v4 pair; never claim partial success. | NOT RUN |
+| ST-19 | Legacy v3 reader reads v4 Control File | Fail closed with unsupported schema; no writes. | NOT RUN |
+| ST-20 | New CR appears after prior CR closed in v1 | Old CR remains bound to v1; new CR blocks downstream until resolved for a later version. | NOT RUN |
+| ST-21 | Stored `event_block_sha256` is the literal sentinel `<HASH_OMITTED>` | `NOT_VERIFIED`. The sentinel is a hashing placeholder only; it must never be persisted as a digest. | NOT RUN |
+| ST-22 | Reader recomputes the event-block hash with the stored digest left in place | Hash mismatch. The reader must substitute `<HASH_OMITTED>` before recomputing; a digest computed over its own value is a protocol violation, not a tolerable variant. | NOT RUN |
+
+## Additional targeted tests
+
+| Test | Scenario / required assertion | Result |
+|---|---|---|
+| AT-01 | A staged event's previously expected Control sequence is consumed by an unrelated event; recovery re-evaluates current preconditions and uses the next available sequence. | NOT RUN |
+| AT-02 | Abort hash edges are exactly H(k-1) → H(k) → H(k+1); one receipt covers both events and all hashes. | NOT RUN |
+| AT-03 | Complete abort pair with missing receipt; recovery writes only the receipt and never a second marker. | NOT RUN |
+| AT-04 | Partial/malformed abort marker is NOT_VERIFIED; do not append a retry marker; restore trusted backup only. | NOT RUN |
+| AT-05 | Canonical UTF-8 without BOM, LF-only, no CR/trailing whitespace, exact-byte hashes. | NOT RUN |
+| AT-06 | Prefix-chain tampering at any historical event is detected from the initialization anchor. | NOT RUN |
+| AT-07 | Cycles/missing/invalid targets across DUPLICATE/SUPERSEDED/dependency graph are rejected before append. | NOT RUN |
+| AT-08 | No-op re-freeze is refused; valid frozen version increments exactly by one. | NOT RUN |
+| AT-09 | Mixed Gate 1 + Gate 2 CR uses ordered tab approvals and persisted disk handoff. | NOT RUN |
+| AT-10 | Partial multi-CR closure batch remains downstream-blocking and resumes idempotently. | NOT RUN |
+
+## Schema v4 repository assertions
+
+- [ ] No exact `decision_event_kind: STATUS_CHANGED` remains in affected P04 Skill/templates.
+- [ ] No accidental `DECISION_DECISION_STATUS_CHANGED` exists.
+- [ ] Control template declares `schema_version: 4` and has no `change_requests: []`.
+- [ ] Register template declares schema v1 and canonical byte/hash rules.
+- [ ] The canonical state-machine contract contains exactly the approved 13 business states and T01–T18; `NOT_VERIFIED` is integrity-only; `REFROZEN` and T19 are absent.
+- [ ] CL-04 restriction is explicit: no `ACCEPTED_FOR_IMPLEMENTATION → TRIAGE/NEEDS_CLARIFICATION` edge.
+- [ ] Tab 01 is sole Register writer; Tabs 02/03 are read-only for CR business state.
+- [ ] Freeze Stage A and CR-closure Stage B are separate; partial batch stays downstream-blocking.
+- [ ] Migration is v3→v4 with a verified backup/manifest, explicit attestation and one complete Control File replacement containing sequential migration and Register-initialization events.
+- [ ] P03 files remain untouched and P03 remains schema v2.
+- [ ] All three prompts reference the canonical Skill and enforce their tab-specific Register permissions.
+- [ ] README artifact mapping shows template 11 → active artifact 10.
+- [ ] No live test is marked PASS without actual Windows Antigravity evidence.
+
+## Live runtime evidence register
+
+All six minimum end-to-end flows, v3→v4 migration and the deliberately invalid recovery case remain NOT RUN until executed in the actual Windows Antigravity workspace with logs, file/hash snapshots and screenshots as evidence. Repository inspection is not runtime verification.
