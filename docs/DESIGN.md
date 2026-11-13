@@ -1,5 +1,5 @@
 > Derived. Not authoritative. On disagreement the Control File wins.
-> Generated from this repository at commit `42f615a`, 2026-11-13.
+> Generated from this repository at commit `7432476`, 2026-11-13.
 
 # Design decisions
 
@@ -47,4 +47,4 @@ The first of those three rules was tested and held: an agent given a two-screen 
 
 ## Visual identity of the kit itself
 
-None, deliberately. The kit is markdown, YAML and three Python scripts. Adding a visual identity to a process kit is the kind of work that feels like progress and produces nothing a user can use.
+None, deliberately. The kit is markdown, YAML and five Python checking scripts. Adding a visual identity to a process kit is the kind of work that feels like progress and produces nothing a user can use.

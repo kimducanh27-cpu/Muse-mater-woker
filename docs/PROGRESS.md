@@ -1,5 +1,5 @@
 > Derived. Not authoritative. On disagreement the Control File wins.
-> Generated from this repository at commit `42f615a`, 2026-11-13.
+> Generated from this repository at commit `7432476`, 2026-11-13.
 
 # Progress
 
@@ -7,15 +7,16 @@
 
 | Thing | Evidence |
 |---|---|
-| Six process contracts (01–06) | Nine Skills, 56 templates, prompts and kits for each |
+| Six process contracts (01–06) | Nine Skills, 57 templates, prompts and kits for each |
 | Process 04 schema v4 with a Change Request Register | Register v1 template, abort-pair contract, migration rules, 22 stress scenarios |
 | Process 04 sentinel hash rule (ADR-P04-11) | Resolved the self-referential preimage; verified comprehensible by probe 8 |
+| Process 04 schema v4 field contract | `CONTROL-FIELDS-v4.yaml` covering 15 event types; `validate-control.py` version-aware |
 | Process 05 UX Design contract | 53 scenarios, three lexical audits, review history, freeze protocol |
 | Process 06 Design Systems contract | 55 scenarios, component admission rule, Material 3 token tiers |
 | Platform decision | Android native, recorded as an immutable Control field |
 | Provenance governance | 23 rules labelled VERBATIM / ADAPTED / LOCAL; 7 LOCAL decisions registered |
 | Upstream method vendored | Four files copied byte-for-byte from an Apache-2.0 source, blob SHAs recorded |
-| Three validators | Control File, Register chain, UX artifact 01 — each tested against a known-bad input |
+| Five checking scripts | Control File, Register chain, UX artifacts 01 and 02, gate applier — each tested against a known-bad input |
 | Eleven probes | Nine run reports; 13 findings, 7 closed by re-running the probe |
 
 ## Broken, then fixed
@@ -41,8 +42,7 @@ Five more were closed by specification only and say so in `test-harness/FINDINGS
 | **No gate has ever been exercised** | Every Control File has `gate_1: PENDING` and an empty `event_log`. The validators check consistent workspaces, never transitions. |
 | **No product exists** | No initiative has run end to end. No frozen artifact exists for any real idea. |
 | **Processes 01–03 have no hash binding** | Process 01 has no state file; Process 02's Control File contains zero occurrences of `sha256`. A chain built on them is asserted, not verified. |
-| **Process 04 schema v4 has no field contract** | Its event set is larger than v1 and unguarded. |
-| **P05 artifacts 02–05 have no validators** | Prose-only, which is the condition that produced three findings. |
+| **P05 artifacts 03–05 have no validators** | Artifact 02 done; 03–05 prose-only, which is the condition that produced three findings. |
 | **130 scenarios are `NOT RUN`** | 22 in Process 04, 53 in Process 05, 55 in Process 06. |
 | **Two draft PRs, no merge** | Merge authorization not granted. |
 

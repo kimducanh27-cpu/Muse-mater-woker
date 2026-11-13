@@ -1,5 +1,5 @@
 > Derived. Not authoritative. On disagreement the Control File wins.
-> Generated from this repository at commit `42f615a`, 2026-11-13.
+> Generated from this repository at commit `7432476`, 2026-11-13.
 
 # Rules
 
@@ -26,7 +26,7 @@ Read this before writing anything. These are the rules that, when broken, produc
 5. **Keep the raw transcript.** A verdict without one is an assertion.
 6. **Delete the prose when a check replaces it.** If a validator computes six values, do not also require the agent to narrate them — two ways to comply means the cheaper one wins, and the other becomes dead weight a reader still believes is enforced.
 
-## The three validators
+## The checkers
 
 Run the relevant one before claiming anything is done.
 
@@ -34,9 +34,13 @@ Run the relevant one before claiming anything is done.
 python test-harness/validate-control.py <control-file>
 python test-harness/validate-register.py <register-file> --h-init <hex>
 python test-harness/validate-ux-model.py <artifact-01> <app-flow>
+python test-harness/validate-patterns.py <artifact-02> <app-flow>
+python test-harness/apply-gate.py <control> --gate 1 --command "<exact>" --artifact <path>
 ```
 
-A validator that has never failed on a known-bad input is not a validator. Each of the three was checked against a deliberately broken artifact before being trusted.
+The first four check. The fifth applies a gate and then re-checks the result. `make-fixture.py` generates probe workspaces; it is a fixture tool, not a checker.
+
+A checker that has never failed on a known-bad input is not a checker. Every one of these was tested against a deliberately broken input before it was trusted.
 
 ## Commands the human types
 

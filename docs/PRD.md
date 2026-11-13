@@ -1,5 +1,5 @@
 > Derived. Not authoritative. On disagreement the Control File wins.
-> Generated from this repository at commit `42f615a`, 2026-11-13.
+> Generated from this repository at commit `7432476`, 2026-11-13.
 
 # What this repository is
 
@@ -32,7 +32,7 @@ If two people are reviewing, the gate model still works, but the exact-command p
 | 07 | UI Design | charter only |
 | 08 | Validation | charter only |
 
-Nine Skills, 56 templates, three validators, thirteen recorded findings.
+Nine Skills, 57 templates, five checking scripts, thirteen recorded findings.
 
 ## What does not exist
 

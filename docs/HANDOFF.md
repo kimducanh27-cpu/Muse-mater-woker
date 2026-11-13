@@ -1,5 +1,5 @@
 > Derived. Not authoritative. On disagreement the Control File wins.
-> Generated from this repository at commit `42f615a`, 2026-11-13.
+> Generated from this repository at commit `7432476`, 2026-11-13.
 
 # Handoff
 
@@ -23,7 +23,7 @@ The full account is in `test-harness/runs/` and `test-harness/FINDINGS.md`. Do n
 
 | | |
 |---|---|
-| Branch | `pipeline/p05-p06`, HEAD `42f615a`, 38 commits ahead of `main` |
+| Branch | `pipeline/p05-p06`, HEAD `7432476`, 40 commits ahead of `main` |
 | Pull requests | #1 (P04, draft, base `main`), #2 (P05/P06, draft, stacked on #1) |
 | Working tree | clean |
 | Gates opened | **zero** |

@@ -1,8 +1,8 @@
-# Lịch sử chat: Pull repo and continue grilling feature development
+# Chat Export: Pull repo and continue grilling feature development
 
-**Thư mục dự án:** C:\Users\ducti\WorkBuddy AI\2026-11-12-15-51-45\app-adr-ui
-
-**Tổng số lượt tin nhắn:** 169
+- **Agent:** WorkBuddy AI
+- **Source:** `C:\Users\ducti\.workbuddy-ai\projects\c-Users-ducti-WorkBuddy AI-2026-11-12-15-51-45\96744a9b-9a29-40eb-8413-2f328311c5ed.jsonl`
+- **Messages:** 195
 
 ---
 
@@ -15,13 +15,13 @@ còn những process sau nữa
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Repo public, truy cập được. Clone về workspace rồi đọc toàn bộ.
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Đã clone và đọc hết repo. Trước khi hỏi, đây là những gì tôi tìm thấy — có vài điểm lệch so với giả định "3-4 process xong rồi":
 
@@ -78,13 +78,13 @@ Q5 cho ai khác reivew
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Q4 tôi diễn đạt tối nghĩa, xin lỗi. Để tôi làm phần tra GitHub trước (đó là việc của tôi, không phải của bạn), rồi hỏi lại Q4 bằng ngôn ngữ cụ thể.
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Đã tra xong. GitHub có sẵn đúng thứ bạn cần — và nó khớp gần như 1-1 với P5→P9.
 
@@ -144,7 +144,7 @@ Q6 thật ra là chưa chốt 7 hay 9 chỉ khi nào đủ mới thôi, lúc đ�
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Rõ. Vậy con số là **emergent** — không hứa trước, chỉ thêm khi đủ. Danh sách gốc bạn nêu cho thấy pipeline thật là 8 bước, không phải 7:
 
@@ -154,7 +154,7 @@ Product Definition là bước phát sinh thêm (không có trong list ban đầ
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Xong. 4 tờ charter + sửa README, commit `c0b9d50` trên nhánh `charters/p05-p08-v0.1.0`. Chưa push (chưa có credential trong máy).
 
@@ -209,25 +209,25 @@ Q2 là sao
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Q2 là cái này — nó không phải lỗi code, nó là một mâu thuẫn logic trong đặc tả:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Q2 xong. Giờ dựng P5 thật. Trước hết xem cấu trúc Control File v4 để P5 kế thừa đúng khuôn:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Hai nhánh đang tách nhau — charters nằm trên nhánh khác với P04 v4. Gộp lại trước:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 **Q2 là gì** — nó không phải lỗi code, mà là một mệnh đề tự mâu thuẫn trong đặc tả P04 v4:
 
@@ -1404,19 +1404,19 @@ Kết luận: Mình muốn sửa định hướng của bộ v1.0: thay vì tạ
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Đoạn chat này giải thích vì sao repo có `UPSTREAMS.md` — và nó cũng nêu vài repo tôi chưa kiểm tra. Kiểm tra thật trước đã:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Kiểm tra xong. Có **một phát hiện chặn** và **một repo tốt hơn hẳn** những gì đoạn chat đề xuất.
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Đã kiểm tra từng repo trong đoạn chat đó bằng GitHub API, không dựa vào mô tả. Ba kết quả, một trong số đó chặn hẳn:
 
@@ -2168,19 +2168,19 @@ Review scope: This is a targeted document-level micro diff review of D3-01 and D
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Đọc xong. Trước khi nhận xét, đối chiếu plan với repo thật — vì plan tự đặt ra luật "hai artifact mâu thuẫn thì workspace là NOT_VERIFIED":
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Tìm thấy 3 lỗi thật. Sửa cái nặng nhất trước — nó nằm ngay trong canonical contract:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Đọc hết. Plan này về mặt kỹ thuật là **tốt thật** — bảng T01–T18 với 11 chiều mỗi dòng, hash chain, abort pair, migration có manifest. Không phải loại tài liệu viết cho có. Nhưng tôi tìm được 3 lỗi, và cái thứ ba nặng hơn cái bạn biết.
 
@@ -2223,13 +2223,13 @@ mà P4 5 sao r
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 "yes to all" → Android native. Chốt luôn vào charter, rồi trả lời câu về P4.
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Chốt Android xong (`7c7ee26`, nhánh giờ 15 commit trước main). Giờ trả lời thẳng câu về P4.
 
@@ -2263,13 +2263,13 @@ tiếp theo là
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 "Tiếp theo" là **P6 — Design Systems**. Và đây là chỗ tôi đổi ý so với lập luận lúc trước, nói rõ lý do: P6 **không phát minh cơ chế mới**. Không register, không abort pair, không migration — chỉ lặp lại đúng khuôn 3 tab của P5. Rủi ro biên thấp. Cái làm P4 đắt là nó tự chế một hệ con, không phải nó viết contract.
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 **P6 xong** — 16 file, 1.531 dòng, commit `695eae7`. Nhánh giờ 16 commit trước main.
 
@@ -2307,7 +2307,7 @@ Skill bạn lấy nguyên văn hay lấy khung thôi
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Câu này quan trọng, và câu trả lời thật thì không được đẹp: **tôi chưa copy một byte nào.** Không nguyên văn, cũng không phải "khung" — tôi viết contract gốc và chỉ *trích dẫn đường dẫn* upstream.
 
@@ -2315,19 +2315,19 @@ Kiểm tra lại xem upstream có gì để copy được không:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Cả bốn đều là file đơn, tự chứa, nhỏ. Copy nguyên văn được — làm luôn:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Copy xong, và **nó lập tức tạo ra hai vấn đề** — đúng loại vấn đề mà chỉ copy nguyên văn mới lộ ra:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Câu trả lời thật, kèm thời điểm — vì nó thay đổi trong 10 phút vừa rồi:
 
@@ -2380,25 +2380,25 @@ repo kít này phát triển theo hướng tham khảo repo khác, lấy khung h
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Đây là một luật quản trị, không phải một câu hỏi — nên tôi phải trả lời bằng cách áp nó vào chính những gì tôi vừa viết. Trước hết kiểm chứng một chỗ tôi định viện dẫn, để không mắc đúng lỗi đang bị cấm:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Xác nhận: Material 3 định nghĩa đúng ba tầng — `ref` / `sys` / `comp`. Tôi đã đặt tên khác cho cùng một thứ. Đó là một dạng "tự bịa" — đổi tên một chuẩn có sẵn mà không nói.
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Giờ phần chính: bản kiểm kê nguồn gốc cho mọi luật tôi đã viết.
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Luật đã nhận. Nhưng phải nói ngay một điều: **"không được tự bịa" theo nghĩa tuyệt đối là bất khả thi** — không tồn tại upstream nào định nghĩa mô hình 3 tab có gate, Control File, hash binding và lệnh duyệt. Nếu cấm sạch nội dung gốc thì repo này không tồn tại từ P1.
 
@@ -2449,7 +2449,7 @@ trong P 5 bạn tham khảo những repo nào
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 P5 tham khảo **đúng 2 repo**. Đây là toàn bộ, có thể kiểm chứng từng dòng:
 
@@ -2494,13 +2494,13 @@ còn P6
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Đọc kỹ file đã copy thì phát hiện tôi **khai quá** trong P6. Sửa trước, rồi trả lời:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 P6 tham khảo **2 repo + 2 chuẩn**. Và khi đọc kỹ file đã copy, tôi phát hiện mình đã khai quá một chỗ — đã sửa (`62b8541`).
 
@@ -2551,19 +2551,19 @@ commi repo hiện tại đi, rồi up p4 5 6  lên
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Auth có sẵn trong Windows Credential Manager. Push (fast-forward, không force):
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Push xong. Nhưng PR #1 giờ có 63 file và tiêu đề vẫn ghi *"blocked on event hash spec"* — một tuyên bố đã sai từ `194d77a`. Sửa lại cho khớp:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Push xong. Nhưng có một việc không làm được, nói rõ luôn.
 
@@ -2607,7 +2607,7 @@ Tôi nghiêng về **(1)** ở giai đoạn này: chưa có ai review, tách nh�
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Repo không có `GLOSSARY.md` và không có `GLOSSARY-MAP.md`. Nên tôi dùng đúng các từ mà hợp đồng đã định nghĩa: Control File, Gate, frozen output, `NOT RUN`.
 
@@ -2649,7 +2649,7 @@ giữ thì bị sao kh
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 **Không hỏng gì về kỹ thuật.** Không file nào sai. Không hash nào lệch. Không gate nào bị phá. Giữ nguyên không làm repo sai.
 
@@ -2674,7 +2674,7 @@ tách
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Tách xong.
 
@@ -2727,7 +2727,7 @@ tôi nontech bạn chỉ toio fix đi'
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Được. Làm đúng 2 việc, mỗi việc vài cú click. Tôi ghi rõ: bấm gì → thấy gì.
 
@@ -2815,7 +2815,7 @@ Nếu bước nào trên màn hình không giống tôi mô tả, chụp ảnh g
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 PR #2 đã tạo, base đúng. Nhưng còn 3 chỗ lệch: tiêu đề đang là tên nhánh, thân trống, và nó đang **Open** chứ không phải Draft — nên nút "Merge pull request" đang sáng.
 
@@ -2873,7 +2873,7 @@ Một chi tiết trong ảnh: GitHub hiện banner *"This pull request can be st
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Dừng lại — **đừng bấm nút xanh "Comment"**. Bạn dán vào ô bình luận, không phải ô mô tả.
 
@@ -2905,7 +2905,7 @@ xong r
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Kiểm tra rồi. PR #2 đã đúng tiêu đề và mô tả. Còn **2 chỗ chưa xong**:
 
@@ -2952,7 +2952,7 @@ xong e
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 PR #1 xong rồi — tiêu đề đúng, đang Draft. Nhưng **PR #2 vẫn Open**, chưa chuyển được.
 
@@ -2992,7 +2992,7 @@ link pr2 đi
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 https://github.com/kimducanh27-cpu/app-adr-ui/pull/2
 
@@ -3010,7 +3010,7 @@ Nếu không thấy, cuộn xuống cuối trang — khu **Reviewers** nằm dư
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Đúng chỗ rồi. Bấm vào dòng đỏ đầu tiên: **"Convert to draft"** (ngay trên "Close pull request").
 
@@ -3026,7 +3026,7 @@ ok
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Xong hết. Cả hai PR đã đúng:
 
@@ -3053,13 +3053,13 @@ backup repo rồi đẩy p4 5 6 lên đi
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Backup trước, rồi báo trạng thái push.
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Backup xong. Hai file trong `2026-11-12-15-51-45\backups\`:
 
@@ -3100,7 +3100,7 @@ bạn giúp tôi tạo prompt hay quy trình gì đó cho con Muse đó chạy a
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Tra rồi. Có hai thứ tên "Muse", phải tách rõ:
 
@@ -3113,7 +3113,7 @@ Giờ đến phần khó, và nó quyết định cả bản test:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Xong. Đẩy lên rồi — `4fe1197` trên `pipeline/p05-p06`, PR #2 tự cập nhật.
 
@@ -3179,7 +3179,7 @@ meta muse á cha
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Meta Muse là agent tiêu dùng — duyệt web, điền form, đặt lịch, gửi mail. Nó chạy trên VM của Meta, có Sentinel giám sát.
 
@@ -3223,13 +3223,13 @@ chạy đc
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Vậy là Meta Muse có shell thật. Prompt hiện tại thiếu một bước: nó giả định repo đã có trong VM. Sửa lại:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Đẩy xong (`c1a9efe`). Prompt giờ có **Bước 0** — tự clone repo đúng nhánh. Thiếu bước đó thì Muse clone `main`, không thấy harness, và probe 1 chết vì lý do chẳng liên quan gì đến hợp đồng.
 
@@ -3276,13 +3276,13 @@ nó chạy agy bằng antigravity CLi á
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Rõ rồi — Muse gọi `agy` trong VM. Vậy có một cái bẫy phải chặn trước: `agy` có chế độ TUI tương tác, chạy vào đó là treo cả phiên. Thêm phần invocation vào harness:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Đẩy xong (`25e8c40`). Giờ harness ghi rõ cách gọi `agy`.
 
@@ -3317,7 +3317,7 @@ prompt này test tới đâu
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Câu hỏi đúng chỗ. Trả lời thẳng: **rất hẹp.**
 
@@ -3383,13 +3383,13 @@ chạy từ p1 luôn chứ
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Được — nhưng phải biết P01-P03 có gì trước đã. Chúng viết trước P04-P06 nên cơ chế khác:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Kiểm tra xong, và có một phát hiện chặn ngay: **P01 và P02 không có ràng buộc hash.**
 
@@ -3404,7 +3404,7 @@ Nghĩa là handoff P02→P03 chỉ kiểm được **chuỗi ký tự**, không 
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Đã thêm, nhưng **không phải chạy cả 18 tab**. Lý do cụ thể:
 
@@ -3460,67 +3460,67 @@ có trên máy mình
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 `agy` 1.5.6 có trên máy, ở `D:\Antigravity\agy\bin\`. Xem CLI surface trước:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 CLI thật khác tài liệu tôi viết: chế độ headless là `-p/--print`, không phải chỉ `--output-format`. Thử một lệnh vô hại trước:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 `agy` chạy được, có credential. Giờ dựng fixture cho Probe 1 và chạy thật:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Fixture đúng: `gate_3.status: APPROVED` nhưng hash là 64 số 0. Giờ cho `agy` đóng vai Tab 01:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Transcript rỗng, không file nào bị ghi. Thử một việc nhỏ hơn để khoanh vùng:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Tool use chạy tốt. Vậy lần trước không phải treo quyền — mà là task quá lớn. Xem model có gì:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Lại treo, và lần này `--print-timeout 280s` cũng không cứu. Khoanh vùng bằng stream-json để thấy nó dừng ở đâu:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Format stream rõ rồi. Nghi vấn: agent gọi `ask_question` → print mode chờ input → treo. Chặn nó lại và chạy lại:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Thấy rồi. Agent làm đúng việc — đọc Skill, đọc Control, tính hash — rồi **kẹt ở bước trả lời**: 25 bước, không ra kết quả. Và nó đọc cả transcript của chính nó, vì tôi để evidence chung thư mục. Tách ra rồi chạy lại gọn:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Probe 1 chạy xong — và kết quả vạch ra lỗi trong **chính bản test của tôi**, trước cả hợp đồng:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Chạy thật rồi. `agy` 1.5.6 trên máy bạn, headless, có credential.
 
@@ -3577,31 +3577,31 @@ fixture
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Dựng fixture P04 thật — có `APP_FLOW.md`, `PRODUCT_DEFINITION.md`, Register, và hash thật. Viết thành script để tái dùng được, không phải shell ad-hoc:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Fixture khớp hash. Chạy Probe 2 — template có điền được không:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Kết quả thật. Agent báo không điền được cột `Source node / transition` vì APP_FLOW không có node. Kiểm chứng xem đó là lỗi fixture hay lỗi hợp đồng:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Hai phát hiện thật. Kiểm thêm cấu trúc artifact rồi ghi báo cáo:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Fixture dựng xong — `make-fixture.py` sinh P04 workspace với hash tính từ chính bytes nó ghi, nên nhất quán theo cấu trúc, không phải hash bịa.
 
@@ -3652,19 +3652,19 @@ tiếp theo là
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Probe 3 — cài vi phạm thật rồi cho reviewer ngữ cảnh sạch soi:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Bắt được cả hai vi phạm. Nhưng nó cũng báo nhầm một dòng — và báo nhầm từ **"component"**, một từ không có trong danh sách cấm. Chạy lại y hệt để xem kết quả có lặp lại được không:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Probe 3: `COMPLIANT` — nhưng lại lộ thêm một lỗi.
 
@@ -3718,25 +3718,25 @@ ok
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Probe 4 — ghi event vào Control File. Đây là test cơ học nhất:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Agent báo thành công. Giờ tự kiểm — đây mới là phần quan trọng:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Hai field tên sai, và agent **khai là đã verify**. Kiểm nốt probe 5:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Xong cả 5. Và cặp 4–5 là chỗ chỉ ra đúng bệnh.
 
@@ -3821,25 +3821,25 @@ fix full luôn
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Fix cả 5. Bắt đầu bằng F-06 — thứ chặn được nhiều lỗi nhất:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Validator bắt đúng lỗi, kèm gợi ý tên sai. Giờ chạy lại probe 4 với hợp đồng mới — đây mới là kiểm chứng:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 **Đóng vòng.** Cùng probe, cùng model — giờ viết đúng tên field và tự verify theo contract. Validator `PASS`.
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Fix xong cả 6. Commit `65e72b5`, đã push.
 
@@ -3902,19 +3902,19 @@ tiếp theo là
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 P06 chưa từng chạy lần nào — 5 probe vừa rồi chỉ chạm P05. Đó là lỗ hổng lớn nhất còn lại. Dựng fixture P06:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Đáng chú ý: nó **từ chối 4 component Material 3** vì không có screen nào cần. Kiểm lại artifact:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 **P06 chạy lần đầu.** `COMPLIANT`, và đây là kết quả đáng chú ý nhất từ đầu buổi.
 
@@ -3977,61 +3977,61 @@ tiếp'
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 P04. Và thứ đáng test nhất ở đó là **quy tắc sentinel** — cái tôi sửa lúc đầu buổi và chưa từng chạy. Nếu nó sai thì mọi thứ phía sau vô nghĩa.
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Treo ở bước 46 — Skill P04 dài 500 dòng, quá tải cho một lượt. Thu hẹp lại đúng câu hỏi cần trả lời:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Rule đọc đúng. Giờ test phần **ghi** — đưa rule trực tiếp để nó khỏi phải đọc 500 dòng Skill:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Giờ kiểm bằng tay — tự tính lại hash theo đúng rule sentinel:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Stored digest **không khớp cả hai cách tính**. Phải tìm xem nó đã băm cái gì — nếu có biến thể hợp lý nào khớp thì ranh giới bytes đang mơ hồ:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Không biến thể nào khớp. Digest sai thật, và agent báo thành công. Đây là lỗi nặng nhất từ đầu buổi. Viết validator cho Register:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Validator cho số khác lần tính tay. Phải làm rõ trước khi báo cáo — nếu validator sai thì finding vô giá trị:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Validator của tôi sai, không phải agent — nó bắt `### CRE-` nằm trong câu văn. Đúng cùng loại lỗi với F-04 (khớp chuỗi thô). Sửa:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Validator giờ đúng: **1 lỗi, digest không verify.** Agent viết hash sai và báo thành công. Ghi vào hợp đồng P04:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 P04 chạm lần đầu. Và đây là lỗi nặng nhất từ đầu buổi.
 
@@ -4106,25 +4106,25 @@ tiếp'
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Chạy lại probe 8 với validator trong vòng lặp. Fixture mới để giữ nguyên bằng chứng cũ:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Validator báo PASS, 1 lần thử. Tự kiểm lại:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 **F-08 đóng đúng chuẩn.** Cùng model, cùng task — khác mỗi validator trong vòng lặp:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 **F-08 đóng.** Cùng model, cùng task, khác đúng một thứ: validator nằm giữa lúc ghi và lúc tuyên bố.
 
@@ -4179,25 +4179,25 @@ ok
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Dựng validator cho artifact 01 của P05 — cùng khuôn với hai cái trước:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Validator bắt được vi phạm thật — nhưng cũng báo nhầm `Tab 01`. Từ `tab` đụng chính từ vựng của workflow. Đó là **F-10**, sửa cả tool lẫn luật:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Validator giờ phân biệt đúng: sạch PASS, cài vi phạm FAIL đúng 2 chỗ. Chạy lại probe với validator trong vòng lặp:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 **F-04 và F-05 đóng.** Probe 10 `PASS` ngay lần đầu, có validator trong vòng lặp.
 
@@ -4261,25 +4261,25 @@ tiếp theo là
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 F-11: sáu check phải chạy thật. Validator cho Control File đã có sẵn từ F-06 — kiểm xem nó có phủ đủ 6 không:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Validator bắt được lỗi trong **chính fixture của tôi** — `decision_log.latest_sha256` null. Nghĩa là 7 probe vừa rồi chạy trên Control File mà hợp đồng sẽ từ chối. Sửa generator:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Validator chạy, nhưng transcript có **0** lần `state_seq`/`schema_version` — agent chạy hộp đen, không đọc Control File. Đó là hệ quả của việc yêu cầu hai thứ trùng nhau:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 **F-11 đóng.** Probe 11 pass cả hai validator ngay lần đầu. Nhưng khi sửa nó, lòi ra hai thứ.
 
@@ -4348,13 +4348,13 @@ trước khi tiếp tục tạo 6 file này tổng hợp lại @skill:grilling @
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Trước khi hỏi, tôi tự tra mấy thứ đáng lẽ không nên hỏi bạn:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Tra trước, không hỏi bạn mấy thứ này:
 
@@ -4394,7 +4394,7 @@ viết ra 6 file đó để có gì chuyển chat đỡ nhắt lại
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Rõ rồi — mục đích là **chuyển chat không phải kể lại**. Vậy ba mặc định tôi áp, nói trước để bạn chặn nếu sai:
 
@@ -4404,13 +4404,13 @@ Rõ rồi — mục đích là **chuyển chat không phải kể lại**. Vậy
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 README dòng 5 vẫn nói P05–P08 chưa có contract — sai từ lâu. Sửa và trỏ vào `docs/`:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Xong. **6 file, 354 dòng** — thay cho 2.031 dòng skill khi mở session mới.
 
@@ -4464,7 +4464,7 @@ lưu ở đâu z
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Trong repo, thư mục `docs/`:
 
@@ -4496,7 +4496,7 @@ tóm tắt bạn ghi gì trong 6 file đó
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Tóm tắt nội dung thật của từng file:
 
@@ -4574,19 +4574,19 @@ với cho prompt để AI kia tự update 6n file này luôn
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Hai việc. Việc 1 kiểm trước:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 Có, nhưng nói thẳng: **nó là luật duy nhất không có máy kiểm.** 23 luật đã dán nhãn, 5 file nhắc tới nó, **0 validator**. Thêm phần này vào `RULES.md`:
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 ## Việc 1 — luật đó có rồi, nhưng thiếu một nửa
 
@@ -4790,7 +4790,7 @@ Nếu user dán kèm một block đã ráp sẵn (từ form), ĐẨY block đó 
 
 ---
 
-### 🤖 WorkBuddy AI
+### 🤖 Assistant
 
 THIẾU NGUỒN | Lý do: không có đoạn SANITIZED_RAW_SOURCE dán kèm; repo dữ liệu kimducanh27-cpu/context-chatgpt-data cũng không đọc được (404 — không tồn tại hoặc không có quyền) nên bước ĐẨY cũng sẽ thất bại
 
@@ -4799,6 +4799,313 @@ THIẾU NGUỒN | Lý do: không có đoạn SANITIZED_RAW_SOURCE dán kèm; rep
 ### 👤 User
 
 @skill:handoff tạo file này vào docs luôn đi, nhờ đồng bộ lại 7 file kia, với nhớ rà lại xem còn thiếu gì không
+
+---
+
+### 🤖 Assistant
+
+Anchor lệch: 6 file ghi `5d5d47b`, HEAD là `42f615a`. Và `grep RE-PROBED` đếm ra 8 vì khớp cả `NOT RE-PROBED` — đúng lại là lỗi substring. Đếm tay: **7**.
+
+---
+
+### 🤖 Assistant
+
+Ba lỗ hổng thật. Sửa hai, cái thứ ba báo để bạn quyết:
+
+---
+
+### 🤖 Assistant
+
+**`docs/HANDOFF.md`** — 62 dòng, ghi thứ mà docs pack không ghi được: trạng thái **session**, không phải trạng thái repo.
+
+Ba luồng đang dở mà session sau sẽ phải tự phát hiện lại:
+
+1. **Protocol lưu trữ chưa từng chạy được** — thiếu excerpt, và `context-chatgpt-data` trả 404. Trước lần gấp sau phải xác nhận repo tồn tại.
+2. **Meta Muse chạy được `agy` nhưng chưa test ở đó** — 11 probe đều chạy local Windows. `MUSE-PROMPT.md` sẵn sàng, chưa dùng.
+3. **Skill P04 không vừa một lượt agent** — 46/71 bước, bị kill ở 300s.
+
+Kèm bảng "suggested skills" (`grilling`, `verification-before-completion`, `systematic-debugging`, `handoff`).
+
+## Đồng bộ 7 file → 8 file
+
+Cả 8 giờ ghi `commit 42f615a`. Và việc đồng bộ **bắt được hai chỗ sai**:
+
+**1. `PROGRESS.md` đếm sai.** Nó ghi *"six more closed by specification"*. Thực tế là **năm** (F-01, 02, 03, 09, 12). Cái thứ 13 — F-07 — không phải fix, nó ghi rằng P06 chưa từng được chạy.
+
+Nguyên nhân tôi đếm sai ban đầu: `grep RE-PROBED` ra 8 vì khớp cả `NOT RE-PROBED`. **Đúng lại lỗi substring của F-04, F-09, F-10** — con số trong pack sai vì đúng cái lý do mà pack đang ghi lại.
+
+**2. `UPDATE-PROMPT.md` cấm sai.** Nó ghi thủ tục này là file duy nhất được thêm vào `docs/`. Không còn đúng — `HANDOFF.md` là file thứ hai. Đã sửa: **6 file nội dung + 2 file vận hành**.
+
+## Rà thiếu — 3 lỗ hổng, sửa 2
+
+| Lỗ hổng | Xử lý |
+|---|---|
+| README **không nhắc `HANDOFF.md`** (0 lần) | ✅ Đã thêm, kèm thứ tự đọc đầy đủ |
+| Không chỗ nào nói kit **KHÔNG dùng để làm gì** | ✅ Thêm mục vào `PRD.md` |
+| `docs/` không có file index | ⚠️ **Để nguyên có chủ ý** |
+
+Về cái thứ ba: một file thứ 9 để liệt kê 8 file là chi phí bảo trì không đáng. Dòng trong README giờ đã làm việc đó.
+
+Mục "not for" trong PRD đáng nói vì nó chặn dùng sai: *không phải máy sinh code, không thay được designer, không dành cho team, không phải compliance framework, và chưa được chứng minh.*
+
+Commit `d53f872`, đã push.
+
+---
+
+### 👤 User
+
+ok tiếp tục công việc
+
+---
+
+### 🤖 Assistant
+
+Theo `docs/TASKS.md`, việc 1 là mở một gate thật. Chuẩn bị workspace trước:
+
+---
+
+### 🤖 Assistant
+
+Workspace sẵn sàng, cả hai validator `PASS`. Gate cần **bạn** gõ lệnh — tôi không được gõ thay. Trong lúc đó làm việc 3 trong TASKS: field contract cho P04.
+
+---
+
+### 🤖 Assistant
+
+v4 dispatch chạy. Nó bắt luôn lỗi fixture: P04 cũng thiếu Decision Log, y như F-12 trước đây.
+
+---
+
+### 🤖 Assistant
+
+Tìm ra: heredoc biến `\n` thành `/n`. Đó là lý do hai lần patch trước bí ẩn thất bại. Dùng chuỗi nhiều dòng thật:
+
+---
+
+### 🤖 Assistant
+
+Kiểm hai chiều — v4 contract có thật sự khác v1 không:
+
+---
+
+### 🤖 Assistant
+
+Hai chiều: v4 sạch `PASS`, v4 gắn event kiểu v1 `FAIL` đúng hai khác biệt cấu trúc. Sửa generator để fixture sau không tái diễn:
+
+---
+
+### 🤖 Assistant
+
+Heredoc lại phá `\n` lần nữa. Bỏ hẳn heredoc — sửa file trực tiếp:
+
+---
+
+### 🤖 Assistant
+
+Việc 3 xong. **`templates/CONTROL-FIELDS-v4.yaml`** — 15 event type, so với 10 của v1.
+
+Ba khác biệt mà checker không được phép bỏ qua:
+
+| | v1 | v4 |
+|---|---|---|
+| `GATE_1_APPROVED` | có `coverage_snapshot` | **không có** |
+| `SCHEMA_MIGRATED` | bị cấm | **tồn tại** |
+| Abort receipt | — | bind **2 event-block hash + 3 cạnh chain** |
+
+Validator giờ đọc `schema_version` của chính file rồi nạp contract tương ứng, **từ chối** nếu không có contract — không đoán theo bản gần nhất.
+
+**Kiểm hai chiều:** v4 sạch → `PASS`. v4 gắn event kiểu v1 → `FAIL` đúng hai chỗ (`thiếu gate`, `thừa coverage_snapshot`).
+
+Và nó bắt ngay lỗi giống F-12: `make-fixture.py` chưa bao giờ tạo Decision Log cho P04. Đã sửa, fixture mới sinh pass cả hai schema.
+
+---
+
+## Hai cái bẫy môi trường, đã ghi vào HANDOFF
+
+**1. Heredoc phá dấu `\`.** `python - <<'PY'` qua shell này âm thầm đổi `\n` thành `/n` hoặc `//n` trong string literal. Nó gây ra **hai lần `AssertionError: anchor not found`** trên file mà bytes hoàn toàn đúng — và nguyên nhân vô hình trong output. Tôi mất hai lần mới tìm ra.
+
+**2. `/tmp` không cùng nghĩa với bash và Python trên Windows.** `cp` vào `/tmp` thành công, rồi `pathlib.Path("/tmp/...")` ném `FileNotFoundError`.
+
+---
+
+## Còn lại: việc 1 — cái gate
+
+Workspace `fixtures/probe-11` đã sẵn sàng:
+
+```
+state_seq      : 0
+event_log      : 0 events
+gate_1.status  : PENDING
+gate_1.seq     : None
+decision_log   : ecbe8fc2f292f985 …
+```
+
+Cả hai validator `PASS`. Nhưng tôi **không được gõ lệnh duyệt thay bạn** — đó là toàn bộ lý do cái gate tồn tại.
+
+Nếu bạn gõ đúng dòng này:
+
+```
+APPROVE SCREEN UX MODEL
+```
+
+tôi sẽ thực hiện một Control update duy nhất: `state_seq` 0 → 1, thêm một event `GATE_1_APPROVED`, đặt `gate_1.approved_state_seq: 1`, bind `decision_log_sha256`, rồi chạy lại validator. Đó sẽ là **lần đầu tiên trong repo này một gate thật sự mở**.
+
+---
+
+### 👤 User
+
+tiếp theo là
+
+---
+
+### 🤖 Assistant
+
+Việc 4 cần artifact chưa tồn tại. Nhưng có việc đáng hơn: **cái gate hiện phụ thuộc vào việc agent tự viết YAML**. Đó đúng là thứ đã hỏng 2 lần hôm nay. Viết công cụ thay vì để agent tự làm:
+
+---
+
+### 🤖 Assistant
+
+`zoneinfo` cần `tzdata` trên Windows — không có. Việt Nam không có DST nên +07:00 cố định là chính xác:
+
+---
+
+### 🤖 Assistant
+
+Gate chạy được trên bản copy: `state_seq` 0→1, 1 event, 11 field, validator vẫn `PASS`. Workspace thật vẫn `PENDING`.
+
+---
+
+### 🤖 Assistant
+
+Cái gate trước giờ phụ thuộc vào việc **agent tự viết YAML** — đúng thứ đã hỏng hai lần hôm nay (F-06 sai tên field, F-08 digest không verify). Giờ có `apply-gate.py`.
+
+Nó làm bốn việc theo thứ tự:
+
+1. **Từ chối** nếu lệnh không khớp `required_command` từng ký tự
+2. **Từ chối** nếu gate không ở `PENDING`/`REOPENED`
+3. **Chạy validator của artifact** — fail thì dừng
+4. Ghi một event, tăng `state_seq`, **verify lại toàn file**
+
+Và nó **từ chối mọi gate chưa có validator**. Gate 1 là mapping duy nhất hiện tại — đó là hành vi trung thực cho tới khi gate 2, 3 có validator riêng.
+
+## Kiểm hai chiều trên bản copy
+
+| | Kết quả |
+|---|---|
+| Lệnh sai (`yes ok`) | `FAIL command does not match` — workspace không đổi |
+| Lệnh đúng | `state_seq` 0→1, 1 event, **11 field**, `approved_state_seq: 1`, validator `PASS` sau khi ghi |
+
+**Workspace thật vẫn `PENDING`, `state_seq: 0`, 0 event.** Không gate nào được mở — một công cụ được kiểm chứng. Hai chuyện khác nhau, và đó chính là điểm.
+
+## Sửa thêm một lỗi portability
+
+`zoneinfo` cần package `tzdata` trên Windows, không có. Việt Nam không có DST nên `+07:00` cố định là chính xác và không thể fail lúc chạy.
+
+---
+
+Commit `fcb8724`. `docs/TASKS.md` giờ ghi việc 3 xong, việc 1 có công cụ sẵn.
+
+Còn đúng một thứ chặn: **bạn gõ `APPROVE SCREEN UX MODEL`**. Lúc đó tôi chạy:
+
+```
+python test-harness/apply-gate.py fixtures/probe-11/product/ux-design/00_UX_CONTROL.md \
+  --gate 1 --command "APPROVE SCREEN UX MODEL" \
+  --artifact fixtures/probe-11/product/ux-design/01_SCREEN_UX_MODEL.md
+```
+
+và repo này sẽ có gate đầu tiên từng mở.
+
+---
+
+### 👤 User
+
+tiếp theo là
+
+---
+
+### 🤖 Assistant
+
+Việc 4 cần artifact chưa tồn tại. Nên làm ngược lại: **sinh artifact 02 bằng agy trước**, xem có lỗi gì — như probe 2 đã tìm ra F-03/F-04.
+
+---
+
+### 🤖 Assistant
+
+Artifact 02 thuộc Tab 02 — mà Tab 02 chỉ bắt đầu **sau** Gate 1. Gate chưa mở nên không sinh được. Làm việc không bị chặn: validator cho artifact 02.
+
+---
+
+### 🤖 Assistant
+
+Validator của tôi lại mắc đúng lỗi cũ — quét cả tài liệu nên bảng register và bảng citation bị đếm trùng. Lần thứ ba trong ngày. Sửa bằng cách giới hạn theo section:
+
+---
+
+### 🤖 Assistant
+
+Ba kiểu hỏng, ba lỗi chính xác, không báo nhầm. Kiểm nốt boundary:
+
+---
+
+### 🤖 Assistant
+
+**`validate-patterns.py`** — kiểm 5 luật của template pattern library.
+
+Bằng chứng hai chiều, **bốn kiểu hỏng**:
+
+| Mẫu | Kết quả |
+|---|---|
+| Đúng | `PASS` |
+| Pattern không screen nào cite, không reserve | `FAIL` — *"that is a habit, not a decision"* |
+| Thiếu `Refusal condition` | `FAIL` — nêu đúng tên subsection |
+| Cite `SCREEN-99` không tồn tại | `FAIL` |
+| *"taps the primary **button** in the **app bar**"* | `FAIL` cả hai từ cấm |
+
+## Viết nó lại tái hiện đúng lỗi nó sinh ra để bắt
+
+Bản đầu quét cả tài liệu — nên **bảng citation check cũng là bảng PAT ID**, bị đọc thành register thứ hai. Mọi pattern bị báo trùng, và mọi pattern bị coi là không ai cite.
+
+Đã sửa: mỗi lần parse giới hạn trong section của nó.
+
+**Đây là lần thứ tư trong một ngày:**
+
+1. `card` trong `discards`
+2. `### CRE-` trong câu văn
+3. `component` ngoài danh sách cấm
+4. checker đọc quá cuối section
+
+Đã thêm **luật 9** vào `RULES.md` — nói thẳng tên, vì kiểu hỏng này đủ ổn định để cảnh báo chứ không phải phát hiện lại mỗi lần.
+
+## Một điều về thứ tự
+
+Artifact 02 thuộc Tab 02, mà Tab 02 **chỉ bắt đầu sau Gate 1**. Gate 1 vẫn `PENDING`, nên không có artifact 02 nào tồn tại trong bất kỳ fixture nào — validator được viết và kiểm trên mẫu thay vì trên artifact thật.
+
+Đó là **gate đang hoạt động đúng**, không phải chỗ tôi lách.
+
+---
+
+Commit `7432476`. Còn `03`, `04`, `05` chưa có validator.
+
+Và cái chặn vẫn là cái cũ: **`APPROVE SCREEN UX MODEL`**. Không có nó thì Tab 02 không mở, artifact 02 không tồn tại, và ba validator kia cũng chỉ kiểm được trên mẫu tay.
+
+---
+
+### 👤 User
+
+update 8 file docs
+
+---
+
+### 🤖 Assistant
+
+Chạy đúng thủ tục `docs/UPDATE-PROMPT.md` — bước 1 là tính lại, không nhớ:
+
+---
+
+### 🤖 Assistant
+
+429 Credits exhausted. Please visit the link below to purchase add-on packs and get more credits: https://www.codebuddy.ai/profile/usage  (01a1d3bfdcef7017a7bc509da59fbde7/96744a9b-9a29-40eb-8413-2f328311c5ed)
 
 ---
 

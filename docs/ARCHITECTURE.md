@@ -1,5 +1,5 @@
 > Derived. Not authoritative. On disagreement the Control File wins.
-> Generated from this repository at commit `42f615a`, 2026-11-13.
+> Generated from this repository at commit `7432476`, 2026-11-13.
 
 # How the kit is built
 
@@ -60,7 +60,7 @@ docs/                   this orientation pack
 
 ## Why validators exist
 
-Five scripts, each born from a demonstrated failure:
+Five scripts that check or apply, each born from a demonstrated failure. A sixth, `make-fixture.py`, generates probe workspaces and checks nothing:
 
 | Script | Checks | Born from |
 |---|---|---|
